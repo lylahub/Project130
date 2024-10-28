@@ -7,6 +7,7 @@ import "./App.css";
 
 // import pages
 import Home from './pages/Home.js';
+import GroupSplit from './pages/GroupSplit.js';
 
 
 function AppRouter() {
@@ -18,6 +19,7 @@ function AppRouter() {
         <Routes location={location} key={location.pathname}>
           {/* <Route exact path="/" element={<LoginSignup />} /> */}
           <Route exact path="/" element={<Home />} />
+          <Route path="/group-split" element={<GroupSplit />} />
           {/* new pages put here */}
         </Routes>
       </AnimatePresence>

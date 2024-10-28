@@ -1,0 +1,89 @@
+/* src/css/GroupSplit.css */
+.group-split-container {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .group-split-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  .group-split-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .group-split-header h1 {
+    font-size: 28px;
+    color: #2c3e50;
+    margin: 0;
+  }
+  
+  .create-group-btn {
+    padding: 12px 24px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .create-group-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .group-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  
+  .group-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .group-card h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+  }
+  
+  .group-card p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .no-groups {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 8px;
+    grid-column: 1 / -1;
+  }
+  
+  .no-groups p {
+    margin: 10px 0;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  .no-groups p:first-child {
+    font-size: 18px;
+    color: #2c3e50;
+  }
