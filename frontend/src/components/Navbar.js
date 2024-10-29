@@ -10,9 +10,9 @@ const Navbar = ({ username }) => {
   const navigate = useNavigate();
 
   const tabs = [
-    { id: 1, label: "Group Split", path: "/group-split" },
-    { id: 2, label: "Bookkeep", path: "/bookkeep" },
-    { id: 3, label: "Income Recommendation", path: "/income-recommendation" }
+    { id: 1, label: "Bookkeep", path: "/sb" },
+    { id: 2, label: "Group Split", path: "/group-split" },
+    { id: 3, label: "Income Recommendation", path: "/income-re" }
   ];
 
   const handleTabClick = (tabId, path) => {
@@ -24,7 +24,7 @@ const Navbar = ({ username }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-left">
-          <Link to="/" className="navbar-logo-container">
+          <Link to="/sb" className="navbar-logo-container">
             <img src={logo} alt="Logo" className="navbar-logo" />
             <span className="navbar-title">SB</span>
           </Link>
@@ -40,11 +40,14 @@ const Navbar = ({ username }) => {
             ))}
           </div>
         </div>
-        <div className="navbar-right">
+        <div 
+          className="navbar-right"
+          onMouseEnter={() => setIsDropdownOpen(true)}
+          onMouseLeave={() => setIsDropdownOpen(false)}
+        >
           <span className="navbar-username">{username}</span>
-          <button 
+          <button
             className="navbar-dropdown-toggle"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             ▼
           </button>
