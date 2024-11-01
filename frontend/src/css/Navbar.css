@@ -88,27 +88,45 @@
   background: var(--active-bg-color);
 }
 
+/* Right Section: Username and Dropdown */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 15px;
-  position: relative; 
+  position: relative;
   margin-right: 90px;
 }
 
+/* Username and Dropdown Icon Container */
+.navbar-username-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-username-container:hover {
+  background-color: var(--hover-bg-color); /* Highlight on hover */
+}
+
+/* Username Text */
 .navbar-username {
   color: var(--text-color);
   font-size: 21px;
   font-weight: 500;
 }
 
+/* Dropdown Icon */
 .navbar-dropdown-toggle {
   background: none;
   border: none;
   color: var(--text-color);
-  cursor: pointer;
   font-size: 14px;
-  padding: 5px 10px;
+  padding: 0;
+  cursor: pointer;
   transition: transform 0.2s;
 }
 
@@ -116,6 +134,7 @@
   transform: translateY(2px);
 }
 
+/* Dropdown Menu */
 .navbar-dropdown-menu {
   position: absolute;
   right: 0;
