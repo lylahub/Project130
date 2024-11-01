@@ -1,0 +1,34 @@
+/* FinancialAdvice.css */
+
+.financial-advice-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.financial-advice-container input {
+    padding: 8px;
+    margin: 10px 0;
+    width: 200px;
+}
+
+.financial-advice-container button {
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.financial-advice-container h3 {
+    margin-top: 20px;
+}
+
+.financial-advice-container p {
+    max-width: 400px;
+    text-align: left;
+}
+
+.error-message {
+    color: red;
+}

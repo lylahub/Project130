@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import axios from 'axios';
+import cors from 'cors';  // Import cors
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -13,8 +14,13 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Initialize Express
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
+
+// Enable CORS for requests from http://localhost:3000
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 // Middleware to parse JSON
 app.use(express.json());
