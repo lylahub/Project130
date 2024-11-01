@@ -1,0 +1,105 @@
+/* src/css/Settings.css */
+.settings-container {
+    min-height: 100vh;
+    background-color: var(--background-primary);
+}
+
+.content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-section {
+    flex: 1;
+    max-width: 600px;
+    background-color: var(--background-secondary);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.form-section h1 {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--text-color);
+}
+
+.form-group.checkbox label {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+.form-group.checkbox input {
+    margin-right: 10px;
+}
+
+.save-button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 14px 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.save-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.save-button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 20px;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+}
