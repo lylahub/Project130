@@ -11,6 +11,7 @@ import Home from './pages/Home.js';
 import GroupSplit from './pages/GroupSplit.js';
 import IncomeRecommendation from './pages/IncomeRe.js';
 import Settings from "./pages/Settings";
+import Profile  from "./pages/Profile";
 
 function AppRouter() {
   const location = useLocation();
@@ -27,7 +28,7 @@ function AppRouter() {
         <Route path="/group-split" element={<GroupSplit />} />
         <Route path="/income-re" element={<IncomeRecommendation />} />
           <Route path = "/settings" element = {<Settings />} />
-        
+        <Route path = "/profile" element = {<Profile />} />
         {/* Redirect unmatched routes to /sb */}
         <Route path="*" element={<Navigate to="/sb" replace />} />
       </Routes>

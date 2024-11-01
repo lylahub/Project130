@@ -1,0 +1,157 @@
+/* src/css/Profile.css */
+
+.profile-container {
+    min-height: 100vh;
+    background-color: var(--background-primary);
+}
+
+.content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-section {
+    width: 100%;
+    max-width: 600px;
+    background-color: var(--background-secondary);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.profile-section h1 {
+    color: var(--text-secondary);
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-picture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    background-color: #ddd;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.form-group p {
+    font-size: 16px;
+    color: var(--text-secondary);
+}
+
+.profile-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Common styling for Edit and Save buttons */
+.edit-button,
+.save-button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.edit-button:hover,
+.save-button:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Cancel button with similar styling but lighter color */
+.cancel-button {
+    background-color: #e0e0e0;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.cancel-button:hover {
+    background-color: #d1d1d1;
+}
+
+.change-password-button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.change-password-button:hover {
+    background-color: var(--secondary-color);
+}
+
+.password-section {
+    margin-top: 20px;
+}
+
+.password-section h2 {
+    color: var(--text-secondary);
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 20px;
+    }
+
+    .profile-section {
+        padding: 20px;
+    }
+}
