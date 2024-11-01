@@ -1,37 +1,46 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import FinancialAdvice from './FinancialAdvice';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from "framer-motion";
+import { UserProvider } from "./userContext.js";
+import "./App.css";
+import './css/theme.css';
+
+// import pages
+import Home from './pages/Home.js';
+import GroupSplit from './pages/GroupSplit.js';
+import IncomeRecommendation from './pages/IncomeRe.js';
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
+
+function AppRouter() {
+  const location = useLocation();
+  return (
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Redirect root to /sb */}
+          <Route path="/" element={<Navigate to="/sb" replace />} />
+
+          {/* Main routes */}
+          <Route path="/sb" element={<Home />} />
+          <Route path="/group-split" element={<GroupSplit />} />
+          <Route path="/income-re" element={<IncomeRecommendation />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+          {/* Redirect unmatched routes to /sb */}
+          <Route path="*" element={<Navigate to="/sb" replace />} />
+        </Routes>
+      </AnimatePresence>
+  );
+}
 
 function App() {
   return (
-      <Router>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <nav>
-              <Link to="/">Home</Link>
-              <Link to="/financial-advice" style={{ marginLeft: '10px' }}>Get Financial Advice</Link>
-            </nav>
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-          </header>
-          <Routes>
-            <Route path="/" element={<h1>Welcome to SmartBudget</h1>} />
-            <Route path="/financial-advice" element={<FinancialAdvice />} />
-          </Routes>
-        </div>
-      </Router>
+      <div className="App">
+        <Router>
+          <AppRouter />
+        </Router>
+      </div>
   );
 }
 
