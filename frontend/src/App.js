@@ -23,8 +23,8 @@ function AppRouter() {
         
         {/* Main routes */}
         <Route path="/sb" element={<Home />} />
-        <Route path="/sb/group-split" element={<GroupSplit />} />
-        <Route path="/sb/income-re" element={<IncomeRecommendation />} />
+        <Route path="/group-split" element={<GroupSplit />} />
+        <Route path="/income-re" element={<IncomeRecommendation />} />
         
         {/* Redirect unmatched routes to /sb */}
         <Route path="*" element={<Navigate to="/sb" replace />} />
