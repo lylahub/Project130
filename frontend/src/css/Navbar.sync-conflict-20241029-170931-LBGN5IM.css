@@ -1,0 +1,135 @@
+/* src/css/Navbar.css */
+.navbar {
+  background-color: #2c3e50;
+  padding: 12px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px; /* 加寬容器 */
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 增加元素間距 */
+}
+
+.navbar-logo {
+  height: 60px; /* 增加 logo 大小 */
+  width: auto;
+}
+
+.navbar-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  padding: 5px;
+  border-radius: 6px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar-logo-container:hover {
+  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-logo-container:active {
+  transform: translateY(0);
+}
+
+.navbar-title {
+  font-size: 31px; /* 增加字體大小 */
+  font-weight: bold;
+  color: #ecf0f1;
+  font-family: 'Montserrat', sans-serif; /* 更現代的字體 */
+  letter-spacing: 1px;
+}
+
+.navbar-tabs {
+  display: flex;
+  gap: 15px;
+  margin-left: 2px;
+}
+
+.navbar-tab {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: #ecf0f1;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.navbar-tab:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.navbar-tab.active {
+  background: rgba(255,255,255,0.2);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-username {
+  color: #ecf0f1;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.navbar-dropdown-toggle {
+  background: none;
+  border: none;
+  color: #ecf0f1;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px 10px;
+  transition: transform 0.2s;
+}
+
+.navbar-dropdown-toggle:hover {
+  transform: translateY(2px);
+}
+
+.navbar-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #34495e;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  list-style-type: none;
+  padding: 5px 0;
+  margin: 5px 0 0;
+  min-width: 180px;
+  border-radius: 6px;
+  z-index: 1000;
+}
+
+.navbar-dropdown-menu li a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #ecf0f1;
+  transition: background-color 0.2s;
+  font-size: 15px;
+}
+
+.navbar-dropdown-menu li a:hover {
+  background-color: #2c3e50;
+}
+
+/* 為了確保字體加載，在 HTML 的 head 中添加 Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
