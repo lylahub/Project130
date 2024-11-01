@@ -1,6 +1,6 @@
-// src/pages/IncomeRecommendation.js
 import React, { useState } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 import Navbar from '../components/Navbar';
 import '../css/IncomeRe.css';
 
@@ -29,26 +29,6 @@ const IncomeRecommendation = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    //   try {
-    //     // 這裡將來會加入與 ChatGPT API 的整合
-    //     // 模擬 API 調用
-    //     setTimeout(() => {
-    //       setRecommendation({
-    //         summary: "Based on your financial profile...",
-    //         suggestions: [
-    //           "Consider increasing your emergency fund",
-    //           "Look into diversifying your investments",
-    //           "Focus on debt reduction"
-    //         ],
-    //         detailedPlan: "Here's a detailed financial plan..."
-    //       });
-    //       setIsLoading(false);
-    //     }, 1500);
-    //   } catch (error) {
-    //     console.error("Error getting recommendations:", error);
-    //     setIsLoading(false);
-    //   }
-    // };
     try {
       const response = await axios.post('/api/get-recommendation', { financialData });
       setRecommendation({
@@ -172,23 +152,24 @@ const IncomeRecommendation = () => {
           {recommendation && (
               <div className="recommendation-section">
                 <h2>Your Personal Financial Recommendations</h2>
+
                 <div className="recommendation-summary">
                   <h3>Summary</h3>
-                  <p>{recommendation.summary}</p>
+                  <ReactMarkdown>{recommendation.summary}</ReactMarkdown>
                 </div>
 
                 <div className="recommendation-suggestions">
                   <h3>Key Suggestions</h3>
                   <ul>
                     {recommendation.suggestions.map((suggestion, index) => (
-                        <li key={index}>{suggestion}</li>
+                        <li key={index}><ReactMarkdown>{suggestion}</ReactMarkdown></li>
                     ))}
                   </ul>
                 </div>
 
                 <div className="recommendation-details">
                   <h3>Detailed Plan</h3>
-                  <p>{recommendation.detailedPlan}</p>
+                  <ReactMarkdown>{recommendation.detailedPlan}</ReactMarkdown>
                 </div>
               </div>
           )}
