@@ -1,7 +1,14 @@
-import express from "express"
-import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions } from "./categoricalBookkeeping.js"
-import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js"
+import express from "express";
+import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions } from "./categoricalBookkeeping.js";
+import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
+
 const router = express.Router();
+
+
+// Add this root route to respond to GET / requests
+router.get('/', (req, res) => {
+    res.send('Welcome to the server! It is running correctly.');
+});
 
 //add default categories
 router.post("/categories/default", async (req, res) => {
