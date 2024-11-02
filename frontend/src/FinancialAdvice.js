@@ -12,7 +12,7 @@ const FinancialAdvice = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:5000/api/get-financial-advice', { income });
+            const response = await axios.post('http://localhost:3001/api/get-financial-advice', { income });
             setAdvice(response.data.advice);
         } catch (error) {
             setError("Failed to retrieve financial advice");
