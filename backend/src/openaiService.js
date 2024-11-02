@@ -1,4 +1,8 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
 
@@ -7,24 +11,38 @@ const getFinancialAdvice = async (userData) => {
     try {
         // Send a POST request to the OpenAI API endpoint
         const response = await axios.post(
-            'https://api.openai.com/v1/completions',
+            'https://api.openai.com/v1/chat/completions',
             {
-                model: 'gpt-4o-mini', // Choose the model that fits your requirements
-                prompt: `Provide budget recommendations for a user with an income of ${userData.income}. Suggest ideal spending on essentials, savings, and discretionary expenses.`,
-                max_tokens: 100, // Limit tokens to control response length
-                temperature: 0.7, // Adjusts response creativity
+                model: 'gpt-4o-mini',
+                messages: [
+                    {
+                        role: 'user',
+                        content: `I need financial advice based on the following data: 
+                        Monthly Income: ${userData.monthlyIncome},
+                        Monthly Expenses: ${userData.monthlyExpenses},
+                        Savings: ${userData.savings},
+                        Debt: ${userData.debt},
+                        Financial Goals: ${userData.financialGoals},
+                        Risk Tolerance: ${userData.riskTolerance},
+                        Investment Experience: ${userData.investmentExperience}. 
+                        Provide recommendations.`
+                    }
+                ],
+                max_tokens: 400,
+                temperature: 0.7,
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${openaiApiKey}`, // Use the API key securely
+                    'Authorization': `Bearer ${openaiApiKey}`,
+                    'Content-Type': 'application/json',
                 },
             }
         );
 
         // Return the response text containing the financial advice
-        return response.data.choices[0].text;
+        return response.data.choices[0].message.content;
     } catch (error) {
-        console.error("Error fetching financial advice:", error);
+        console.error("Error fetching financial advice:", error.response?.data || error.message);
         throw error;
     }
 };
