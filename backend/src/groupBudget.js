@@ -72,6 +72,15 @@ export class GroupBudget extends Observable {
             });
             console.log(`clients for group '${groupName}' (${groupId}):`, this.clients[groupId]);
             console.log(`Group '${groupName}' created successfully with participants:`, participantsUIDs);
+
+            const data = {
+                action: 'newGroup',
+                groupId: groupId,
+                entry: this.groups[groupId]
+            };
+
+            this.notifyGroup(groupId, data);
+
         } catch (error) {
             console.error("Error creating group:", error);
         }
@@ -114,6 +123,7 @@ export class GroupBudget extends Observable {
     
             // Notify all online participants in the group about the new entry
             this.notifyGroup(groupId, data);
+            await this.updateBalances(groupId, participants, payer, totalAmount, shares)
     
             console.log("Entry added successfully with balances updated.");
             return shares;

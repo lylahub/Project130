@@ -12,6 +12,7 @@ export default function (groupBudgets, clients) {
         res.send('Welcome to the server! It is running correctly.');
     });
 
+    
     // Route to create a new group
     router.post("/group/create", async (req, res) => {
         const { userId, groupName, participantEmails } = req.body;
