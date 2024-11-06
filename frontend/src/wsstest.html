@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input type="text" id="userIdInput" placeholder="Enter user ID" />
+    <button id="connectBtn">Connect</button>
+    
+    <div id="groupSection" style="display: none;">
+        <input type="text" id="groupNameInput" placeholder="Enter group name" />
+        <input type="text" id="participantEmailsInput" placeholder="Enter participant emails (comma-separated)" />
+        <button id="createGroupBtn">Create Group</button>
+    </div>
+
+    <div id="clientsSection" style="display: none;">
+        <input type="text" id="groupIdInput" placeholder="Enter group ID" />
+        <button id="showClientsBtn">Show Group Clients</button>
+    </div>
+
+    <pre id="output"></pre>
+
+    <script>
+        let socket;
+
+        // Display messages in the output area
+        function logMessage(message) {
+            const output = document.getElementById("output");
+            output.textContent += message + "\n";
+        }
+
+        // Connect to the WebSocket server
+        document.getElementById("connectBtn").onclick = () => {
+            const userId = document.getElementById("userIdInput").value;
+            if (!userId) {
+                logMessage("Please enter a user ID");
+                return;
+            }
+
+            socket = new WebSocket("ws://localhost:3001");
+
+            // When connection opens, send the userId to server
+            socket.onopen = () => {
+                logMessage("WebSocket connected");
+                document.getElementById("groupSection").style.display = 'block';
+                document.getElementById("clientsSection").style.display = 'block';
+
+                // Send connect message with userId
+                const connectMessage = {
+                    action: "connect",
+                    userId: userId
+                };
+                socket.send(JSON.stringify(connectMessage));
+                logMessage("Sent to server: " + JSON.stringify(connectMessage));
+            };
+
+            // Log messages received from the server
+            socket.onmessage = (event) => {
+                logMessage("Message from server: " + event.data);
+
+                try {
+                    const data = JSON.parse(event.data);
+                    logMessage(`Received data with action: ${data.action}`);
+
+                    if (data.action === "showClients" && data.clients) {
+                        logMessage("Clients in group " + data.groupId + ": " + JSON.stringify(data.clients));
+                    } else if (data.action === "createGroup") {
+                        logMessage("Group created successfully: " + JSON.stringify(data));
+                    } else {
+                        logMessage("Unhandled action type: " + data.action);
+                    }
+                } catch (e) {
+                    logMessage("Error parsing message from server: " + e.message);
+                }
+            };
+
+            // Log connection closed
+            socket.onclose = () => {
+                logMessage("WebSocket connection closed");
+                document.getElementById("groupSection").style.display = 'none';
+                document.getElementById("clientsSection").style.display = 'none';
+            };
+
+            // Log errors
+            socket.onerror = (error) => {
+                logMessage("WebSocket error: " + error.message);
+            };
+        };
+
+        // Send createGroup message to the server
+        document.getElementById("createGroupBtn").onclick = () => {
+            const groupName = document.getElementById("groupNameInput").value;
+            const participantEmails = document.getElementById("participantEmailsInput").value;
+
+            if (!groupName || !participantEmails) {
+                logMessage("Please enter both group name and participant emails");
+                return;
+            }
+
+            const userId = document.getElementById("userIdInput").value; // Ensure userId is used
+
+            const createGroupMessage = {
+                action: "createGroup",
+                userId: userId,
+                groupName: groupName,
+                participantEmails: participantEmails.split(",").map(email => email.trim())
+            };
+            socket.send(JSON.stringify(createGroupMessage));
+            logMessage("Sent to server: " + JSON.stringify(createGroupMessage));
+        };
+
+        // Send showClients message to the server
+        document.getElementById("showClientsBtn").onclick = () => {
+            const groupId = document.getElementById("groupIdInput").value;
+            if (!groupId) {
+                logMessage("Please enter a group ID");
+                return;
+            }
+
+            const userId = document.getElementById("userIdInput").value;
+
+            const showClientsMessage = {
+                action: "showClients",
+                userId: userId,
+                groupId: groupId
+            };
+            socket.send(JSON.stringify(showClientsMessage));
+            logMessage("Sent to server to show clients in group: " + JSON.stringify(showClientsMessage));
+        };
+    </script>
+</body>
+</html>
