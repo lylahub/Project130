@@ -6,8 +6,8 @@
     --text-color: #ecf0f1;         /* 主要文字顏色 */
     
     /* 背景顏色 */
-    --background-primary: #6ea984;   /* 主要背景 */
-    --background-secondary: #ede6d3; /* 次要背景，如卡片 */
+    --background-primary: #96beb8;   /* 主要背景 */
+    --background-secondary: #e0dac8; /* 次要背景，如卡片 */
     
     /* 互動效果 */
     --hover-bg-color: rgba(255,255,255,0.1);

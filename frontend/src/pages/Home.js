@@ -24,20 +24,21 @@ const Home = () => {
         { id: 3, label: "Tab 3" }
       ]} activeTab={activeTab} onTabChange={setActiveTab} />
       
+      <div className="home-container">
       <div className="home-content">
-        <div className="top-sections">
-          <div className="chart-section">
-            <h2>Chart</h2>
-            {/* 這裡添加圖表組件 */}
+        <div className="block-container">
+          <div className="top-sections">
+            <div className="chart-section">
+              <h2>Chart</h2>
+              {/* Chart content */}
+            </div>
+            <div className="info-section">
+              {/* Info content */}
+            </div>
           </div>
-          <div className="info-section">
-            {/* 右側信息區塊 */}
-          </div>
-        </div>
-        
-        <div className="transactions-section">
-          <h2>Transaction History</h2>
-          <div className="transactions-list">
+          <div className="transactions-section">
+            <h2>Transaction History</h2>
+            <div className="transactions-list">
             {transactions.map(transaction => (
               <div key={transaction.id} className="transaction-item">
                 <span>{transaction.date}</span>
@@ -45,9 +46,11 @@ const Home = () => {
                 <span>${transaction.amount}</span>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
