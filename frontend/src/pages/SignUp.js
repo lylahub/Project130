@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/SignUp.css';
+import logo from '../components/logo.png';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -46,30 +47,42 @@ const SignUp = () => {
 
   return (
     <div className="signup-container">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignUp} className="signup-form">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading} // Disable inputs when loading
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}> {/* Disable button when loading */}
-          {loading ? "Signing Up..." : "Sign Up"}
-        </button>
-        {error && <p className="error">{error}</p>}
-        {message && <p className="success">{message}</p>}
-      </form>
+      <div className="signup-box">
+        <div className="logo-container">
+        <img src={logo} alt="Logo"></img>
+        </div>
+        <form onSubmit={handleSignUp} className="signup-form">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
+          />
+          <button type="submit" className="button primary" disabled={loading}>
+            {loading ? "Signing Up..." : "Sign Up"}
+          </button>
+          <button 
+            type="button" 
+            className="button secondary" 
+            onClick={() => navigate('/login')} 
+            disabled={loading}
+          >
+            Back to Login
+          </button>
+          {error && <p className="error">{error}</p>}
+          {message && <p className="success">{message}</p>}
+        </form>
+      </div>
     </div>
   );
 };

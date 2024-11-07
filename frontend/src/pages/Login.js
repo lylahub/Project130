@@ -3,6 +3,8 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../userContext.js';
 import '../css/Login.css';
+import logo from '../components/logo.png';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,10 +41,13 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  return (
-    <div className="login-container">
-      <h2>Login</h2>
+{/*<img src={logo} alt="Logo"></img>*/}
+return (
+  <div className="login-container">
+    <div className="login-box">
+      <div className="logo-container">
+        <img src={logo} alt="Logo"></img>
+      </div>
       <form onSubmit={handleLogin} className="login-form">
         <input
           type="email"
@@ -50,7 +55,7 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          disabled={loading} // Disable input during loading
+          disabled={loading}
         />
         <input
           type="password"
@@ -60,16 +65,22 @@ const Login = () => {
           required
           disabled={loading}
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="button primary" disabled={loading}>
           {loading ? "Logging In..." : "Log In"}
+        </button>
+        <button 
+          type="button" 
+          className="button secondary" 
+          onClick={() => navigate('/signup')} 
+          disabled={loading}
+        >
+          Sign Up
         </button>
         {error && <p className="error">{error}</p>}
       </form>
-      <button onClick={() => navigate('/signup')} className="signup-button" disabled={loading}>
-        Sign Up
-      </button>
     </div>
-  );
+  </div>
+);
 };
 
 export default Login;

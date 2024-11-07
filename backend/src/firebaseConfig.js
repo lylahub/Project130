@@ -9,8 +9,8 @@ const __dirname = path.dirname(__filename);
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-console.log("Firebase API Key:", process.env.REACT_APP_FIREBASE_API_KEY);
-console.log("Firebase Auth Domain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
+// console.log("Firebase API Key:", process.env.REACT_APP_FIREBASE_API_KEY);
+// console.log("Firebase Auth Domain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
