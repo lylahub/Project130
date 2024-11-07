@@ -1,0 +1,68 @@
+/* src/css/SignUp.css */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-primary);
+  }
+  
+  .signup-box {
+    background: var(--background-secondary);
+    padding: 2rem; /* Increased padding for a more spacious look */
+    border-radius: 10px; /* More rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow for more depth */
+    width: 100%;
+    max-width: 400px; /* Fixed width for symmetry */
+    text-align: center;
+  }
+  
+  .signup-box h2 {
+    margin-bottom: 1.5rem; /* More space between title and inputs */
+    color: var(--text-primary);
+  }
+  
+  .signup-box input[type="email"],
+  .signup-box input[type="password"] {
+    width: 100%;
+    padding: 0.8rem; /* Increased padding for inputs */
+    margin: 0.5rem 0; /* Consistent spacing */
+    border: 1px solid var(--border-color);
+    border-radius: 5px; /* Slightly more rounded inputs */
+    font-size: 1rem;
+    background-color: var(--input-background);
+  }
+  
+  .signup-button {
+    width: 100%;
+    padding: 0.8rem; /* Increased padding for button */
+    margin-top: 1.5rem; /* Increased margin for spacing */
+    border: none;
+    border-radius: 5px; /* Match button corners with inputs */
+    font-size: 1rem;
+    background-color: var(--button-primary);
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition effect */
+  }
+  
+  .signup-button:hover {
+    background-color: var(--button-primary-hover); /* Optional hover color */
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .back-to-login-button {
+    margin-top: 1rem;
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+  }
+  
