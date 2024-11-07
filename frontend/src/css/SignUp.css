@@ -1,0 +1,26 @@
+/* src/css/SignUp.css */
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f7f9fc;
+  }
+  
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+  }
+  
+  .signup-form input,
+  .signup-form button {
+    padding: 10px;
+    margin: 8px 0;
+  }
+  
+  .error {
+    color: red;
+  }
+  
