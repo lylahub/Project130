@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from "framer-motion";
 import { UserProvider } from "./userContext.js";
+import { WebSocketProvider } from "./WebsocketContext.js"
 import "./App.css";
 import './css/theme.css';
 
@@ -37,9 +38,13 @@ function AppRouter() {
 function App() {
   return (
       <div className="App">
-        <Router>
-          <AppRouter />
-        </Router>
+        <UserProvider>
+          <WebSocketProvider>
+            <Router>
+              <AppRouter />
+            </Router>
+          </WebSocketProvider>
+        </UserProvider>
       </div>
   );
 }
