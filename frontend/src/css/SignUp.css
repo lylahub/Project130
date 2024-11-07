@@ -1,68 +1,105 @@
-/* src/css/SignUp.css */
 .signup-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--background-primary);
-  }
-  
-  .signup-box {
-    background: var(--background-secondary);
-    padding: 2rem; /* Increased padding for a more spacious look */
-    border-radius: 10px; /* More rounded corners */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow for more depth */
-    width: 100%;
-    max-width: 400px; /* Fixed width for symmetry */
-    text-align: center;
-  }
-  
-  .signup-box h2 {
-    margin-bottom: 1.5rem; /* More space between title and inputs */
-    color: var(--text-primary);
-  }
-  
-  .signup-box input[type="email"],
-  .signup-box input[type="password"] {
-    width: 100%;
-    padding: 0.8rem; /* Increased padding for inputs */
-    margin: 0.5rem 0; /* Consistent spacing */
-    border: 1px solid var(--border-color);
-    border-radius: 5px; /* Slightly more rounded inputs */
-    font-size: 1rem;
-    background-color: var(--input-background);
-  }
-  
-  .signup-button {
-    width: 100%;
-    padding: 0.8rem; /* Increased padding for button */
-    margin-top: 1.5rem; /* Increased margin for spacing */
-    border: none;
-    border-radius: 5px; /* Match button corners with inputs */
-    font-size: 1rem;
-    background-color: var(--button-primary);
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s; /* Smooth transition effect */
-  }
-  
-  .signup-button:hover {
-    background-color: var(--button-primary-hover); /* Optional hover color */
-  }
-  
-  .error-message {
-    color: var(--error-color);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-  }
-  
-  .back-to-login-button {
-    margin-top: 1rem;
-    color: var(--text-primary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-    font-size: 0.9rem;
-  }
-  
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-primary);
+  padding: 20px;
+}
+
+.signup-box {
+  background: var(--background-secondary);
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo-container {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.signup-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  color: var(--text-secondary);
+}
+
+.signup-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.button.primary {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.success {
+  color: #27ae60;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}

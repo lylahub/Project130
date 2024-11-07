@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useUser } from '../userContext';
 import { useNavigate } from 'react-router-dom';
 import '../css/SignUp.css';
+import logo from '../components/logo.png';
 
 const SignUp = () => {
   const { signUp } = useUser();
@@ -10,6 +11,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -23,14 +25,17 @@ const SignUp = () => {
   return (
     <div className="signup-container">
       <div className="signup-box">
-        <h2>Sign Up</h2>
-        <form onSubmit={handleSignUp}>
+        <div className="logo-container">
+          <img src={logo} alt="Logo"></img>
+        </div>
+        <form onSubmit={handleSignUp} className="signup-form">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
           />
           <input
             type="password"
@@ -38,13 +43,17 @@ const SignUp = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
           />
-          <button type="submit" className="signup-button">Sign Up</button>
+          <button type="submit" className="button primary" disabled={loading}>
+            {loading ? "Signing Up..." : "Sign Up"}
+          </button>
         </form>
         {error && <p className="error-message">{error}</p>}
         <button
-          className="back-to-login-button"
+          className="button secondary"
           onClick={() => navigate("/login")}
+          disabled={loading}
         >
           Back to Login
         </button>

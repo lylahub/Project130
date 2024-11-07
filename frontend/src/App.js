@@ -33,7 +33,7 @@ function AppRouter() {
         {/* Protected routes - accessible only if user is authenticated */}
         {uid ? (
           <>
-            <Route path="/home" element={<Home />} />
+            <Route path="/sb" element={<Home />} />
             <Route path="/group-split" element={<GroupSplit />} />
             <Route path="/income-re" element={<IncomeRecommendation />} />
             <Route path="/settings" element={<Settings />} />

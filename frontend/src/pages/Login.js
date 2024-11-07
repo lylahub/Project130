@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { useUser } from '../userContext';
 import '../css/Login.css';
+import logo from '../components/logo.png';
 
 const Login = () => {
   const { login } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,14 +26,17 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
+        <div className="logo-container">
+          <img src={logo} alt="Logo"></img>
+        </div>
+        <form onSubmit={handleLogin} className="login-form">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
           />
           <input
             type="password"
@@ -39,8 +44,11 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
           />
-          <button type="submit" className="login-button">Log In</button>
+          <button type="submit" className="button primary" disabled={loading}>
+          {loading ? "Logging In..." : "Log In"}
+          </button>
         </form>
         {error && <p className="error-message">{error}</p>}
         <p className="signup-link">

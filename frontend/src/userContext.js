@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
     try {
       const userId = await loginService(email, password);
       setUid(userId);
-      navigate("/home");
+      navigate("/sb");
     } catch (error) {
       console.error("Login error:", error.message);
       return error.message;
@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
     try {
       const userId = await signUpService(email, password);
       setUid(userId);
-      navigate("/home");
+      navigate("/sb");
     } catch (error) {
       console.error("Signup error:", error.message);
       return error.message;

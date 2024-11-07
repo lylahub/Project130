@@ -1,62 +1,97 @@
-/* src/css/Login.css */
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: var(--background-primary);
+  padding: 20px;
 }
 
 .login-box {
   background: var(--background-secondary);
-  padding: 2rem; /* Increased padding for a more spacious look */
-  border-radius: 10px; /* More rounded corners */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow for more depth */
+  padding: 2.5rem;
+  border-radius: 12px;
   width: 100%;
-  max-width: 400px; /* Fixed width for symmetry */
-  text-align: center;
+  max-width: 360px; /* 調整整體寬度 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.login-box h2 {
-  margin-bottom: 1.5rem; /* More space between title and inputs */
-  color: var(--text-primary);
+.logo-container {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
-.login-box input[type="email"],
-.login-box input[type="password"] {
+.logo-container img {
   width: 100%;
-  padding: 0.8rem; /* Increased padding for inputs */
-  margin: 0.5rem 0; /* Consistent spacing */
+  height: 100%;
+  object-fit: contain;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
   border: 1px solid var(--border-color);
-  border-radius: 5px; /* Slightly more rounded inputs */
+  border-radius: 8px;
   font-size: 1rem;
-  background-color: var(--input-background);
+  background-color: white;
+  color: var(--text-secondary);
 }
 
-.login-button {
+.login-form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.button {
   width: 100%;
-  padding: 0.8rem; /* Increased padding for button */
-  margin-top: 1.5rem; /* Increased margin for spacing */
-  border: none;
-  border-radius: 5px; /* Match button corners with inputs */
+  padding: 12px;
+  border-radius: 8px;
   font-size: 1rem;
-  background-color: var(--button-primary);
-  color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s; /* Smooth transition effect */
-}
-
-.login-button:hover {
-  background-color: var(--button-primary-hover); /* Optional hover color */
-}
-
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
   margin-top: 0.5rem;
 }
 
-.signup-link {
-  margin-top: 1.5rem; /* Increased margin for better spacing */
-  color: var(--text-secondary);
+.button.primary {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  width: 100%;
 }
