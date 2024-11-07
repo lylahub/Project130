@@ -1,21 +1,26 @@
 /* src/css/Home.css */
 .home-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  min-height: 90vh;
   background-color: var(--background-primary);
 }
 
 .home-content {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* 新增容器來限制寬度並置中 */
+.block-container {
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  max-width: 1200px;
 }
 
 .top-sections {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
 }
@@ -23,28 +28,73 @@
 .chart-section,
 .info-section {
   background: var(--background-secondary);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px var(--shadow-color);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px var(--shadow-color);
   height: 300px;
 }
 
 .transactions-section {
   background: var(--background-secondary);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px var(--shadow-color);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.transactions-section h2 {
+  color: var(--text-secondary);
+  font-size: 28px;
+  margin-bottom: 20px;
 }
 
 .transactions-list {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .transaction-item {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 20px;
-  padding: 15px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-secondary);
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+/* 響應式設計 */
+@media (max-width: 968px) {
+  .top-sections {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .chart-section,
+  .info-section {
+    height: auto;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-content {
+    padding: 20px;
+    gap: 24px;
+  }
+
+  .transactions-section {
+    padding: 24px;
+  }
+
+  .transactions-section h2 {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .transaction-item {
+    gap: 15px;
+    padding: 12px 0;
+  }
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Client</title>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input type="text" id="userIdInput" placeholder="Enter user ID" />
+    <button id="connectBtn">Connect</button>
+    <button id="sendTestMessageBtn" disabled>Send Test Message</button>
+    <pre id="output"></pre>
+
+    <script>
+        let socket;
+
+        function logMessage(message) {
+            const output = document.getElementById("output");
+            output.textContent += message + "\n";
+        }
+
+        document.getElementById("connectBtn").onclick = () => {
+            const userId = document.getElementById("userIdInput").value;
+            if (!userId) {
+                logMessage("Please enter a user ID");
+                return;
+            }
+
+            socket = new WebSocket("ws://localhost:3001");
+
+            socket.onopen = () => {
+                logMessage("WebSocket connected");
+                document.getElementById("sendTestMessageBtn").disabled = false;
+
+                const connectMessage = {
+                    action: "connect",
+                    userId: userId
+                };
+                socket.send(JSON.stringify(connectMessage));
+                logMessage("Sent to server: " + JSON.stringify(connectMessage));
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                logMessage("Message from server: " + event.data);
+
+                const userId = document.getElementById("userIdInput").value;
+                if (data.receiverId === userId) {
+                    logMessage(`This message is for you (${userId}): ${data.message || "No specific message"}`);
+                } else {
+                    logMessage(`This message is for another user (${data.receiverId})`);
+                }
+            };
+
+            socket.onclose = () => {
+                logMessage("WebSocket connection closed");
+                document.getElementById("sendTestMessageBtn").disabled = true;
+            };
+
+            socket.onerror = (error) => {
+                logMessage("WebSocket error: " + error.message);
+            };
+        };
+
+        document.getElementById("sendTestMessageBtn").onclick = () => {
+            const testMessage = {
+                action: "test",
+                message: "Hello, server!"
+            };
+            socket.send(JSON.stringify(testMessage));
+            logMessage("Sent to server: " + JSON.stringify(testMessage));
+        };
+    </script>
+</body>
+</html>

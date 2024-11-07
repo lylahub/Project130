@@ -1,11 +1,52 @@
 // src/pages/GroupSplit.js
 import React, { useState } from 'react';
+import { useContext, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import '../css/GroupSplit.css';
+import { useUser } from '../userContext';
+import { WebSocketContext } from '../WebsocketContext';
 
 const GroupSplit = () => {
   const [groups, setGroups] = useState([]);
+  const { uid, setUid } = useUser();
   const username = "Baby"; // 這裡應該從用戶狀態獲取
+  const socket = useContext(WebSocketContext);
+  useEffect(() => {
+    if (uid) {
+      fetch(`http://localhost:3001/group/fetch-groups?userId=${uid}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.groups) {
+            setGroups(data.groups);
+          } else {
+            console.error("Failed to fetch groups:", data.error);
+          }
+        })
+        .catch(error => console.error("Error fetching groups:", error));
+    }
+  }, [uid]);
+
+  
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.action === 'newGroup') {
+          setGroups(prevGroups => [...prevGroups, message.group]);
+        } else if (message.action === 'newEntry') {
+          setGroups(prevGroups => 
+            prevGroups.map(group => 
+              group.id === message.groupId 
+                ? { ...group, entries: [...group.entries, message.entry] } 
+                : group
+            )
+          );
+        }
+      };
+    }
+  }, [socket]);
+
+
 
   return (
     <div className="group-split-container">
