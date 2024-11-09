@@ -29,6 +29,7 @@ const login = async (email, password) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     console.log("User logged in successfully:", user);
+    console.log("User", user.uid)
 
     // WebSocket 连接
     const ws = new WebSocket(WEBSOCKET_URL);
@@ -54,9 +55,10 @@ const login = async (email, password) => {
     ws.on("close", () => {
       console.log("WebSocket connection closed");
     });
-
+    return user.uid;
   } catch (error) {
     console.error("Error during login:", error.message);
+    return null; 
   }
 };
 

@@ -116,12 +116,13 @@ export default function (groupBudgets, clients) {
     router.post("/login", async (req, res) => {
         const { email, password } = req.body;
         try {
-            await login(email, password);
-            res.status(200).json({ message: "User logged in successfully!" });
+            const uid = await login(email, password); 
+            res.status(200).json({ message: "User logged in successfully!", userId: uid }); 
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
     });
+    
 
     // User sign out
     router.post("/logout", async (req, res) => {
