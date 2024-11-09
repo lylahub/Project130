@@ -31,7 +31,6 @@ const login = async (email, password) => {
     console.log("User logged in successfully:", user);
     console.log("User", user.uid)
 
-    // WebSocket 连接
     const ws = new WebSocket(WEBSOCKET_URL);
 
     ws.on("open", () => {
@@ -42,7 +41,6 @@ const login = async (email, password) => {
       }));
     });
 
-    // 处理 WebSocket 消息
     ws.on("message", (data) => {
       const message = JSON.parse(data);
       console.log("Received message from WebSocket:", message);

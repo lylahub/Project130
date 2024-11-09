@@ -100,6 +100,63 @@ export default function (groupBudgets, clients) {
             res.status(400).json({ error: "Error adding entry", details: error.message });
         }
     });
+    // get category details
+    router.get("/categories/details", async (req, res) => {
+        const { userId, categoryName } = req.query;
+        try {
+            const details = await getCategoryDetails(userId, categoryName);
+            res.status(200).json({ details });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch category details", details: error.message });
+        }
+    });
+
+    // amount
+    router.get("/categories/amount", async (req, res) => {
+        const { userId, categoryName } = req.query;
+        try {
+            const amounts = await getCategoryAmount(userId, categoryName);
+            res.status(200).json({ amounts });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch category amount", details: error.message });
+        }
+    });
+
+    // reset monthly amount
+    router.post("/categories/reset-monthly", async (req, res) => {
+        const { userId } = req.body;
+        try {
+            await resetMonthlyAmounts(userId);
+            res.status(200).send("Monthly amounts reset successfully");
+        } catch (error) {
+            res.status(500).json({ error: "Failed to reset monthly amounts", details: error.message });
+        }
+    });
+
+    // get all categories
+    router.get("/categories/user-categories", async (req, res) => {
+        const { userId } = req.query;
+        try {
+            const categories = await getUserCategories(userId);
+            res.status(200).json({ categories });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch user categories", details: error.message });
+        }
+    });
+
+    // fetch all transactions
+    router.get("/categories/transactions", async (req, res) => {
+        const { userId } = req.query;
+        try {
+            const transactions = await fetchTransactions(userId);
+            res.status(200).json({ transactions });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch transactions", details: error.message });
+        }
+    });
+
+
+
 
     // User sign up
     router.post("/signup", async (req, res) => {
