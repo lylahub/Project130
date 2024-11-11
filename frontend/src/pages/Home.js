@@ -159,7 +159,8 @@ const Home = () => {
     setSelectedCategoryId(categoryId);
 
     if (categoryId === 'overall') {
-      setFilteredTransactions(transactions);
+      const allTransactions = await fetchAllTransactions(uid);
+      setFilteredTransactions(allTransactions);
       setSelectedCategoryAmounts({
         totalAmount: overallAmounts.totalAmount,
         monthlyAmount: overallAmounts.monthlyAmount
