@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
     console.log("Received userId from loginService:", userId);
     setUid(userId);
     console.log("uid set:", userId);
-    navigate("/home");
+    navigate("/sb");
   } catch (error) {
     console.error("Login error:", error.message);
     return error.message;

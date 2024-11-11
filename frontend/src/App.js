@@ -30,12 +30,12 @@ function AppRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Navigate to={uid ? "/home" : "/login"} replace />} />
+        <Route path="/" element={<Navigate to={uid ? "/sb" : "/login"} replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         {uid ? (
           <>
-            <Route path="/home" element={<Home />} />
+            <Route path="/sb" element={<Home />} />
             <Route path="/group-split" element={<GroupSplit />} />
             <Route path="/income-re" element={<IncomeRecommendation />} />
             <Route path="/settings" element={<Settings />} />
