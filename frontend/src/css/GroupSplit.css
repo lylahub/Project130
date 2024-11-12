@@ -30,9 +30,9 @@
 .group-split-header input {
   padding: 12px 16px;
   font-size: 16px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--secondary-color);
   border-radius: 6px;
-  background-color: white;
+  background-color: var(--secondary-color);
   color: var(--text-secondary);
   flex: 1;
   min-width: 200px;
