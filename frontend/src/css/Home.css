@@ -11,7 +11,7 @@
 }
 
 /* 主容器设置宽度和居中 */
-.block-container {
+.home-block-container {
   display: grid;
   grid-template-columns: 2fr 1fr; /* 左侧占2份宽度，右侧占1份 */
   grid-template-rows: auto auto;

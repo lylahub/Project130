@@ -233,7 +233,7 @@ const Home = () => {
       />
       
       <div className="home-content">
-        <div className="block-container">
+        <div className="home-block-container">
           <div className="left-section">
             <div className="chart-section">
               <h2>Category Overview</h2>
