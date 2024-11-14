@@ -10,15 +10,18 @@ export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const login = async (email, password) => {
-    try {
-      const userId = await loginService(email, password);
-      setUid(userId);
-      navigate("/sb");
-    } catch (error) {
-      console.error("Login error:", error.message);
-      return error.message;
-    }
-  };
+  try {
+    const userId = await loginService(email, password);
+    console.log("Received userId from loginService:", userId);
+    setUid(userId);
+    console.log("uid set:", userId);
+    navigate("/sb");
+  } catch (error) {
+    console.error("Login error:", error.message);
+    return error.message;
+  }
+};
+
 
   const signUp = async (email, password) => {
     try {

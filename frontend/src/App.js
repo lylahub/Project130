@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'r
 import { AnimatePresence } from "framer-motion";
 import { UserProvider, useUser } from "./userContext.js";
 import { WebSocketProvider } from "./WebsocketContext.js";
+import { useEffect } from 'react';
 import "./App.css";
 import './css/theme.css';
 
@@ -17,20 +18,21 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 
 function AppRouter() {
-  const location = useLocation();
-  const { uid } = useUser(); // Check if user is logged in
+  const location = useLocation(); // useLocation在Router内部使用
+  const { uid, setUid } = useUser();
+
+  useEffect(() => {
+    if (uid) {
+      console.log("User has logged in successfully with UID:", uid);
+    }
+  }, [uid]);
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* If user is not authenticated, navigate to Login page */}
-        <Route path="/" element={<Navigate to={uid ? "/home" : "/login"} replace />} />
-
-        {/* Public routes for Login and Sign Up */}
+        <Route path="/" element={<Navigate to={uid ? "/sb" : "/login"} replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-
-        {/* Protected routes - accessible only if user is authenticated */}
         {uid ? (
           <>
             <Route path="/sb" element={<Home />} />
@@ -40,13 +42,14 @@ function AppRouter() {
             <Route path="/profile" element={<Profile />} />
           </>
         ) : (
-          // Redirect unauthenticated users back to login
           <Route path="*" element={<Navigate to="/login" replace />} />
         )}
       </Routes>
     </AnimatePresence>
   );
 }
+
+
 
 function App() {
   return (

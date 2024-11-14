@@ -1,5 +1,5 @@
 // src/pages/Login.js
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useUser } from '../userContext';
 import '../css/Login.css';
 import logo from '../components/logo.png';
@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { setUid, uid } = useUser();
 
   const handleLogin = async (e) => {
     e.preventDefault();

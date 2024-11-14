@@ -8,6 +8,7 @@
     /* 背景顏色 */
     --background-primary: #96beb8;   /* 主要背景 */
     --background-secondary: #e0dac8; /* 次要背景，如卡片 */
+    --background-third: #cecbc0;
     
     /* 互動效果 */
     --hover-bg-color: rgba(255,255,255,0.1);
@@ -17,6 +18,10 @@
     --shadow-color: rgba(0,0,0,0.1);
     --border-color: #eee;
     --text-secondary: #333333;     /* 次要文字顏色 */
+
+    /* 收入/支出顏色 */
+    --income-color: #10B981;       /* 收入顏色 */
+    --expense-color: #EF4444;      /* 支出顏色 */
   }
   
   /* 預設主題配色示例 */

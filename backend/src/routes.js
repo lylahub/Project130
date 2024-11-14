@@ -1,6 +1,6 @@
 // routes.js
 import express from "express";
-import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions } from "./categoricalBookkeeping.js";
+import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
 
 const router = express.Router();
@@ -69,37 +69,126 @@ export default function (groupBudgets, clients) {
 
     // Add default categories
     router.post("/categories/default", async (req, res) => {
-        const { userId } = req.body;
+        const { userId, icons } = req.body;
         try {
-            await addDefaultCategories(userId);
-            res.status(200).send("Default categories added successfully");
+            const result = await addDefaultCategories(userId, icons);
+            if (result.success) {
+                res.status(200).json({
+                    message: "Default categories added successfully",
+                    categories: result.categories
+                });
+            } else {
+                res.status(500).send({ error: result.message });
+            }
         } catch (error) {
-            res.status(500).send({ error: "Failed to add default categories" });
+            res.status(500).send({ error: "Failed to add default categories", details: error.message });
         }
     });
-
+    
     // Add new categories
     router.post("/categories", async (req, res) => {
         const { userId, categoryName, icon } = req.body;
         try {
-            await addNewCategory(userId, categoryName, icon);
-            res.status(201).send("Categories added successfully");
+            const category = await addNewCategory(userId, categoryName, icon);
+
+            console.log("Category Response:", category);
+            res.status(201).json({ success: true, category }); 
         } catch (error) {
-            res.status(400).send("Error adding category", error);
+            console.error("Error adding category:", error.message);
+            res.status(400).json({ success: false, message: "Error adding category", details: error.message });  // 处理错误返回 JSON
+        }
+    });
+    
+    // Add entry to a category
+    router.post("/categories/entry", async (req, res) => {
+        const { userId, categoryName, amount, note, incomeExpense } = req.body;
+        try {
+          const newEntry = await addEntryToCategory(userId, categoryName, amount, note, incomeExpense);
+          res.status(201).json({ message: "Entry added successfully", entry: newEntry }); // Ensure JSON response
+        } catch (error) {
+          console.error("Error adding entry:", error);
+          res.status(400).json({ error: "Error adding entry", details: error.message });
+        }
+      });
+      
+    // get category details
+    router.get("/categories/details", async (req, res) => {
+        const { userId, categoryName } = req.query;
+    
+        try {
+            const details = await getCategoryDetails(userId, categoryName);
+            if (details && details.length > 0) {
+                res.status(200).json({ entries: details, message: "Successfully received" });
+            } else {
+                res.status(404).json({ entries: [] });
+            }
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch category details", entries: error.message });
+        }
+    });
+    
+
+    // amount
+    router.get("/categories/amount", async (req, res) => {
+        const { userId, categoryName } = req.query;
+        try {
+            const amounts = await getCategoryAmount(userId, categoryName);
+            res.status(200).json({ amounts });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch category amount", details: error.message });
         }
     });
 
-    // Add entry to a category
-    router.post("/categories/entry", async (req, res) => {
-        const { userId, categoryName, amount, memo, incomeExpense } = req.body;
+    // reset monthly amount
+    router.post("/categories/reset-monthly", async (req, res) => {
+        const { userId } = req.body;
         try {
-            await addEntryToCategory(userId, categoryName, amount, memo, incomeExpense);
-            res.status(201).send("Entry added successfully");
+            await resetMonthlyAmounts(userId);
+            res.status(200).send("Monthly amounts reset successfully");
         } catch (error) {
-            console.error("Error adding entry:", error);
-            res.status(400).json({ error: "Error adding entry", details: error.message });
+            res.status(500).json({ error: "Failed to reset monthly amounts", details: error.message });
         }
     });
+
+    // get all categories
+    router.get("/categories/user-categories", async (req, res) => {
+        const { userId } = req.query;
+        try {
+            const categories = await getUserCategories(userId);
+            res.status(200).json({ categories });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch user categories", details: error.message });
+        }
+    });
+
+    // fetch all transactions
+    router.get("/categories/transactions", async (req, res) => {
+        const { userId } = req.query;
+    
+        try {
+            const transactions = await fetchTransactions(userId);
+            res.status(200).json({ transactions });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to fetch transactions", details: error.message });
+        }
+    });
+
+    //overall monthly amount and total amount of a user
+    router.get("/categories/overall", async (req, res) => {
+        const { userId } = req.query;
+        try {
+            const overallAmounts = await getOverallAmount(userId);
+            if (overallAmounts) {
+                res.status(200).json(overallAmounts);
+            } else {
+                res.status(404).json({ error: "User data not found" });
+            }
+        } catch (error) {
+            console.error("Failed to fetch overall amounts:", error);
+            res.status(400).json({ error: "Failed to fetch overall amounts", details: error.message });
+        }
+    });
+
 
     // User sign up
     router.post("/signup", async (req, res) => {
@@ -116,12 +205,13 @@ export default function (groupBudgets, clients) {
     router.post("/login", async (req, res) => {
         const { email, password } = req.body;
         try {
-            await login(email, password);
-            res.status(200).json({ message: "User logged in successfully!" });
+            const uid = await login(email, password); 
+            res.status(200).json({ message: "User logged in successfully!", userId: uid }); 
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
     });
+    
 
     // User sign out
     router.post("/logout", async (req, res) => {

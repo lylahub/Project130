@@ -1,5 +1,5 @@
 import { db, storage } from "./firebaseConfig.js";
-import { collection, addDoc, getDocs, setDoc ,Timestamp, updateDoc, deleteDoc, orderBy, doc, query, getDoc, where, serverTimestamp, writeBatch } from "firebase/firestore";
+import { collection, addDoc, getDocs, setDoc ,Timestamp, updateDoc, deleteDoc, orderBy, doc, query, getDoc, where, serverTimestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { SplitStrategy, EqualSplitStrategy, CustomSplitStrategy } from "./SplitStrategy.js";
 import { Observable } from "./Observer.js";
@@ -62,8 +62,11 @@ export class GroupBudget extends Observable {
             // Save the group information in the instance
             this.groups[groupId] = {
                 groupName: groupName,
+                createdBy: this.userId,
                 participants: participantsUIDs,
-                created_at: groupData.created_at
+                created_at: serverTimestamp(),
+                balances: null,
+                entriesInfo: null
             };
     
             // Initialize the clients array for this group
@@ -123,7 +126,7 @@ export class GroupBudget extends Observable {
     
             // Notify all online participants in the group about the new entry
             this.notifyGroup(groupId, data);
-            await this.updateBalances(groupId, participants, payer, totalAmount, shares)
+            await this.updateBalances(groupId, participants, payer, shares)
     
             console.log("Entry added successfully with balances updated.");
             return shares;
@@ -134,7 +137,7 @@ export class GroupBudget extends Observable {
     }
     
 
-    async updateBalances(groupId, participants, payer, totalAmount, shares) {
+    async updateBalances(groupId, participants, payer, shares) {
         const groupRef = doc(db, "groups", groupId);
         //create a balanceRef to keep track of the money owes
         const balancesRef = collection(groupRef, "balances");
@@ -179,31 +182,79 @@ export class GroupBudget extends Observable {
     
             if (!querySnapshot.empty) {
                 console.log("Fetched groups for user:", this.userId);
-                querySnapshot.forEach((doc) => {
+                querySnapshot.forEach(async (doc) => {
                     const curData = doc.data();
                     const groupId = doc.id;
     
-                    // 更新 `groups` 和 `clients` 信息
+                    // Fetch entries and balances for the group
+                    let entriesInfo = null;
+                    let balances = null;
+                    if (curData.entries) {
+                        entriesInfo = await this.fetchEntries(groupId);
+                        balances = await this.fetchBalances(groupId);
+                    }
+    
+                    // Update `groups` and `clients` info
                     this.groups[groupId] = {
+                        groupId: groupId,
                         groupName: curData.groupName,
                         participants: curData.participants,
-                        created_at: curData.created_at
+                        created_at: curData.created_at,
+                        entriesInfo: entriesInfo,
+                        balances: balances
                     };
     
                     this.clients[groupId] = curData.participants.map(uid => {
-                        console.log(`Group ${groupId}, clients: ${clients}`)
+                        console.log(`Group ${groupId}, clients: ${clients}`);
                         return { uid, socket: clients[uid] || null };
                     });
     
                     console.log("Group ID:", groupId, "Participants:", this.clients[groupId]);
                 });
+                return this.groups;
             } else {
                 console.log("No groups found for user:", this.userId);
+                return null;
             }
         } catch (error) {
-            console.log("Error in fetching groups! ", error);
+            console.log("Error in fetching groups!", error);
         }
     }
+    
+    async fetchEntries(groupId) {
+        const entriesRef = collection(db, "groups", groupId, "entries");
+        const entriesSnapshot = await getDocs(entriesRef);
+        let entries = {};
+        entriesSnapshot.forEach((doc) => {
+            const curData = doc.data();
+            const entryId = doc.id;
+            entries[entryId] = {
+                entryId: entryId,
+                amount: curData.amount,
+                payer: curData.payer,
+                created_at: curData.created_at,
+                memo: curData.memo || " ",
+                participants: curData.participants || []
+            };
+        });
+        return entries;
+    }
+    
+    async fetchBalances(groupId) {
+        const balancesRef = collection(db, "groups", groupId, "balance");
+        const balancesSnapshot = await getDocs(balancesRef);
+        let balances = {};
+        balancesSnapshot.forEach((doc) => {
+            const curData = doc.data();
+            const creditor = doc.id;
+            balances[creditor] = {
+                creditor: creditor,
+                owes: curData.owes || {}
+            };
+        });
+        return balances;
+    }
+    
     
     
 }
