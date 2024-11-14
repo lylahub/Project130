@@ -1,8 +1,10 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 
-// Load environment variables
-dotenv.config();
+// Conditionally load environment variables from .env if not already defined
+if (!process.env.REACT_APP_OPENAI_API_KEY) {
+    dotenv.config();
+}
 
 const openaiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
 
