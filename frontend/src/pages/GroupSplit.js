@@ -4,7 +4,6 @@ import '../css/GroupSplit.css';
 import { useUser } from '../userContext';
 import { WebSocketContext } from '../WebsocketContext';
 
-
 const ExpenseModal = ({ group, onClose }) => {
   const [expenses, setExpenses] = useState([]);
   const [expenseInputs, setExpenseInputs] = useState([
@@ -255,7 +254,7 @@ const GroupSplit = () => {
   // 处理创建群组
   const handleCreateGroup = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/group/create`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/group/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -284,7 +283,7 @@ const GroupSplit = () => {
   // 获取群组信息
   const handleFetchGroups = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/group/fetch-groups?userId=${uid}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/group/fetch-groups?userId=${uid}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

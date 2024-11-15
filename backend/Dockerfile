@@ -1,19 +1,20 @@
 # backend/Dockerfile
-
-# Use a Node.js base image
 FROM node:18-alpine
 
-# Set working directory
 WORKDIR /app
 
 # Copy package.json files and install dependencies
-COPY package*.json ./
+COPY ./backend/package*.json ./
+# Add relative path to backend
 RUN npm install
 
-# Copy the entire src folder to the container's working directory
-COPY src ./src
+# Copy the src folder
+COPY ./backend/src ./src
 
-# Expose the backend port (replace 3001 if different)
+# Copy the environment file from the root directory
+COPY ./.env .env
+
+# Expose the backend port
 EXPOSE 3001
 
 # Start the backend server
