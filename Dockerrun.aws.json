@@ -1,0 +1,35 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "741448934242.dkr.ecr.us-west-2.amazonaws.com/backend:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "hostPort": 3001
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" }
+      ]
+    },
+    {
+      "name": "frontend",
+      "image": "741448934242.dkr.ecr.us-west-2.amazonaws.com/frontend:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" }
+      ]
+    }
+  ]
+}
