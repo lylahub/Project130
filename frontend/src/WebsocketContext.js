@@ -10,7 +10,7 @@ export const WebSocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (uid) {  // Ensure uid is available
-      const socketUrl = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:3001"; // Use env variable for WebSocket URL, fallback to localhost for local dev
+      const socketUrl = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:8080"; // Use env variable for WebSocket URL, fallback to localhost for local dev
       socketRef.current = new WebSocket(socketUrl);
 
       socketRef.current.onopen = () => {

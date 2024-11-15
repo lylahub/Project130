@@ -27,8 +27,8 @@ const wss = new WebSocketServer({ server });
 //const groupBudget = new GroupBudget(userId);
 const groupBudgets = {};
 
-const PORT = process.env.PORT || 3001;
-const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:3001"; // Update for production
+const PORT = process.env.PORT || 8080;
+const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:8080"; // Update for production
 
 // Middleware setup
 app.use(bodyParser.json());

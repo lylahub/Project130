@@ -1,5 +1,5 @@
 // src/authService.js
-const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001"; // Fallback to localhost for local testing
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8080"; // Fallback to localhost for local testing
 
 export const login = async (email, password) => {
   const response = await fetch(`${apiUrl}/login`, {

@@ -18,7 +18,7 @@ ENV ENV_VARS=${ENV_VARS}
 RUN echo "$ENV_VARS" > .env
 
 # Expose the backend port
-EXPOSE 3001
+EXPOSE 8080
 
 # Start the backend server
 CMD ["npm", "start"]
