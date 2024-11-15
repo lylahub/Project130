@@ -12,7 +12,7 @@ jobs:
     steps:
       # Step 1: Check out the code
       - name: Check out the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Step 2: Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
@@ -34,16 +34,20 @@ jobs:
       # Step 5: Build and push backend image to Artifact Registry
       - name: Build and push backend image
         run: |
-          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
-          docker build --build-arg ENV_VARS="$(echo ${{ secrets.ENV_VARS }})" -t $IMAGE_TAG -f ./backend/Dockerfile .
-          docker push $IMAGE_TAG
+          docker build \
+            --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
+            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
+            -f ./backend/Dockerfile .
+          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
 
       # Step 6: Build and push frontend image to Artifact Registry
       - name: Build and push frontend image
         run: |
-          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
-          docker build -t $IMAGE_TAG -f ./frontend/Dockerfile .
-          docker push $IMAGE_TAG
+          docker build \
+            --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
+            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
+            -f ./frontend/Dockerfile .
+          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
 
       # Step 7: Deploy backend to Google Cloud Run
       - name: Deploy backend to Google Cloud Run
@@ -52,7 +56,8 @@ jobs:
             --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
             --platform managed \
             --region us-west1 \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --set-env-vars ENV_VARS=${{ secrets.ENV_VARS }}
 
       # Step 8: Deploy frontend to Google Cloud Run
       - name: Deploy frontend to Google Cloud Run
