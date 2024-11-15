@@ -14,44 +14,39 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Google Cloud credentials
-      - name: Set up GCP credentials
-        uses: google-github-actions/setup-gcloud@v2
+      # Step 2: Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Step 3: Set up Google Cloud CLI
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: gcloud
 
-      # Step 3: Log in to Google Container Registry (GCR)
-      - name: Log in to Google Container Registry
-        run: |
-          gcloud auth configure-docker
+      # Step 4: Configure Docker for GCR
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
 
-      # Step 4: Build and push backend image to GCR
+      # Step 5: Build and push backend image to GCR
       - name: Build and push backend image to GCR
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest ./backend
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest
+          IMAGE_TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:${{ github.sha }}
+          docker build -t $IMAGE_TAG ./backend
+          docker push $IMAGE_TAG
 
-      # Step 5: Build and push frontend image to GCR
+      # Step 6: Build and push frontend image to GCR
       - name: Build and push frontend image to GCR
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest ./frontend
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
+          IMAGE_TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
+          docker build -t $IMAGE_TAG ./frontend
+          docker push $IMAGE_TAG
 
-      # Step 6: Deploy backend to Google Cloud Run
+      # Step 7: Deploy backend to Google Cloud Run
       - name: Deploy backend to Google Cloud Run
         run: |
           gcloud run deploy backend-service \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --allow-unauthenticated
-
-      # Step 7: Deploy frontend to Google Cloud Run
-      - name: Deploy frontend to Google Cloud Run
-        run: |
-          gcloud run deploy frontend-service \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --allow-unauthenticated
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/
