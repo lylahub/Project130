@@ -6,19 +6,21 @@ services:
       context: ./  # Build context remains the root of the project (where docker-compose.yml is)
       dockerfile: backend/Dockerfile  # Use the Dockerfile in the backend folder
     env_file:
-      - .env  # Ensure the .env file is loaded into the backend container
+      - .env  # Load environment variables into the backend container
     ports:
-      - "8080:8080"  # Expose backend port to localhost:8080
+      - "8080:8080"  # Map backend container port 8080 to localhost:8080
     environment:
-      NODE_ENV: development  # Set environment to development for local dev
+      NODE_ENV: development
 
   frontend:
     build:
       context: ./  # Build context remains the root of the project
       dockerfile: frontend/Dockerfile  # Use the Dockerfile in the frontend folder
     env_file:
-      - .env  # Ensure the .env file is loaded into the frontend container
+      - .env  # Load environment variables into the frontend container
     ports:
-      - "3000:3000"  # Expose frontend port to localhost:3000
+      - "3000:3000"  # Map frontend container port 3000 to localhost:3000
     environment:
-      NODE_ENV: development  # Set environment to development for local dev
+      NODE_ENV: development
+    depends_on:
+      - backend  # Ensure the backend service starts before the frontend

@@ -1,24 +1,19 @@
 FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Copy package.json and package-lock.json
 COPY frontend/package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy craco.config.js for craco build
-COPY frontend/craco.config.js ./
-# Ensure craco.config.js is copied
+# Copy the entire frontend folder to the container
+COPY frontend/ ./
 
-# Copy public and src directories
-COPY frontend/public ./public
-COPY frontend/src ./src
-
-# Run the build process
-RUN npm run build
-
-# Expose the frontend port
+# Expose the port used by the React development server
 EXPOSE 3000
 
-# Start the server
+# Start the React development server
 CMD ["npm", "start"]
