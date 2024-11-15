@@ -5,14 +5,17 @@ WORKDIR /app
 
 # Copy package.json files and install dependencies
 COPY ./backend/package*.json ./
-# Add relative path to backend
 RUN npm install
 
 # Copy the src folder
 COPY ./backend/src ./src
 
-# Copy the environment file from the root directory
-COPY ./.env .env
+# Accept environment variables as build arguments
+ARG ENV_VARS
+ENV ENV_VARS=${ENV_VARS}
+
+# Create .env file from the build argument
+RUN echo "$ENV_VARS" > .env
 
 # Expose the backend port
 EXPOSE 3001
