@@ -35,7 +35,7 @@ jobs:
       - name: Build and push backend image
         run: |
           IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
-          docker build --build-arg ENV_VARS="$(echo ${{ secrets.ENV_VARS }})" -t $IMAGE_TAG .  
+          docker build --build-arg ENV_VARS="$(echo ${{ secrets.ENV_VARS }})" -t $IMAGE_TAG -f ./backend/Dockerfile .
           docker push $IMAGE_TAG
 
       # Step 6: Build and push frontend image to Artifact Registry
