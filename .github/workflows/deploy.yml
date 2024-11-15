@@ -42,7 +42,7 @@ jobs:
       - name: Build and push frontend image
         run: |
           IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
-          docker build -t $IMAGE_TAG ./frontend
+          docker build -t $IMAGE_TAG -f ./frontend/Dockerfile .
           docker push $IMAGE_TAG
 
       # Step 7: Deploy backend to Google Cloud Run
