@@ -55,12 +55,9 @@ jobs:
           docker tag frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/frontend:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/frontend:latest
 
-      # Step 7: Upload Dockerrun.aws.json to S3
-      - name: Upload Dockerrun.aws.json to S3
-        run: |
-          aws s3 cp ./Dockerrun.aws.json s3://elasticbeanstalk-us-west-2-${{ secrets.AWS_ACCOUNT_ID }}/Dockerrun.aws.json
-        env:
-          AWS_REGION: us-west-2
+      # Step 7: Package and Upload Deployment Artifact
+      - name: Create deployment package
+        run: zip Dockerrun.zip Dockerrun.aws.json
 
       # Step 8: Deploy to Elastic Beanstalk
       - name: Deploy to Elastic Beanstalk
@@ -72,4 +69,4 @@ jobs:
           environment_name: cs130-test-env
           version_label: github-${{ github.sha }}
           region: us-west-2
-          file: ./Dockerrun.aws.json
+          deployment_package: Dockerrun.zip

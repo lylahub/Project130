@@ -14,7 +14,21 @@
       ],
       "environment": [
         { "name": "NODE_ENV", "value": "production" }
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/cs130-test",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs-backend"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3001/health || exit 1"
+        ]
+      }
     },
     {
       "name": "frontend",
@@ -29,7 +43,21 @@
       ],
       "environment": [
         { "name": "NODE_ENV", "value": "production" }
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/cs130-test",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs-frontend"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/health || exit 1"
+        ]
+      }
     }
   ]
 }
