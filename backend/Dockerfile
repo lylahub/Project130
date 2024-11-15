@@ -8,7 +8,7 @@ COPY ./backend/package*.json ./
 RUN npm install
 
 # Copy the src folder
-COPY ./backend/src ./src
+COPY ./src ./src
 
 # Accept environment variables as build arguments
 ARG ENV_VARS
