@@ -113,11 +113,16 @@ export default function (groupBudgets, clients) {
     });
 
     // User login
+    // added: include userId in the response when login is successful
     router.post("/login", async (req, res) => {
         const { email, password } = req.body;
         try {
-            await login(email, password);
-            res.status(200).json({ message: "User logged in successfully!" });
+            const result = await login(email, password); // Login returns { userId: user.uid }
+            if (result.userId) {
+                res.status(200).json({ message: "User logged in successfully!", userId: result.userId });
+            } else {
+                res.status(400).json({ error: result.error || "Login failed." });
+            }
         } catch (error) {
             res.status(400).json({ error: error.message });
         }
@@ -156,6 +161,36 @@ export default function (groupBudgets, clients) {
             res.status(400).json({ error: error.message });
         }
     });
+
+    // added: Save user settings
+    router.post("/user/settings", async (req, res) => {
+        const { userId, settings } = req.body; // userId and settings from frontend
+        try {
+            // Assuming a 'users' collection in Firestore
+            const userDocRef = doc(db, "users", userId);
+            await setDoc(userDocRef, { settings }, { merge: true }); // Merge updates with existing data
+            res.status(200).json({ message: "Settings updated successfully!" });
+        } catch (error) {
+            console.error("Error updating settings:", error);
+            res.status(500).json({ error: "Failed to update settings", details: error.message });
+        }
+    });
+
+    // added: Fetch user transactions (routes.js)
+    router.get("/transactions", async (req, res) => {
+        const { userId } = req.query;
+        try {
+            // Assuming transactions are stored in Firestore under a 'transactions' subcollection
+            const transactionsSnapshot = await db.collection(`users/${userId}/transactions`).get();
+            const transactions = transactionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            res.status(200).json(transactions);
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+            res.status(500).json({ error: "Failed to fetch transactions", details: error.message });
+        }
+    });
+
+
 
     return router;
 }

@@ -55,6 +55,9 @@ const login = async (email, password) => {
       console.log("WebSocket connection closed");
     });
 
+    // added: Return user ID to frontend
+    return { userId: user.uid };  // <-- Ensure this userId is returned
+
   } catch (error) {
     console.error("Error during login:", error.message);
   }

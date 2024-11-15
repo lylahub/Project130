@@ -25,10 +25,28 @@ const Settings = () => {
         }));
     };
 
-    // Placeholder function for saving settings
-    const handleSave = () => {
-        alert("Settings saved!");
+    // added func
+    const handleSave = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/user/settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: "your-uid-here", // Replace with actual userId from context
+                    settings,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to save settings");
+            }
+            const result = await response.json();
+            alert(result.message || "Settings saved!");
+        } catch (error) {
+            console.error("Error saving settings:", error);
+            alert("Failed to save settings");
+        }
     };
+    
 
     return (
         <div className="settings-container">
