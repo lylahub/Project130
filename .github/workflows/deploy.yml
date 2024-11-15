@@ -69,6 +69,8 @@ jobs:
             --platform managed \
             --region us-west1 \
             --allow-unauthenticated \
-            --set-env-vars=REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }},\
-          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }},\
-          REACT_APP_WEBSOCKET_URL=${{ secrets.REACT_APP_WEBSOCKET_URL }}
+            --set-env-vars=PORT=8080,\
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }},\
+            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }},\
+            REACT_APP_WEBSOCKET_URL=${{ secrets.REAL_APP_WEBSOCKET_URL }}
+
