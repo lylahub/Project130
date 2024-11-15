@@ -1,16 +1,18 @@
-# frontend/Dockerfile
-
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package.json files and install dependencies first
-COPY package*.json ./
+# Copy package.json and package-lock.json to install dependencies
+COPY frontend/package*.json ./
 RUN npm install
 
-# Copy public and src directories after dependencies are installed
-COPY public ./public
-COPY src ./src
+# Copy craco.config.js for craco build
+COPY frontend/craco.config.js ./
+# Ensure craco.config.js is copied
+
+# Copy public and src directories
+COPY frontend/public ./public
+COPY frontend/src ./src
 
 # Run the build process
 RUN npm run build

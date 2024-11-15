@@ -1,6 +1,8 @@
 // src/authService.js
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001"; // Fallback to localhost for local testing
+
 export const login = async (email, password) => {
-  const response = await fetch("http://localhost:3001/login", {
+  const response = await fetch(`${apiUrl}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -17,7 +19,7 @@ export const login = async (email, password) => {
 };
 
 export const signUp = async (email, password) => {
-  const response = await fetch("http://localhost:3001/signup", {
+  const response = await fetch(`${apiUrl}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

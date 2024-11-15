@@ -46,7 +46,7 @@ const getCategoryDetails = async (userId, categoryName) => {
 };
 
 const addNewCategory = async (uid, categoryName, icon) => {
-  const response = await fetch("http://localhost:3001/categories", {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/categories`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, categoryName, icon }),
@@ -59,7 +59,7 @@ const addNewCategory = async (uid, categoryName, icon) => {
 };
 
 const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
-  const response = await fetch("http://localhost:3001/categories/entry", {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/categories/entry`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, categoryName: categoryId, amount, note: memo, incomeExpense: incomeExpense}),
@@ -73,7 +73,7 @@ const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
 };
 
 const addDefaultCategories = async(uid, icons) => {
-  const response = await fetch("http://localhost:3001/categories/default", {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/categories/default`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, icons: icons }),
@@ -86,7 +86,7 @@ const addDefaultCategories = async(uid, icons) => {
 }
 
 const getOverallAmounts = async (userId) => {
-  const response = await fetch(`http://localhost:3001/categories/overall?userId=${userId}`);
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/categories/overall?userId=${userId}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch overall amounts for user ${userId}: ${response.statusText}`);
   }

@@ -3,22 +3,22 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: ./  # Build context remains the root of the project (where docker-compose.yml is)
+      dockerfile: backend/Dockerfile  # Use the Dockerfile in the backend folder
     env_file:
-      - .env
+      - .env  # Ensure the .env file is loaded into the backend container
     ports:
-      - "3001:3001"
+      - "3001:3001"  # Expose backend port to localhost:3001
     environment:
-      NODE_ENV: development
+      NODE_ENV: development  # Set environment to development for local dev
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: ./  # Build context remains the root of the project
+      dockerfile: frontend/Dockerfile  # Use the Dockerfile in the frontend folder
     env_file:
-      - .env
+      - .env  # Ensure the .env file is loaded into the frontend container
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Expose frontend port to localhost:3000
     environment:
-      NODE_ENV: development
+      NODE_ENV: development  # Set environment to development for local dev

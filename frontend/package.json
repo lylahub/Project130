@@ -18,9 +18,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -41,5 +41,10 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://backend:3001"
+  "proxy": "http://backend:3001",
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@craco/craco": "^7.0.0",
+    "os-browserify": "^0.3.0"
+  }
 }

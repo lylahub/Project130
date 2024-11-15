@@ -28,11 +28,14 @@ const wss = new WebSocketServer({ server });
 const groupBudgets = {};
 
 const PORT = process.env.PORT || 3001;
+const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:3001"; // Update for production
 
 // Middleware setup
 app.use(bodyParser.json());
+
+// CORS configuration for local development or production (set in .env)
 app.use(cors({
-    origin: 'http://localhost:3000'  // Enable CORS for frontend
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000'  // Allow frontend URL, default to localhost for local dev
 }));
 
 // Route handling
