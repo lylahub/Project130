@@ -34,14 +34,14 @@ jobs:
       # Step 5: Build and push backend image to Artifact Registry
       - name: Build and push backend image
         run: |
-          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend:latest
+          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
           docker build -t $IMAGE_TAG ./backend
           docker push $IMAGE_TAG
 
       # Step 6: Build and push frontend image to Artifact Registry
       - name: Build and push frontend image
         run: |
-          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
+          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
           docker build -t $IMAGE_TAG ./frontend
           docker push $IMAGE_TAG
 
@@ -49,7 +49,7 @@ jobs:
       - name: Deploy backend to Google Cloud Run
         run: |
           gcloud run deploy backend-service \
-            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend:latest \
+            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
             --platform managed \
             --region us-west1 \
             --allow-unauthenticated
@@ -58,7 +58,7 @@ jobs:
       - name: Deploy frontend to Google Cloud Run
         run: |
           gcloud run deploy frontend-service \
-            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend:latest \
+            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
             --platform managed \
             --region us-west1 \
             --allow-unauthenticated
