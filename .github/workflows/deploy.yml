@@ -1,4 +1,4 @@
-name: Deploy to AWS Elastic Beanstalk
+name: Deploy to Google Cloud Run
 
 on:
   push:
@@ -14,59 +14,44 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v2
 
-      # Step 2: Configure AWS credentials
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+      # Step 2: Set up Google Cloud credentials
+      - name: Set up GCP credentials
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      # Step 3: Log in to Amazon ECR
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-
-      # Step 4: Create ECR Repositories if they don't exist
-      - name: Create ECR Repository for Backend (if not exists)
+      # Step 3: Log in to Google Container Registry (GCR)
+      - name: Log in to Google Container Registry
         run: |
-          aws ecr describe-repositories --repository-names backend || \
-          aws ecr create-repository --repository-name backend
-        env:
-          AWS_REGION: us-west-2
+          gcloud auth configure-docker
 
-      - name: Create ECR Repository for Frontend (if not exists)
+      # Step 4: Build and push backend image to GCR
+      - name: Build and push backend image to GCR
         run: |
-          aws ecr describe-repositories --repository-names frontend || \
-          aws ecr create-repository --repository-name frontend
-        env:
-          AWS_REGION: us-west-2
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest ./backend
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest
 
-      # Step 5: Build and push backend image to ECR
-      - name: Build and push backend image to ECR
+      # Step 5: Build and push frontend image to GCR
+      - name: Build and push frontend image to GCR
         run: |
-          docker build -t backend ./backend
-          docker tag backend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/backend:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/backend:latest
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest ./frontend
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
-      # Step 6: Build and push frontend image to ECR
-      - name: Build and push frontend image to ECR
+      # Step 6: Deploy backend to Google Cloud Run
+      - name: Deploy backend to Google Cloud Run
         run: |
-          docker build -t frontend ./frontend
-          docker tag frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/frontend:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/frontend:latest
+          gcloud run deploy backend-service \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend:latest \
+            --platform managed \
+            --region ${{ secrets.GCP_REGION }} \
+            --allow-unauthenticated
 
-      # Step 7: Package and Upload Deployment Artifact
-      - name: Create deployment package
-        run: zip Dockerrun.zip Dockerrun.aws.json
-
-      # Step 8: Deploy to Elastic Beanstalk
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v20
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: cs130-test
-          environment_name: cs130-test-env
-          version_label: github-${{ github.sha }}
-          region: us-west-2
-          deployment_package: Dockerrun.zip
+      # Step 7: Deploy frontend to Google Cloud Run
+      - name: Deploy frontend to Google Cloud Run
+        run: |
+          gcloud run deploy frontend-service \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest \
+            --platform managed \
+            --region ${{ secrets.GCP_REGION }} \
+            --allow-unauthenticated
