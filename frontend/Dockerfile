@@ -11,9 +11,6 @@ RUN npm install
 # Copy all project files to the container
 COPY frontend/ ./
 
-# Include the environment file for the build process
-COPY .env .env
-
 # Build the application
 RUN npm run build
 
