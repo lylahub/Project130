@@ -69,7 +69,4 @@ jobs:
             --platform managed \
             --region ${{ secrets.GCP_REGION }} \
             --allow-unauthenticated \
-            --set-env-vars=PORT=8080,\
-            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }},\
-            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }},\
-            REACT_APP_WEBSOCKET_URL=${{ secrets.REACT_APP_WEBSOCKET_URL }}
+            --set-env-vars=PORT=8080,REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }},CORS_ORIGIN=${{ secrets.CORS_ORIGIN }},REACT_APP_WEBSOCKET_URL=${{ secrets.REACT_APP_WEBSOCKET_URL }}
