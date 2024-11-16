@@ -12,7 +12,7 @@ RUN npm install
 COPY frontend/ ./
 
 # Include the environment file for the build process
-COPY .env.production .env
+COPY .env .env
 
 # Build the application
 RUN npm run build
