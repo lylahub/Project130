@@ -35,7 +35,17 @@ app.use(bodyParser.json());
 
 // CORS configuration for local development or production (set in .env)
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',  // Allow requests from frontend URL
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+            'http://localhost:3000', // Local frontend
+            'https://frontend-service-520187080239.us-west1.run.app' // Deployed frontend
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
 }));
