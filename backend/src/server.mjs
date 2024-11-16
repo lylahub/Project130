@@ -35,7 +35,9 @@ app.use(bodyParser.json());
 
 // CORS configuration for local development or production (set in .env)
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000'  // Allow frontend URL, default to localhost for local dev
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',  // Allow requests from frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true
 }));
 
 // Route handling

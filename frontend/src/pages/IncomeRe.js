@@ -4,6 +4,9 @@ import ReactMarkdown from 'react-markdown';
 import Navbar from '../components/Navbar';
 import '../css/IncomeRe.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+console.log("API Base URL:", process.env.REACT_APP_API_URL);
+
 const IncomeRecommendation = () => {
   const [financialData, setFinancialData] = useState({
     monthlyIncome: '',
@@ -30,7 +33,7 @@ const IncomeRecommendation = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/get-recommendation', { financialData });
+      const response = await axios.post(`${API_BASE_URL}/api/get-recommendation`, { financialData });
       setRecommendation({
         summary: response.data.recommendation,
         suggestions: [

@@ -1,20 +1,31 @@
-# Use Node.js base image
-FROM node:18-alpine
-
-# Set working directory
+# Stage 1: Build the React app
+FROM node:18-alpine as build
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json to the container
 COPY frontend/package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy all project files to the container
 COPY frontend/ ./
 
-# Expose the React development server port
-EXPOSE 3000
+# Build the application
+RUN npm run build
 
-# Start the React app
-CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "3000"]
+# Stage 2: Serve the React app
+FROM node:18-alpine
+WORKDIR /app
+
+# Install a lightweight static file server
+RUN npm install -g serve
+
+# Copy the build folder from the first stage
+COPY --from=build /app/build /app
+
+# Expose the port for Google Cloud Run
+EXPOSE 8080
+
+# Serve the React app on port 8080
+CMD ["serve", "-s", ".", "-l", "8080"]
