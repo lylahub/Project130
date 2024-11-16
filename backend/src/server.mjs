@@ -33,25 +33,24 @@ const PORT = process.env.PORT || 8080;
 const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:8080";
 
 
+// CORS Configuration
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(",");
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: true,
+    })
+);
+
 // Middleware setup
 app.use(bodyParser.json());
-
-// CORS configuration for local development or production (set in .env)
-app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            'http://localhost:3000', // Local frontend
-            'https://frontend-service-520187080239.us-west1.run.app' // Deployed frontend
-        ];
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
-}));
 
 // Route handling
 app.use("/", router(groupBudgets, clients));
@@ -68,6 +67,7 @@ app.post('/api/get-recommendation', async (req, res) => {
     }
 });
 
+// WebSocket handling
 wss.on('connection', (socket) => {
     socket.on('message', async (message) => {
         const data = JSON.parse(message);
