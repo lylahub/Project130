@@ -2,8 +2,8 @@
 FROM node:18-alpine as build
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
-COPY frontend/package*.json ./
+# Copy package.json and lock files separately for better caching
+COPY frontend/package.json frontend/package-lock.json ./
 
 # Install dependencies
 RUN npm install
@@ -27,5 +27,6 @@ COPY --from=build /app/build /app
 # Expose the port for Google Cloud Run
 EXPOSE 8080
 
-# Serve the React app on port 8080
-CMD ["serve", "-s", ".", "-l", "8080"]
+# Serve the React app on the port provided by Google Cloud Run or fallback to 8080
+CMD ["sh", "-c", "serve -s . -l ${PORT:-8080}"]
+
