@@ -32,6 +32,8 @@ const PORT = process.env.PORT || 8080;
 // Using REACT_APP_WEBSOCKET_URL for WebSocket configuration
 const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || "ws://localhost:8080";
 
+// Middleware setup
+app.use(bodyParser.json());
 
 // CORS configuration for local development or production (set in .env)
 app.use(cors({
@@ -50,8 +52,6 @@ app.use(cors({
     credentials: true
 }));
 
-// Middleware setup
-app.use(bodyParser.json());
 
 // Route handling
 app.use("/", router(groupBudgets, clients));
