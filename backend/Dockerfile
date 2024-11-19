@@ -1,24 +1,22 @@
-# backend/Dockerfile
 FROM node:18-alpine
-
 WORKDIR /app
 
-# Copy package.json files and install dependencies
+# Install dependencies
 COPY ./backend/package*.json ./
 RUN npm install
 
-# Copy the src folder
+# Copy the source code
 COPY ./backend/src ./src
 
-# Accept environment variables as build arguments
+# Set environment variables dynamically
 ARG ENV_VARS
 ENV ENV_VARS=${ENV_VARS}
 
-# Create .env file from the build argument
+# Create a .env file from the build argument
 RUN echo "$ENV_VARS" > .env
 
 # Expose the backend port
 EXPOSE 8080
 
-# Start the backend server
+# Start the server
 CMD ["npm", "start"]

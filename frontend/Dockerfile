@@ -2,31 +2,23 @@
 FROM node:18-alpine as build
 WORKDIR /app
 
-# Copy package.json and lock files separately for better caching
-COPY frontend/package.json frontend/package-lock.json ./
-
 # Install dependencies
+COPY frontend/package.json frontend/package-lock.json ./
 RUN npm install
 
-# Copy all project files to the container
+# Copy all project files and build
 COPY frontend/ ./
-
-# Build the application
 RUN npm run build
 
 # Stage 2: Serve the React app
-FROM node:18-alpine
-WORKDIR /app
+FROM nginx:stable-alpine
+WORKDIR /usr/share/nginx/html
 
-# Install a lightweight static file server
-RUN npm install -g serve
+# Copy built app from Stage 1
+COPY --from=build /app/build .
 
-# Copy the build folder from the first stage
-COPY --from=build /app/build /app
+# Expose port 80 (default for nginx)
+EXPOSE 80
 
-# Expose the port for Google Cloud Run
-EXPOSE 8080
-
-# Serve the React app on the port provided by Google Cloud Run or fallback to 8080
-CMD ["sh", "-c", "serve -s . -l ${PORT:-8080}"]
-
+# Use nginx to serve the static files
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
