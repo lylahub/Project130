@@ -1,0 +1,64 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      # Step 2: Authenticate to Google Cloud
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      # Step 3: Set up Google Cloud CLI
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: gcloud
+
+      # Step 4: Configure Docker for Artifact Registry
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-west1-docker.pkg.dev
+
+      # Step 5: Build and push backend image to Artifact Registry
+      - name: Build and push backend image
+        run: |
+          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
+          docker build -t $IMAGE_TAG ./backend
+          docker push $IMAGE_TAG
+
+      # Step 6: Build and push frontend image to Artifact Registry
+      - name: Build and push frontend image
+        run: |
+          IMAGE_TAG=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
+          docker build -t $IMAGE_TAG ./frontend
+          docker push $IMAGE_TAG
+
+      # Step 7: Deploy backend to Google Cloud Run
+      - name: Deploy backend to Google Cloud Run
+        run: |
+          gcloud run deploy backend-service \
+            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
+            --platform managed \
+            --region us-west1 \
+            --allow-unauthenticated
+
+      # Step 8: Deploy frontend to Google Cloud Run
+      - name: Deploy frontend to Google Cloud Run
+        run: |
+          gcloud run deploy frontend-service \
+            --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
+            --platform managed \
+            --region us-west1 \
+            --allow-unauthenticated

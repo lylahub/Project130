@@ -15,8 +15,11 @@ import GroupBudget from "./groupBudget.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let clients = {};
-// Load environment variables from .env file
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Conditionally load .env file for local development
+if (!process.env.PORT) {
+    dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+}
 
 const app = express();
 const server = createServer(app);
