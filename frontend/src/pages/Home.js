@@ -243,11 +243,11 @@ const Home = () => {
               {/* Overall Amounts */}
               <div className="overall-amounts">
                 <div className="amount-card">
-                  <p>Overall Total</p>
+                  <p>Overall Total Expense</p>
                   <strong>${overallAmounts.totalAmount}</strong>
                 </div>
                 <div className="amount-card">
-                  <p>Monthly Total</p>
+                  <p>Monthly Total Expense</p>
                   <strong>${overallAmounts.monthlyAmount}</strong>
                 </div>
               </div>

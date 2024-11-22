@@ -31,9 +31,29 @@ export default function (groupBudgets, clients) {
         }
     });
 
+    //for test fetching balances
+    router.get("/group/fetch-balances", async (req, res) => {
+        const { userId, groupId } = req.query;
+
+        // check relevant instance
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "No group budget for this user" });
+        }
+
+        try {
+            const balances = await userGroupBudget.fetchBalances(groupId);
+
+            res.status(200).json(balances);
+        } catch (error) {
+            res.status(500).json({ error: "Fail in fetching balances", details: error.message });
+        }
+    });
+
+
     // Route to add entry to a group
     router.post("/group/add-entry", async (req, res) => {
-        const { userId, groupId, payer, amount, memo, split, splitStrategy } = req.body;
+        const { groupId, payer, amount, memo, shares, userId } = req.body;
 
         // Retrieve the existing GroupBudget instance from groupBudgets
         const userGroupBudget = groupBudgets[userId];
@@ -42,8 +62,8 @@ export default function (groupBudgets, clients) {
         }
 
         try {
-            const shares = await userGroupBudget.addEntry(groupId, payer, amount, memo, split, splitStrategy);
-            res.status(201).json({ message: "Entry added successfully", shares });
+            const results = await userGroupBudget.addEntry(groupId, payer, amount, memo, shares);
+            res.status(201).json({ message: "Entry added successfully", results });
         } catch (error) {
             res.status(500).json({ error: "Failed to add entry", details: error.message });
         }
@@ -66,6 +86,123 @@ export default function (groupBudgets, clients) {
             res.status(500).json({ error: "Failed to fetch groups", details: error.message });
         }
     });
+
+
+    router.post("/group/calculate-settlement", async (req, res) => {
+        const { userId, groupId, payer, amount, splitStrategy, split } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+
+        try {
+            const settlementResults = await userGroupBudget.calculateSettlement(
+                groupId, payer, amount, splitStrategy, split
+            );
+            res.status(200).json(settlementResults);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to calculate settlement", details: error.message });
+        }
+    });
+
+
+    //fetch group entries
+    router.get("/group/fetch-entries", async (req, res) => {
+        const { groupId, userId } = req.query;
+        const userGroupBudget = groupBudgets[userId];
+        
+        if (!userGroupBudget) {
+          return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+      
+        try {
+          const entries = await userGroupBudget.fetchEntries(groupId);
+          res.status(200).json(entries);
+        } catch (error) {
+          console.error("Error fetching entries:", error);
+          res.status(500).json({ error: "Failed to fetch entries", details: error.message });
+        }
+      });
+
+    //zero balances for the group
+    router.post("/group/pay-balance", async (req, res) => {
+        const { userId, groupId, payer, payee, amount } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        try {
+            await userGroupBudget.payBalances(groupId, payer, payee, amount);
+            res.status(200).json({
+                message: "Balance successfully cleared between payer and payee",
+                payer,
+                payee
+            });
+            
+        } catch(error) {
+            console.log("Error clearing balance:", error);
+            res.status(500).json({
+                error: "Failed to clear balance",
+                details: error.message
+            });
+        }
+    });
+
+    //Mark all paid
+    router.post("/group/mark-all-paid", async (req, res) => {
+        const { userId, groupId, payer } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        try {
+            await userGroupBudget.markAllAsPaidForParticipant(groupId, payer, userId);
+            res.status(200).json({
+                message: `All transactions between ${payer} and ${userId} in group ${groupId} marked as paid;`,
+                payer,
+                userId,
+                groupId
+            });
+        } catch (error) {
+            console.error("Error marking all transactions as paid:", error);
+            res.status(500).json({
+                error: "Failed to mark all transactions as paid",
+                details: error.message
+            });
+        }
+    });
+    
+    
+    //MarkPaid
+    router.post("/group/mark-paid", async (req, res) => {
+        const { userId, groupId, transactionId, payer } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        
+        try {
+            await userGroupBudget.markTransactionAsPaid(groupId, transactionId, userId, payer);
+            
+            res.status(200).json({
+                message: `Transaction ${transactionId} marked as paid for user ${userId} in group ${groupId}.`,
+                transactionId,
+                userId,
+                groupId
+            });
+        } catch (error) {
+            console.error("Error marking transaction as paid:", error);
+    
+            res.status(500).json({
+                error: "Failed to mark transaction as paid",
+                details: error.message
+            });
+        }
+    });
+    
+    
+    
 
     // Add default categories
     router.post("/categories/default", async (req, res) => {

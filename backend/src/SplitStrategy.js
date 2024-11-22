@@ -17,10 +17,11 @@ export class EqualSplitStrategy extends SplitStrategy {
 export class CustomSplitStrategy extends SplitStrategy {
     calculateShare(amount, participants, split) {
         return participants.reduce((acc, participant) => {
-            const personalSplit = split[participant] || (1 / participants.length);
-            acc[participant] = amount * personalSplit;
+            const percent = split[participant] || 0;
+            acc[participant] = parseFloat((amount * (percent / 100)).toFixed(2));
             return acc;
         }, {});
     }
-} 
+}
+
 
