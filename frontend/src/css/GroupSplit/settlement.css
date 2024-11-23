@@ -1,0 +1,197 @@
+/* Settlement Summary Container */
+.settlement-summary {
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  
+  .settlement-summary h3 {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+  }
+  
+  /* Strategy Selector */
+  .strategy-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .strategy-selector label {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  
+  .strategy-selector select {
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: white;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    min-width: 150px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+  }
+  
+  .strategy-selector select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+  }
+  
+  /* Total Amount Card */
+  .summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .summary-card h4 {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0 0 8px 0;
+  }
+  
+  .total-amount {
+    color: var(--text-secondary);
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+  
+  /* Settlements List */
+  .settlements-list {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .settlement-item {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .settlement-item:last-child {
+    border-bottom: none;
+  }
+  
+  .settlement-parties {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9375rem;
+  }
+  
+  .arrow {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+  }
+  
+  .from, .to {
+    background: var(--background-third);
+    padding: 4px 12px;
+    border-radius: 4px;
+    color: var(--text-secondary);
+  }
+  
+  .settlement-amount {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--background-third);
+    padding: 4px 12px;
+    border-radius: 4px;
+  }
+  
+  /* Custom Split Inputs (when visible) */
+  .custom-split-inputs {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .custom-split-inputs h4 {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0 0 16px 0;
+  }
+  
+  .participant-split {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .participant-split:last-child {
+    margin-bottom: 0;
+  }
+  
+  .participant-split label {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    min-width: 120px;
+  }
+  
+  .participant-split input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: var(--background-third);
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+  
+  .participant-split input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .settlement-summary {
+      padding: 16px;
+    }
+  
+    .strategy-selector {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  
+    .strategy-selector select {
+      width: 100%;
+    }
+  
+    .settlement-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  
+    .settlement-parties {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+  
+    .settlement-amount {
+      width: 100%;
+      text-align: right;
+    }
+  }

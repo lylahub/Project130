@@ -1,0 +1,96 @@
+/* 支出輸入區域 */
+.expense-input {
+    background-color: var(--background-primary);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .expense-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  
+  .expense-form select,
+  .expense-form input {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
+  .expense-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .expense-header-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .add-more-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .add-more-btn:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .remove-expense-btn {
+    background: none;
+    border: none;
+    color: #ff4444;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+    margin-left: 8px;
+  }
+  
+  .remove-expense-btn:hover {
+    color: #cc0000;
+  }
+  
+  .clear-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .clear-btn:hover {
+    background-color: #cc0000;
+  }
+  
+  /* 修改原有的expense-form樣式使其支援多個輸入 */
+  .expense-input .expense-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr auto;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  
+  .expense-form:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .expense-form {
+      grid-template-columns: 1fr;
+    }
+  }

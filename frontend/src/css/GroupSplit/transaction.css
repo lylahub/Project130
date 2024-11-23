@@ -1,0 +1,161 @@
+/* Transaction List Container */
+.transaction-list {
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  
+  .transaction-list h3 {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  /* Transaction Item */
+  .transaction-item {
+    background: var(--background-third);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .transaction-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Transaction Info Layout */
+  .transaction-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  /* Primary Information */
+  .transaction-primary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+  }
+  
+  .payer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+  }
+  
+  .description-section {
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+  
+  /* Participants Section */
+  .participants-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  
+  .participants-header {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 0.9375rem;
+  }
+  
+  .participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .participant-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  
+  .participant-name {
+    color: var(--text-secondary);
+  }
+  
+  .participant-share {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  
+  /* Transaction Footer */
+  .transaction-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .created-at {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+  
+  /* Status and Buttons */
+  .payment-status {
+    display: flex;
+    align-items: center;
+  }
+  
+  .pay-button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .pay-button:hover {
+    background: var(--secondary-color);
+    transform: translateY(-1px);
+  }
+  
+  .paid-label {
+    background: var(--income-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .transaction-list {
+      padding: 16px;
+    }
+  
+    .payer-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  
+    .transaction-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  
+    .pay-button {
+      width: 100%;
+    }
+  }

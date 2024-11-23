@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Navbar from '../components/Navbar';
-import '../css/GroupSplit.css';
+import '../css/GroupSplit/base.css';
+import '../css/GroupSplit/expenseform.css';
+import '../css/GroupSplit/groupcard.css';
+import '../css/GroupSplit/model.css';
+import '../css/GroupSplit/settlement.css';
+import '../css/GroupSplit/transaction.css';
 import { useUser } from '../userContext';
 import { WebSocketContext } from '../WebsocketContext';
 
 //TODO: Balances update after pay is wrong
 //TODO: After changing to another page, the new transactions will be cleared, not kept, prolly fetch again after that? 
 //TODO: The above question is due to delay update, same occurred when logging in it cannot fetch groups on time
+//TODO: new entry only shows up after refreash the page
 const ExpenseModal = ({ group, onClose }) => {
   const { uid } = useUser();
   const [expenseInputs, setExpenseInputs] = useState([
@@ -297,43 +303,27 @@ const ExpenseModal = ({ group, onClose }) => {
           {/* Settlement Summary */}
           <div className="settlement-summary">
             <h3>Settlement Summary</h3>
-            <div className="summary-strategy">
+            
+            <div className="strategy-selector">
               <label>Select Strategy:</label>
               <select value={splitStrategy} onChange={handleStrategyChange}>
                 <option value="EqualSplit">Equal Split</option>
                 <option value="CustomSplit">Custom Split</option>
               </select>
             </div>
-  
+
             <div className="summary-card">
               <h4>Total Expense</h4>
-              <div className="summary-amount">${settlementResults.totalExpense.toFixed(2)}</div>
+              <div className="total-amount">${settlementResults.totalExpense.toFixed(2)}</div>
             </div>
-  
-            {splitStrategy === "CustomSplit" && (
-              <div className="custom-split-inputs">
-                <h4>Custom Split Ratios</h4>
-                {group.participants.map((participant) => (
-                  <div key={participant} className="participant-split">
-                    <label>{participant}:</label>
-                    <input
-                      type="number"
-                      placeholder="Enter ratio in %"
-                      value={customSplits[participant] || ""}
-                      onChange={(e) => handleCustomSplitChange(participant, e.target.value)}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-  
-            <div className="settlement-list">
+
+            <div className="settlements-list">
               {settlementResults.settlements.map((settlement, index) => (
                 <div key={index} className="settlement-item">
-                  <div className="settlement-details">
-                    <span className="expense-tag tag-paid">{settlement.from}</span>
-                    <span className="settlement-arrow">→</span>
-                    <span className="expense-tag tag-owe">{settlement.to}</span>
+                  <div className="settlement-parties">
+                    <span className="from">{settlement.from}</span>
+                    <span className="arrow">→</span>
+                    <span className="to">{settlement.to}</span>
                   </div>
                   <div className="settlement-amount">
                     ${parseFloat(settlement.amount).toFixed(2)}
@@ -354,58 +344,60 @@ const ExpenseModal = ({ group, onClose }) => {
           )}
   
           {/* Transaction List */}
-          {showTransactions && (
-            <div className="transaction-list">
-              <h4>Transactions</h4>
-              {Object.keys(entriesInfo || {}).length === 0 ? (
-                <p>No transactions available.</p>
-              ) : (
-                Object.entries(entriesInfo).map(([entryId, entry]) => (
-                  <div key={entryId} className="transaction-item">
-                    <p>
-                      <strong>Payer:</strong> {entry.payer}
-                    </p>
-                    <p>
-                      <strong>Amount:</strong> ${parseFloat(entry.amount).toFixed(2)}
-                    </p>
-                    <p>
-                      <strong>Description:</strong> {entry.memo}
-                    </p>
-                    <p>
-                      <strong>Participants:</strong>
-                      {Object.entries(entry.participants || {}).map(([participant, share]) => (
-                        <span key={participant} className="participant-share">
-                          {participant}: ${parseFloat(share).toFixed(2)}
-                        </span>
-                      ))}
-                    </p>
-  
-                    {/* Check if the user is not the payer and hasn't paid yet */}
-                    {entry.payer !== uid && (!entry.paidStatus[uid] || entry.paidStatus[uid] !== true) && (
-                      <button
-                        className="pay-button"
-                        onClick={() => {
-                          handlePayBalances(entry.payer, entry.participants[uid], entryId); // Pay the payer the total owed amount
-                          console.log("total owe", entry.participants[uid])
-                        }}
-                      >
-                        Pay
-                      </button>
-                    )}
-  
-                    {/* Show 'Paid' if the user has already paid */}
-                    {entry.payer !== uid && entry.paidStatus[uid] === true && (
-                      <span className="paid-label">Paid</span>
-                    )}
-  
-                    <p>
-                      <strong>Created At:</strong> {formatTimestamp(entry.created_at)}
-                    </p>
-                  </div>
-                ))
-              )}
+{showTransactions && (
+  <div className="transaction-list">
+    <h3>Transactions</h3>
+    {Object.keys(entriesInfo || {}).length === 0 ? (
+      <p className="no-transactions">No transactions available.</p>
+    ) : (
+      Object.entries(entriesInfo).map(([entryId, entry]) => (
+        <div key={entryId} className="transaction-item">
+          <div className="transaction-info">
+            <div className="transaction-primary">
+              <div className="payer-section">
+                <span>Payer: {entry.payer}</span>
+                <span className="amount">Amount: ${parseFloat(entry.amount).toFixed(2)}</span>
+              </div>
+              <div className="description-section">
+                <span>Description: {entry.memo}</span>
+              </div>
             </div>
-          )}
+
+            <div className="participants-section">
+              <div className="participants-header">Participants:</div>
+              <div className="participants-list">
+                {Object.entries(entry.participants || {}).map(([participant, share]) => (
+                  <div key={participant} className="participant-item">
+                    <span className="participant-name">{participant}:</span>
+                    <span className="participant-share">${parseFloat(share).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="transaction-footer">
+            <span className="created-at">Created At: {formatTimestamp(entry.created_at)}</span>
+            {entry.payer !== uid && (
+              <div className="payment-status">
+                {!entry.paidStatus[uid] || entry.paidStatus[uid] !== true ? (
+                  <button
+                    className="pay-button"
+                    onClick={() => handlePayBalances(entry.payer, entry.participants[uid], entryId)}
+                  >
+                    Pay
+                  </button>
+                ) : (
+                  <span className="paid-label">Paid</span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+)}
         </div>
       </div>
     </div>
