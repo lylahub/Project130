@@ -1,0 +1,63 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "741448934242.dkr.ecr.us-west-2.amazonaws.com/backend:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "hostPort": 3001
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/cs130-test",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs-backend"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3001/health || exit 1"
+        ]
+      }
+    },
+    {
+      "name": "frontend",
+      "image": "741448934242.dkr.ecr.us-west-2.amazonaws.com/frontend:latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/cs130-test",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs-frontend"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/health || exit 1"
+        ]
+      }
+    }
+  ]
+}
