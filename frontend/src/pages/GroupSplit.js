@@ -8,6 +8,7 @@ import '../css/GroupSplit/settlement.css';
 import '../css/GroupSplit/transaction.css';
 import { useUser } from '../userContext';
 import { WebSocketContext } from '../WebsocketContext';
+import { DollarSign, User, FileText, Users, Clock } from 'lucide-react';
 
 //TODO: Balances update after pay is wrong
 //TODO: After changing to another page, the new transactions will be cleared, not kept, prolly fetch again after that? 
@@ -300,99 +301,129 @@ const ExpenseModal = ({ group, onClose }) => {
             </div>
           </div>
   
-          {/* Settlement Summary */}
-          <div className="settlement-summary">
-            <h3>Settlement Summary</h3>
-            
-            <div className="strategy-selector">
-              <label>Select Strategy:</label>
-              <select value={splitStrategy} onChange={handleStrategyChange}>
-                <option value="EqualSplit">Equal Split</option>
-                <option value="CustomSplit">Custom Split</option>
-              </select>
-            </div>
+{/* Settlement Summary */}
+<div className="settlement-summary">
+  <div className="settlement-header">
+    <div className="settlement-title-section">
+      <h3>Settlement Summary</h3>
+      <div className="strategy-section">
+        <label>Select Strategy:</label>
+        <select value={splitStrategy} onChange={handleStrategyChange}>
+          <option value="EqualSplit">Equal Split</option>
+          <option value="CustomSplit">Custom Split</option>
+        </select>
+      </div>
+    </div>
 
-            <div className="summary-card">
-              <h4>Total Expense</h4>
-              <div className="total-amount">${settlementResults.totalExpense.toFixed(2)}</div>
-            </div>
+    <div className="settlement-actions">
+      <button className="split-button" onClick={handleCalculate}>
+        Calculate Split
+      </button>
+      {settlementResults.settlements.length > 0 && (
+        <button className="add-entry-button" onClick={handleAddEntry}>
+          Add Entry
+        </button>
+      )}
+    </div>
+  </div>
 
-            <div className="settlements-list">
-              {settlementResults.settlements.map((settlement, index) => (
-                <div key={index} className="settlement-item">
-                  <div className="settlement-parties">
-                    <span className="from">{settlement.from}</span>
-                    <span className="arrow">→</span>
-                    <span className="to">{settlement.to}</span>
-                  </div>
-                  <div className="settlement-amount">
-                    ${parseFloat(settlement.amount).toFixed(2)}
-                  </div>
-                </div>
-              ))}
-            </div>
+  <div className="summary-card">
+    <h4>Total Expense</h4>
+    <div className="total-amount">
+      ${settlementResults.totalExpense.toFixed(2)}
+    </div>
+  </div>
+
+  {splitStrategy === "CustomSplit" && (
+    <div className="custom-split-section">
+      <h4>Custom Split Ratios</h4>
+      <div className="custom-split-list">
+        {group.participants.map((participant) => (
+          <div key={participant} className="participant-split">
+            <label>{participant}:</label>
+            <input
+              type="number"
+              placeholder="Enter ratio in %"
+              value={customSplits[participant] || ""}
+              onChange={(e) => handleCustomSplitChange(participant, e.target.value)}
+            />
           </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {settlementResults.settlements.length > 0 && (
+    <div className="settlements-list">
+      {settlementResults.settlements.map((settlement, index) => (
+        <div key={index} className="settlement-item">
+          <div className="settlement-details">
+            <span className="from-tag">{settlement.from}</span>
+            <span className="settlement-arrow">→</span>
+            <span className="to-tag">{settlement.to}</span>
+          </div>
+          <div className="settlement-amount">
+            ${parseFloat(settlement.amount).toFixed(2)}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
   
-          <button className="split-button" onClick={handleCalculate}>
-            Calculate Split
-          </button>
-  
-          {settlementResults.settlements.length > 0 && (
-            <button className="add-entry-button" onClick={handleAddEntry}>
-              Add Entry
-            </button>
-          )}
-  
-          {/* Transaction List */}
+{/* Transaction List */}
 {showTransactions && (
   <div className="transaction-list">
     <h3>Transactions</h3>
+    
     {Object.keys(entriesInfo || {}).length === 0 ? (
       <p className="no-transactions">No transactions available.</p>
     ) : (
       Object.entries(entriesInfo).map(([entryId, entry]) => (
         <div key={entryId} className="transaction-item">
-          <div className="transaction-info">
-            <div className="transaction-primary">
-              <div className="payer-section">
-                <span>Payer: {entry.payer}</span>
-                <span className="amount">Amount: ${parseFloat(entry.amount).toFixed(2)}</span>
-              </div>
-              <div className="description-section">
-                <span>Description: {entry.memo}</span>
-              </div>
-            </div>
+          {/* Transaction Item Content */}
+<div className="transaction-content">
+  <div className="transaction-info">
+    <div className="info-row">
+      <User className="icon" />
+      <span className="label">Payer:</span>
+      <span className="value">{entry.payer}</span>
+    </div>
+    <div className="info-row">
+      <DollarSign className="icon" />
+      <span className="label">Amount:</span>
+      <span className="value amount">${parseFloat(entry.amount).toFixed(2)}</span>
+    </div>
+    <div className="info-row">
+      <FileText className="icon" />
+      <span className="label">Description:</span>
+      <span className="value">{entry.memo || "No description"}</span>
+    </div>
+    {/* 時間戳移到這裡 */}
+    <div className="info-row timestamp">
+      <Clock className="icon" />
+      <span className="label">Created At:</span>
+      <span className="value">{formatTimestamp(entry.created_at)}</span>
+    </div>
+  </div>
 
-            <div className="participants-section">
-              <div className="participants-header">Participants:</div>
-              <div className="participants-list">
-                {Object.entries(entry.participants || {}).map(([participant, share]) => (
-                  <div key={participant} className="participant-item">
-                    <span className="participant-name">{participant}:</span>
-                    <span className="participant-share">${parseFloat(share).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+  <div className="vertical-line"></div>
 
-          <div className="transaction-footer">
-            <span className="created-at">Created At: {formatTimestamp(entry.created_at)}</span>
-            {entry.payer !== uid && (
-              <div className="payment-status">
-                {!entry.paidStatus[uid] || entry.paidStatus[uid] !== true ? (
-                  <button
-                    className="pay-button"
-                    onClick={() => handlePayBalances(entry.payer, entry.participants[uid], entryId)}
-                  >
-                    Pay
-                  </button>
-                ) : (
-                  <span className="paid-label">Paid</span>
-                )}
-              </div>
-            )}
-          </div>
+  <div className="participants-info">
+    <div className="participants-header">
+      <Users className="icon" />
+      Participants:
+    </div>
+    <div className="participants-list">
+      {Object.entries(entry.participants || {}).map(([participant, share]) => (
+        <div key={participant} className="participant-row">
+          <span>{participant}</span>
+          <span className="share">${parseFloat(share).toFixed(2)}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
         </div>
       ))
     )}

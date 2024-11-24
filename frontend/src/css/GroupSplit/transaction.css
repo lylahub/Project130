@@ -1,161 +1,379 @@
-/* Transaction List Container */
+/* Modal Layout */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--background-primary);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--background-secondary);
+  border-radius: 16px 16px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  color: var(--text-secondary);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-header-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.modal-body {
+  padding: 32px;
+}
+
+/* Section Headers */
+.balances-section h4,
+.expense-input h3,
+.settlement-summary h3,
+.transaction-list h3 {
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+}
+
+/* Common Section Styles */
+.balances-section,
+.expense-input,
+.settlement-summary,
 .transaction-list {
-    background: var(--background-secondary);
-    border-radius: 12px;
+  background: var(--background-secondary);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+/* Button Styles */
+.show-transactions-btn,
+.close-button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.show-transactions-btn {
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+.show-transactions-btn:hover {
+  background: var(--secondary-color);
+}
+
+.close-button {
+  background: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  padding: 4px 12px;
+}
+
+.close-button:hover {
+  background: var(--hover-bg-color);
+}
+
+/* Transaction List */
+.transaction-list {
+  background: var(--background-secondary);
+  border-radius: 12px;
+}
+
+/* Empty State */
+.no-transactions {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 32px;
+  background: var(--background-third);
+  border-radius: 8px;
+  font-size: 1.125rem;
+}
+
+/* Transaction Item */
+.transaction-item {
+  background: var(--background-third);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  overflow: hidden;
+}
+
+/* Transaction Content Grid */
+.transaction-content {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Info Section */
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.info-row .icon {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  color: var(--primary-color);
+}
+
+.label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.value {
+  color: var(--text-secondary);
+  word-break: break-all;
+  flex: 1;
+}
+
+.value.amount {
+  color: var(--income-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Vertical Line */
+.vertical-line {
+  width: 1px;
+  background-color: var(--border-color);
+  align-self: stretch;
+  margin: 0 12px;
+}
+
+/* Participants Section */
+.participants-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.participants-header {
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.participant-row {
+  background: var(--background-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.participant-row span {
+  word-break: break-all;
+}
+
+.share {
+  color: var(--income-color);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Timestamp */
+.info-row.timestamp {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+/* Balances Section */
+.balances-section {
+  margin-bottom: 32px;
+}
+
+.balances-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.balance-item {
+  background: var(--background-third);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.balance-item p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.pay-balance-btn {
+  background: var(--income-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pay-balance-btn:hover {
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .modal-content {
+    width: 95%;
+  }
+  
+  .modal-body {
     padding: 24px;
   }
-  
-  .transaction-list h3 {
-    color: var(--text-secondary);
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  
-  /* Transaction Item */
-  .transaction-item {
-    background: var(--background-third);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-  
-  .transaction-item:last-child {
-    margin-bottom: 0;
-  }
-  
-  /* Transaction Info Layout */
-  .transaction-info {
-    display: flex;
-    flex-direction: column;
+
+  .transaction-content {
     gap: 16px;
   }
-  
-  /* Primary Information */
-  .transaction-primary {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .transaction-content {
+    grid-template-columns: 1fr;
   }
-  
-  .payer-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 0.9375rem;
-    color: var(--text-secondary);
+
+  .vertical-line {
+    display: none;
   }
-  
-  .description-section {
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
+
+  .info-row {
+    flex-direction: row;
+    align-items: flex-start;
   }
-  
-  /* Participants Section */
-  .participants-section {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    padding: 12px;
+
+  .label {
+    min-width: 80px;
   }
-  
-  .participants-header {
-    color: var(--text-secondary);
-    font-weight: 500;
-    margin-bottom: 8px;
-    font-size: 0.9375rem;
+
+  .participants-info {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
   }
-  
-  .participants-list {
-    display: flex;
+
+  .participant-row {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .balance-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .info-row {
     gap: 8px;
   }
-  
-  .participant-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 4px;
+
+  .balance-item {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-header-right {
+    gap: 8px;
+  }
+
+  .show-transactions-btn {
+    padding: 6px 12px;
     font-size: 0.875rem;
   }
-  
-  .participant-name {
-    color: var(--text-secondary);
+
+  .transaction-item {
+    padding: 16px;
   }
-  
-  .participant-share {
-    color: var(--text-secondary);
-    font-weight: 500;
+
+  .label {
+    min-width: 70px;
+    font-size: 0.9rem;
   }
-  
-  /* Transaction Footer */
-  .transaction-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  .value {
+    font-size: 0.9rem;
   }
-  
-  .created-at {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-  }
-  
-  /* Status and Buttons */
-  .payment-status {
-    display: flex;
-    align-items: center;
-  }
-  
-  .pay-button {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .pay-button:hover {
-    background: var(--secondary-color);
-    transform: translateY(-1px);
-  }
-  
-  .paid-label {
-    background: var(--income-color);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .transaction-list {
-      padding: 16px;
-    }
-  
-    .payer-section {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-    }
-  
-    .transaction-footer {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-  
-    .pay-button {
-      width: 100%;
-    }
-  }
+}
