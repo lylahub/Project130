@@ -2,6 +2,7 @@
 import express from "express";
 import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
+import { getUserData, updateUserData } from "./user.js";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ export default function (groupBudgets, clients) {
         res.send('Welcome to the server! It is running correctly.');
     });
 
-    
+
     // Route to create a new group
     router.post("/group/create", async (req, res) => {
         const { userId, groupName, participantEmails } = req.body;
@@ -211,7 +212,7 @@ export default function (groupBudgets, clients) {
             res.status(400).json({ error: error.message });
         }
     });
-    
+
 
     // User sign out
     router.post("/logout", async (req, res) => {
@@ -246,6 +247,30 @@ export default function (groupBudgets, clients) {
             res.status(400).json({ error: error.message });
         }
     });
+
+    // get user data
+    router.get("/user/:uid", async (req, res) => {
+        const { uid } = req.params;
+        try {
+            const userData = await getUserData(uid);
+            res.status(200).json(userData);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch user data", details: error.message });
+        }
+    });
+
+    // Update user data
+    router.put("/user/:uid", async (req, res) => {
+        const { uid } = req.params;
+        const updates = req.body; // Expecting { key: value } pairs
+        try {
+            await updateUserData(uid, updates); // Backend function to handle updates
+            res.status(200).json({ message: "User updated successfully" });
+        } catch (error) {
+            res.status(500).json({ error: "Failed to update user data", details: error.message });
+        }
+    });
+
 
     return router;
 }
