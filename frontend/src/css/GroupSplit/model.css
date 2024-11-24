@@ -97,194 +97,94 @@
   
   /* Balance Section */
   .balances-section {
-    background-color: var(--background-secondary);
+    background: var(--background-secondary);
     border-radius: 12px;
-    padding: 20px;
+    padding: 24px;
+    margin-bottom: 32px;
   }
   
   .balances-section h4 {
     color: var(--text-secondary);
-    font-size: 1.125rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    margin: 0 0 16px 0;
+    margin: 0 0 24px 0;
   }
   
   .balances-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
   
   .balance-item {
-    background-color: var(--background-third);
-    padding: 16px;
+    background: var(--background-third);
+    padding: 16px 24px;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
   }
   
   .balance-item p {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.9375rem;
-  }
-  
-  .pay-balance-btn {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    padding: 6px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .pay-balance-btn:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-1px);
-  }
-  
-  /* Expense Details */
-  .expense-input {
-    background: var(--background-third);
-    border-radius: 12px;
-    padding: 24px;
-  }
-  
-  .expense-input h3 {
-    color: var(--text-secondary);
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0 0 16px 0;
-  }
-  
-  .expense-form {
-    display: grid;
-    grid-template-columns: minmax(150px, 1fr) minmax(120px, 1fr) minmax(200px, 2fr);
-    gap: 16px;
-    width: 100%;
-  }
-  
-  /* Form Controls */
-  .expense-form select,
-  .expense-form input {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: white;
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
-    transition: all 0.2s ease;
-    outline: none;
-    box-sizing: border-box;
-  }
-  
-  .expense-form select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 16px;
-    padding-right: 32px;
-  }
-  
-  .expense-form input::placeholder {
-    color: #9ca3af;
-  }
-  
-  .expense-form select:focus,
-  .expense-form input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
-  }
-  
-  /* Settlement Section */
-  .settlement-summary {
-    background: var(--background-secondary);
-    border-radius: 12px;
-    padding: 24px;
-  }
-  
-  .settlement-summary h3 {
-    color: var(--text-secondary);
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0 0 16px 0;
-  }
-  
-  .summary-strategy {
+    font-size: 1rem;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   
-  .summary-strategy label {
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-  
-  .summary-strategy select {
-    padding: 8px 12px;
-    border: 2px solid transparent;
-    border-radius: 6px;
-    background: white;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-  }
-  
-  .summary-card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .summary-card h4 {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin: 0 0 8px 0;
-  }
-  
-  .summary-amount {
-    color: var(--text-secondary);
-    font-size: 1.5rem;
+  .balance-item .amount {
     font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 1.1rem;
   }
   
-  /* Action Buttons */
-  .split-button,
-  .add-entry-button {
-    width: 100%;
-    padding: 12px;
+  .balance-item .amount.positive {
+    color: var(--income-color);
+    background-color: rgba(16, 185, 129, 0.1);
+  }
+  
+  .balance-item .amount.negative {
+    color: var(--expense-color);
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  /* Pay Button - Unified style for both Pay and Pay All */
+  .pay-button {
+    background-color: var(--income-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
     cursor: pointer;
+    font-weight: 500;
     transition: all 0.2s ease;
   }
   
-  .split-button {
-    background: var(--primary-color);
-    color: var(--text-color);
-    margin-bottom: 12px;
-  }
-  
-  .add-entry-button {
-    background: var(--income-color);
-    color: white;
-  }
-  
-  .split-button:hover,
-  .add-entry-button:hover {
+  .pay-button:hover {
+    opacity: 0.9;
     transform: translateY(-1px);
-    filter: brightness(1.1);
   }
+  
+  .pay-button:active {
+    transform: translateY(0);
+  }
+  
+  .no-balances {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+    background: var(--background-third);
+    border-radius: 8px;
+    margin: 0;
+  }
+  
+
   
   /* Responsive Design */
   @media (max-width: 768px) {
@@ -301,10 +201,9 @@
       padding: 20px;
       gap: 20px;
     }
-  
-    .expense-form {
-        grid-template-columns: 1fr;
-        gap: 12px;
+
+    .balances-section {
+      padding: 20px;
     }
   
     .balance-item {
@@ -312,8 +211,12 @@
       align-items: flex-start;
       gap: 12px;
     }
+
+    .balance-item p {
+      font-size: 0.95rem;
+    }
   
-    .pay-balance-btn {
+    .pay-button {
       width: 100%;
     }
   
@@ -321,10 +224,20 @@
       padding: 6px 12px;
       font-size: 0.8125rem;
     }
+  }
+
+  @media (max-width: 480px) {
+    .balances-section h4 {
+      font-size: 1.25rem;
+    }
   
-    .expense-input,
-    .settlement-summary {
-      padding: 16px;
+    .balance-item {
+      padding: 12px;
+    }
+  
+    .balance-item .amount {
+      font-size: 1rem;
+      padding: 4px 8px;
     }
   }
   

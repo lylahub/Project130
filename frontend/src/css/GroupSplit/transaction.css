@@ -210,7 +210,7 @@
 }
 
 .participant-row {
-  background: var(--background-primary);
+  background: var(--background-third);
   padding: 12px 16px;
   border-radius: 8px;
   display: flex;
@@ -225,10 +225,21 @@
   word-break: break-all;
 }
 
+/* Participant Share Amount */
 .share {
-  color: var(--income-color);
   font-weight: 500;
-  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.share.income {
+  color: var(--income-color);
+  background-color: rgba(18, 84, 62, 0.1);
+}
+
+.share.expense {
+  color: var(--expense-color);
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Timestamp */
@@ -268,18 +279,39 @@
   color: var(--text-secondary);
 }
 
-.pay-balance-btn {
-  background: var(--income-color);
+/* Payment Status */
+.payment-status {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pay-button {
+  background-color: var(--income-color);
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
-.pay-balance-btn:hover {
+.pay-button:hover {
   opacity: 0.9;
+}
+
+.paid-label {
+  color: var(--income-color);
+  background-color: rgba(16, 185, 129, 0.1);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Responsive Design */
@@ -329,6 +361,10 @@
   .balance-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .payment-status {
+    justify-content: flex-start;
   }
 }
 

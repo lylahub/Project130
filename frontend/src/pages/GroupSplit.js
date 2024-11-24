@@ -13,7 +13,6 @@ import { DollarSign, User, FileText, Users, Clock } from 'lucide-react';
 //TODO: Balances update after pay is wrong
 //TODO: After changing to another page, the new transactions will be cleared, not kept, prolly fetch again after that? 
 //TODO: The above question is due to delay update, same occurred when logging in it cannot fetch groups on time
-//TODO: new entry only shows up after refreash the page
 const ExpenseModal = ({ group, onClose }) => {
   const { uid } = useUser();
   const [expenseInputs, setExpenseInputs] = useState([
@@ -245,10 +244,13 @@ const ExpenseModal = ({ group, onClose }) => {
                     {amount < 0 ? (
                       <>
                         <p>
-                          <strong>You owe {debtor}:</strong> ${Math.abs(parseFloat(amount)).toFixed(2)}
+                          <strong>You owe {debtor}:</strong> 
+                          <span className="amount negative">
+                            ${Math.abs(parseFloat(amount)).toFixed(2)}
+                          </span>
                         </p>
                         <button
-                          className="pay-balance-btn"
+                          className="pay-button"
                           onClick={() => handlePayBalances(debtor)}
                         >
                           Pay All
@@ -256,14 +258,17 @@ const ExpenseModal = ({ group, onClose }) => {
                       </>
                     ) : (
                       <p>
-                        <strong>{debtor} owes you:</strong> ${parseFloat(amount).toFixed(2)}
+                        <strong>{debtor} owes you:</strong> 
+                        <span className="amount positive">
+                          ${parseFloat(amount).toFixed(2)}
+                        </span>
                       </p>
                     )}
                   </div>
                 ))}
               </div>
             ) : (
-              <p>No outstanding balances.</p>
+              <p className="no-balances">No outstanding balances.</p>
             )}
           </div>
   
@@ -301,134 +306,154 @@ const ExpenseModal = ({ group, onClose }) => {
             </div>
           </div>
   
-{/* Settlement Summary */}
-<div className="settlement-summary">
-  <div className="settlement-header">
-    <div className="settlement-title-section">
-      <h3>Settlement Summary</h3>
-      <div className="strategy-section">
-        <label>Select Strategy:</label>
-        <select value={splitStrategy} onChange={handleStrategyChange}>
-          <option value="EqualSplit">Equal Split</option>
-          <option value="CustomSplit">Custom Split</option>
-        </select>
-      </div>
-    </div>
+          {/* Settlement Summary */}
+          <div className="settlement-summary">
+            <div className="settlement-header">
+              <div className="settlement-title-section">
+                <h3>Settlement Summary</h3>
+                <div className="strategy-section">
+                  <label>Select Strategy:</label>
+                  <select value={splitStrategy} onChange={handleStrategyChange}>
+                    <option value="EqualSplit">Equal Split</option>
+                    <option value="CustomSplit">Custom Split</option>
+                  </select>
+                </div>
+              </div>
 
-    <div className="settlement-actions">
-      <button className="split-button" onClick={handleCalculate}>
-        Calculate Split
-      </button>
-      {settlementResults.settlements.length > 0 && (
-        <button className="add-entry-button" onClick={handleAddEntry}>
-          Add Entry
-        </button>
-      )}
-    </div>
-  </div>
+              <div className="settlement-actions">
+                <button className="split-button" onClick={handleCalculate}>
+                  Calculate Split
+                </button>
+                {settlementResults.settlements.length > 0 && (
+                  <button className="add-entry-button" onClick={handleAddEntry}>
+                    Add Entry
+                  </button>
+                )}
+              </div>
+            </div>
 
-  <div className="summary-card">
-    <h4>Total Expense</h4>
-    <div className="total-amount">
-      ${settlementResults.totalExpense.toFixed(2)}
-    </div>
-  </div>
+            <div className="summary-card">
+              <h4>Total Expense</h4>
+              <div className="total-amount">
+                ${settlementResults.totalExpense.toFixed(2)}
+              </div>
+            </div>
 
-  {splitStrategy === "CustomSplit" && (
-    <div className="custom-split-section">
-      <h4>Custom Split Ratios</h4>
-      <div className="custom-split-list">
-        {group.participants.map((participant) => (
-          <div key={participant} className="participant-split">
-            <label>{participant}:</label>
-            <input
-              type="number"
-              placeholder="Enter ratio in %"
-              value={customSplits[participant] || ""}
-              onChange={(e) => handleCustomSplitChange(participant, e.target.value)}
-            />
+            {splitStrategy === "CustomSplit" && (
+              <div className="custom-split-section">
+                <h4>Custom Split Ratios</h4>
+                <div className="custom-split-list">
+                  {group.participants.map((participant) => (
+                    <div key={participant} className="participant-split">
+                      <label>{participant}:</label>
+                      <input
+                        type="number"
+                        placeholder="Enter ratio in %"
+                        value={customSplits[participant] || ""}
+                        onChange={(e) => handleCustomSplitChange(participant, e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {settlementResults.settlements.length > 0 && (
+              <div className="settlements-list">
+                {settlementResults.settlements.map((settlement, index) => (
+                  <div key={index} className="settlement-item">
+                    <div className="settlement-details">
+                      <span className="from-tag">{settlement.from}</span>
+                      <span className="settlement-arrow">→</span>
+                      <span className="to-tag">{settlement.to}</span>
+                    </div>
+                    <div className="settlement-amount">
+                      ${parseFloat(settlement.amount).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    </div>
-  )}
-
-  {settlementResults.settlements.length > 0 && (
-    <div className="settlements-list">
-      {settlementResults.settlements.map((settlement, index) => (
-        <div key={index} className="settlement-item">
-          <div className="settlement-details">
-            <span className="from-tag">{settlement.from}</span>
-            <span className="settlement-arrow">→</span>
-            <span className="to-tag">{settlement.to}</span>
-          </div>
-          <div className="settlement-amount">
-            ${parseFloat(settlement.amount).toFixed(2)}
-          </div>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
   
-{/* Transaction List */}
-{showTransactions && (
-  <div className="transaction-list">
-    <h3>Transactions</h3>
-    
-    {Object.keys(entriesInfo || {}).length === 0 ? (
-      <p className="no-transactions">No transactions available.</p>
-    ) : (
-      Object.entries(entriesInfo).map(([entryId, entry]) => (
-        <div key={entryId} className="transaction-item">
-          {/* Transaction Item Content */}
-<div className="transaction-content">
-  <div className="transaction-info">
-    <div className="info-row">
-      <User className="icon" />
-      <span className="label">Payer:</span>
-      <span className="value">{entry.payer}</span>
-    </div>
-    <div className="info-row">
-      <DollarSign className="icon" />
-      <span className="label">Amount:</span>
-      <span className="value amount">${parseFloat(entry.amount).toFixed(2)}</span>
-    </div>
-    <div className="info-row">
-      <FileText className="icon" />
-      <span className="label">Description:</span>
-      <span className="value">{entry.memo || "No description"}</span>
-    </div>
-    {/* 時間戳移到這裡 */}
-    <div className="info-row timestamp">
-      <Clock className="icon" />
-      <span className="label">Created At:</span>
-      <span className="value">{formatTimestamp(entry.created_at)}</span>
-    </div>
-  </div>
+          {/* Transaction List */}
+          {showTransactions && (
+            <div className="transaction-list">
+              <h3>Transactions</h3>
+              
+              {Object.keys(entriesInfo || {}).length === 0 ? (
+                <p className="no-transactions">No transactions available.</p>
+              ) : (
+                Object.entries(entriesInfo).map(([entryId, entry]) => (
+                  <div key={entryId} className="transaction-item">
+                    {/* Transaction Item Content */}
+                    <div className="transaction-content">
+              <div className="transaction-info">
+                <div className="info-row">
+                  <User className="icon" />
+                  <span className="label">Payer:</span>
+                  <span className="value">{entry.payer}</span>
+                </div>
+                <div className="info-row">
+                  <DollarSign className="icon" />
+                  <span className="label">Amount:</span>
+                  <span className="value amount">
+                    ${parseFloat(entry.amount).toFixed(2)}
+                  </span>
+                </div>
+                <div className="info-row">
+                  <FileText className="icon" />
+                  <span className="label">Description:</span>
+                  <span className="value">{entry.memo || "No description"}</span>
+                </div>
+                <div className="info-row timestamp">
+                  <Clock className="icon" />
+                  <span className="label">Created At:</span>
+                  <span className="value">{formatTimestamp(entry.created_at)}</span>
+                </div>
+              </div>
 
-  <div className="vertical-line"></div>
+              <div className="vertical-line"></div>
 
-  <div className="participants-info">
-    <div className="participants-header">
-      <Users className="icon" />
-      Participants:
-    </div>
-    <div className="participants-list">
-      {Object.entries(entry.participants || {}).map(([participant, share]) => (
-        <div key={participant} className="participant-row">
-          <span>{participant}</span>
-          <span className="share">${parseFloat(share).toFixed(2)}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
-        </div>
-      ))
-    )}
-  </div>
-)}
+              <div className="participants-info">
+                <div className="participants-header">
+                  <Users className="icon" />
+                  Participants:
+                </div>
+                <div className="participants-list">
+                  {Object.entries(entry.participants || {}).map(([participant, share]) => (
+                    <div key={participant} className="participant-row">
+                      <span>{participant}</span>
+                      <span className={`share ${participant === entry.payer ? 'income' : 'expense'}`}>
+                        ${parseFloat(share).toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                        
+                        {/* Pay Button & Paid Label */}
+                        <div className="payment-status">
+                          {entry.payer !== uid && (!entry.paidStatus?.[uid] || entry.paidStatus[uid] !== true) && (
+                            <button
+                              className="pay-button"
+                              onClick={() => {
+                                handlePayBalances(entry.payer, entry.participants[uid], entryId);
+                              }}
+                            >
+                              Pay
+                            </button>
+                          )}
+                          {entry.payer !== uid && entry.paidStatus?.[uid] === true && (
+                            <span className="paid-label">Paid</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -709,14 +734,28 @@ const GroupSplit = () => {
     setSelectedGroup(group);
   };
 
-  const GroupCard = ({ group, onClick }) => {
-    // 格式化創建時間
-    const formatDate = (timestamp) => {
-      if (!timestamp) return 'N/A';
-      
-      // 檢查是否是 Firestore Timestamp 對象
+const GroupCard = ({ group, onClick }) => {
+  const { uid } = useUser();  // 添加這行來獲取當前用戶ID
+  
+  // 計算餘額總和的函數
+  const calculateTotalBalance = () => {
+    if (group.balances && group.balances[uid] && group.balances[uid].owes) {
+      // 計算所有欠款的總和
+      return Object.values(group.balances[uid].owes).reduce((sum, amount) => {
+        // 如果是負數（我們欠別人的）就減去，如果是正數（別人欠我們的）就加上
+        return sum + parseFloat(amount);
+      }, 0);
+    }
+    return 0;
+  };
+
+  // 格式化創建時間
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    
+    try {
+      // 處理 Firestore Timestamp 對象
       if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
-        // 將 Firestore Timestamp 轉換為 JavaScript Date
         const date = new Date(timestamp.seconds * 1000);
         return new Intl.DateTimeFormat('en-US', {
           year: 'numeric',
@@ -727,7 +766,7 @@ const GroupSplit = () => {
         }).format(date);
       }
       
-      // 如果是一般的 Date 對象
+      // 處理普通的 Date 對象
       if (timestamp instanceof Date) {
         return new Intl.DateTimeFormat('en-US', {
           year: 'numeric',
@@ -737,36 +776,65 @@ const GroupSplit = () => {
           minute: '2-digit'
         }).format(timestamp);
       }
+
+      // 處理時間戳字符串
+      if (typeof timestamp === 'string') {
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }).format(date);
+        }
+      }
+
+      // 處理數字型時間戳
+      if (typeof timestamp === 'number') {
+        const date = new Date(timestamp);
+        return new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).format(date);
+      }
+      
+      return 'N/A';
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'N/A';
+    }
+  };
+
+  const totalBalance = calculateTotalBalance();
   
-      return 'Invalid Date';
-    };
-  
-    return (
-      <div className="group-card" onClick={onClick}>
-        <div className="group-card-header">
-          <h3>{group.groupName}</h3>
-          <span className="group-date">
-            {formatDate(group.created_at)}
+  return (
+    <div className="group-card" onClick={onClick}>
+      <div className="group-card-header">
+        <h3>{group.groupName}</h3>
+        <span className="group-date">
+          {formatDate(group.created_at)}
+        </span>
+      </div>
+      
+      <div className="group-meta">
+        <div className="meta-item">
+          <i className="fas fa-users"></i>
+          <span>{group.participants.length} members</span>
+        </div>
+        <div className="group-total">
+          Total: <span className={totalBalance >= 0 ? 'positive' : 'negative'}>
+            ${Math.abs(totalBalance).toFixed(2)}
           </span>
         </div>
-        
-        <div className="group-meta">
-          <div className="meta-item">
-            <i className="fas fa-users"></i>
-            <span>{group.participants.length} members</span>
-          </div>
-          <div className="group-total">
-            Total: ${group.total || 0}
-          </div>
-        </div>
       </div>
-    );
-  };
-  
-  if (loading) {
-    return <div>Loading...</div>; // Display loading message until data is fetched
-  }
-
+    </div>
+  );
+};
 
   return (
     <div className="group-split-container">
