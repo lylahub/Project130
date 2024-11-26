@@ -5,6 +5,7 @@ import { useUser } from '../userContext.js';
 import Navbar from '../components/Navbar';
 import '../css/Home.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { CategoryChartExpense } from '../chart.js';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 console.log()
@@ -115,6 +116,7 @@ const Home = () => {
   const [overallAmounts, setOverallAmounts] = useState({ monthlyAmount: 0, totalAmount: 0 });
   const [transactionType, setTransactionType] = useState('expense');
 
+
   const icons = [
     "fa-utensils",
     "fa-shopping-cart",
@@ -135,6 +137,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       const fetchedCategories = await fetchUserCategories(uid);
+      console.log(fetchedCategories)
       
       if (fetchedCategories.length === 0) {
         await addDefaultCategories(uid, default_icons);
@@ -145,6 +148,7 @@ const Home = () => {
       }
 
       const fetchedTransactions = await fetchAllTransactions(uid);
+      console.log("Transactions: ", fetchedTransactions)
       const fetchedOverallAmounts = await getOverallAmounts(uid);
       setTransactions(fetchedTransactions);
       setFilteredTransactions(fetchedTransactions); 
@@ -241,6 +245,10 @@ const Home = () => {
           <div className="left-section">
             {/* Chart Section */}
             <div className="chart-section card">
+            <div className="pie-chart">
+              {(selectedCategoryId === 'overall' || !selectedCategoryId)&&
+              <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>}
+            </div>
               <h2>Category Overview</h2>
               
               {/* Overall Amounts */}
@@ -254,7 +262,6 @@ const Home = () => {
                   <strong>${overallAmounts.monthlyAmount}</strong>
                 </div>
               </div>
-  
               {/* Categories List */}
               <div className="category-list">
                 {categories?.map((category) => (
