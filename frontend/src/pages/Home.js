@@ -98,11 +98,19 @@ const getOverallAmounts = async (userId) => {
   return data;
 };
 
+const fetchUsername = async (uid) => {
+  const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch username");
+  }
+  const data = await response.json();
+  return data.username;
+};
 
 const Home = () => {
   const navigate = useNavigate();
-  const username = "Baby";
   const { uid } = useUser();
+  const [username, setUsername] = useState('');
   const [activeTab, setActiveTab] = useState(1);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -156,6 +164,10 @@ const Home = () => {
         totalAmount: fetchedOverallAmounts.totalAmount,
         monthlyAmount: fetchedOverallAmounts.monthlyAmount
       });
+
+      // Fetch the username based on the uid
+      const fetchedUsername = await fetchUsername(uid);
+      setUsername(fetchedUsername);
     };
 
     fetchData();

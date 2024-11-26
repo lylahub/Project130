@@ -57,3 +57,30 @@ export const ensureFieldExists = async (uid, field, defaultValue = null) => {
     throw new Error(`Failed to check or initialize field: ${field}`);
   }
 };
+
+/**
+ * Get the username associated with a given uid.
+ * @param {string} uid - The user's unique ID (uid).
+ * @returns {Promise<string>} - The username corresponding to the uid.
+ * @throws {Error} - Throws an error if the uid is not found or any issue occurs.
+ */
+export const getUsernameByUid = async (uid) => {
+    try {
+      // Reference the user document in the "users" collection
+      const userDocRef = doc(db, "users", uid);
+  
+      // Fetch the document snapshot
+      const userDocSnap = await getDoc(userDocRef);
+  
+      if (userDocSnap.exists()) {
+        // Extract the username field from the document
+        const userData = userDocSnap.data();
+        return userData.username || "Username not set";
+      } else {
+        throw new Error("User not found");
+      }
+    } catch (error) {
+      console.error("Error fetching username:", error.message);
+      throw error;
+    }
+  };

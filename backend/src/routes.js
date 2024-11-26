@@ -2,7 +2,7 @@
 import express from "express";
 import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
-import { getUserData, updateUserData } from "./user.js";
+import { getUserData, updateUserData, getUsernameByUid } from "./user.js";
 
 const router = express.Router();
 
@@ -407,6 +407,19 @@ export default function (groupBudgets, clients) {
             res.status(500).json({ error: "Failed to update user data", details: error.message });
         }
     });
+
+    // Endpoint to fetch the username by uid
+    router.get('/get-username/:uid', async (req, res) => {
+        const { uid } = req.params; // Extract the uid from the URL
+      
+        try {
+          const username = await getUsernameByUid(uid); // Call your Firestore function
+          res.status(200).json({ username });
+        } catch (error) {
+          console.error('Error fetching username:', error.message);
+          res.status(500).json({ error: 'Failed to fetch username' });
+        }
+      });
 
     return router;
 }
