@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import admin from "firebase-admin";
 
 // Get the current file path and directory in an ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -36,4 +37,29 @@ const firebaseConfig = {
   const auth = getAuth(app);
   const storage = getStorage(app);
 
-  export { app, db, auth, storage};
+
+  // Firebase Admin SDK Configuration (for backend use)
+  const adminConfig = {
+    type: process.env.FIREBASE_ADMIN_TYPE,
+    projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+    privateKeyId: process.env.FIREBASE_ADMIN_PRIVATE_KEY_ID,
+    privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, "\n"), // Fix escaped newlines
+    clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+    clientId: process.env.FIREBASE_ADMIN_CLIENT_ID,
+    authUri: process.env.FIREBASE_ADMIN_AUTH_URI,
+    tokenUri: process.env.FIREBASE_ADMIN_TOKEN_URI,
+    authProviderCertUrl: process.env.FIREBASE_ADMIN_AUTH_PROVIDER_CERT_URL,
+    clientCertUrl: process.env.FIREBASE_ADMIN_CLIENT_CERT_URL,
+    };
+
+    if (!admin.apps.length) {
+        admin.initializeApp({
+            credential: admin.credential.cert(adminConfig),
+        });
+    }
+
+    const adminDb = admin.firestore();
+
+
+    // Export both client and admin SDKs
+    export { app, db, auth, storage, adminDb };

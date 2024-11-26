@@ -1,16 +1,21 @@
 // src/pages/Profile.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; // Import Navbar component
 import '../css/Profile.css'; // Import CSS for styling
+import { useUser } from '../userContext';
 
 // Main Profile component
 const Profile = () => {
+
+    // Access `uid` from the global context
+    const { uid } = useUser();
+    
     // Profile state holds user information
     const [profile, setProfile] = useState({
-        username: 'Baby',
-        email: 'baby@example.com',
-        profilePicture: '', // URL or uploaded image data for the profile picture
-        bio: 'This is a sample bio.',
+        username: '',
+        email: '',
+        profile_pic: 'https://via.placeholder.com/150', // Default profile picture
+        bio: '',
     });
 
     // State to manage edit mode, new password inputs
@@ -18,19 +23,52 @@ const Profile = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    // Fetch user profile from the backend
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/user/${uid}`); // Calls the backend `/user/:uid` endpoint
+                const data = await response.json();
+                setProfile({
+                    username: data.username || "To be set",
+                    email: data.email || "", // Email is always available from Firebase Auth
+                    profile_pic: data.profile_pic || "https://via.placeholder.com/150",
+                    bio: data.bio || "To be set",
+                });
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        };
+
+        if (uid) fetchProfile();
+    }, [uid]);
+
     // Handle input changes for profile information
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle image upload and display
-    const handleImageUpload = (e) => {
+    // Handle profile picture upload
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setProfile((prev) => ({ ...prev, profilePicture: reader.result }));
+            reader.onloadend = async () => {
+                const updatedProfile = { ...profile, profile_pic: reader.result }; // Save image as Base64 string
+                setProfile(updatedProfile);
+
+                // Update backend
+                try {
+                    await fetch(`http://localhost:3001/user/${uid}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ profile_pic: reader.result }),
+                    });
+                    alert("Profile picture updated successfully!");
+                } catch (error) {
+                    console.error("Error updating profile picture:", error);
+                }
             };
             reader.readAsDataURL(file);
         }
@@ -48,10 +86,26 @@ const Profile = () => {
         }
     };
 
-    // Save profile changes and exit edit mode
-    const handleSaveProfile = () => {
-        setIsEditing(false); // Exit edit mode
-        alert("Profile updated successfully!"); // Notify user
+    // Save profile changes
+    const handleSaveProfile = async () => {
+        try {
+            const updates = {
+                username: profile.username,
+                email: profile.email,
+                bio: profile.bio,
+            };
+
+            await fetch(`http://localhost:3001/user/${uid}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updates),
+            });
+
+            alert("Profile updated successfully!");
+            setIsEditing(false); // Exit edit mode
+        } catch (error) {
+            console.error("Error saving profile:", error);
+        }
     };
 
     return (
@@ -65,7 +119,7 @@ const Profile = () => {
                     {/* Profile picture section */}
                     <div className="profile-picture">
                         <img
-                            src={profile.profilePicture || 'https://via.placeholder.com/150'} // Default placeholder if no picture
+                            src={profile.profile_pic} // Show profile picture from state
                             alt="Profile"
                             className="profile-img"
                         />
@@ -94,24 +148,14 @@ const Profile = () => {
                                     placeholder="Enter your username"
                                 />
                             ) : (
-                                <p>{profile.username}</p> // Display only when not editing
+                                <p>{profile.username || "To be set"}</p> // Display only when not editing
                             )}
                         </div>
 
                         {/* Email field */}
                         <div className="form-group">
                             <label>Email</label>
-                            {isEditing ? (
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={profile.email}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter your email"
-                                />
-                            ) : (
-                                <p>{profile.email}</p> // Display only when not editing
-                            )}
+                            <p>{profile.email}</p> {/* Email is not editable */}
                         </div>
 
                         {/* Bio field */}
@@ -126,7 +170,7 @@ const Profile = () => {
                                     rows="4"
                                 />
                             ) : (
-                                <p>{profile.bio}</p> // Display only when not editing
+                                <p>{profile.bio || "To be set"}</p> // Display only when not editing
                             )}
                         </div>
 
