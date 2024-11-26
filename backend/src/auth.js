@@ -3,7 +3,7 @@ import { auth } from "./firebaseConfig.js";
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "./firebaseConfig.js";
 import WebSocket from 'ws';
-const WEBSOCKET_URL = "ws://localhost:3001";
+const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:3001';
 
 // Sign up
 const signUp = async (email, password) => {

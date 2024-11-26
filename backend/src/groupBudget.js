@@ -1,6 +1,5 @@
 import { db, storage } from "./firebaseConfig.js";
 import { collection, addDoc, getDocs, setDoc ,Timestamp, updateDoc, deleteDoc, orderBy, doc, query, getDoc, where, serverTimestamp, runTransaction, writeBatch} from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { SplitStrategy, EqualSplitStrategy, CustomSplitStrategy } from "./SplitStrategy.js";
 import { Observable } from "./Observer.js";
 
@@ -197,59 +196,6 @@ export class GroupBudget extends Observable {
         }
     }
     
-    
-    
-   /*  async fetchGroups(clients) {
-        const groupsRef = collection(db, "groups");
-        try {
-            const q = query(groupsRef, where("participants", "array-contains", this.userId));
-            const querySnapshot = await getDocs(q);
-    
-            if (!querySnapshot.empty) {
-                console.log("Fetched groups for user:", this.userId);
-                querySnapshot.forEach(async (doc) => {
-                    const curData = doc.data();
-                    const groupId = doc.id;
-                    console.log(curData.entries)
-    
-                    // Fetch entries and balances for the group
-                    let entriesInfo = null;
-                    let balances = null;
-                    const entriesSnapshot = await getDocs(collection(doc.ref, "entries"));
-                    //const balanceSnapshot = await getDocs(collection(doc.ref, "balances"));
-                    if (!entriesSnapshot.empty) {
-                        entriesInfo = await this.fetchEntries(groupId);
-                        console.log("Entries Info: ", entriesInfo);
-                        balances = await this.fetchBalances(groupId);
-                        console.log("Balanced Info: ", balances)
-                    }
-    
-                    // Update `groups` and `clients` info
-                    this.groups[groupId] = {
-                        groupId: groupId,
-                        groupName: curData.groupName,
-                        participants: curData.participants,
-                        created_at: curData.created_at,
-                        entriesInfo: entriesInfo,
-                        balances: balances
-                    };
-    
-                    this.clients[groupId] = curData.participants.map(uid => {
-                        console.log(`Group ${groupId}, clients: ${clients}`);
-                        return { uid, socket: clients[uid] || null };
-                    });
-    
-                });
-                return this.groups;
-            } else {
-                console.log("No groups found for user:", this.userId);
-                return null;
-            }
-        } catch (error) {
-            console.log("Error in fetching groups!", error);
-        }
-    } */
-
     //fixed with promiseall
     async fetchGroups(clients) {
         const groupsRef = collection(db, "groups");

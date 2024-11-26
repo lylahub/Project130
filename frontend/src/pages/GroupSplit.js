@@ -9,10 +9,13 @@ import '../css/GroupSplit/transaction.css';
 import { useUser } from '../userContext';
 import { WebSocketContext } from '../WebsocketContext';
 import { DollarSign, User, FileText, Users, Clock } from 'lucide-react';
+import { BalancesChart } from '../chart'
 
 //TODO: Balances update after pay is wrong
 //TODO: After changing to another page, the new transactions will be cleared, not kept, prolly fetch again after that? 
 //TODO: The above question is due to delay update, same occurred when logging in it cannot fetch groups on time
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
 const ExpenseModal = ({ group, onClose }) => {
   const { uid } = useUser();
   const [expenseInputs, setExpenseInputs] = useState([
@@ -78,7 +81,7 @@ const ExpenseModal = ({ group, onClose }) => {
 
   //Adding entry, message will be propagated via websocket to update the UI
   const handleAddEntry = async () => {
-    const response = await fetch("http://localhost:3001/group/add-entry", {
+    const response = await fetch(`${API_BASE_URL}/group/add-entry`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -115,7 +118,7 @@ const ExpenseModal = ({ group, onClose }) => {
     const payer = expenseInputs[0].paidBy; //this can be simplified
 
     try {
-      const response = await fetch("http://localhost:3001/group/calculate-settlement", {
+      const response = await fetch(`${API_BASE_URL}/group/calculate-settlement`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -151,7 +154,7 @@ const ExpenseModal = ({ group, onClose }) => {
     }
     try {
       // Step 1: Pay the balance
-      const payBalanceResponse = await fetch("http://localhost:3001/group/pay-balance", {
+      const payBalanceResponse = await fetch(`${API_BASE_URL}/group/pay-balance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -171,7 +174,7 @@ const ExpenseModal = ({ group, onClose }) => {
       if (entryId) {
         console.log("Entry ID")
         // Mark the specific transaction as paid
-        const markTransactionResponse = await fetch("http://localhost:3001/group/mark-paid", {
+        const markTransactionResponse = await fetch(`${API_BASE_URL}/group/mark-paid`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -190,7 +193,7 @@ const ExpenseModal = ({ group, onClose }) => {
         console.log("Transaction marked as paid:", markTransactionData);
       } else {
         // Mark all transactions involving the debtor as paid
-        const markAllResponse = await fetch("http://localhost:3001/group/mark-all-paid", {
+        const markAllResponse = await fetch(`${API_BASE_URL}/group/mark-all-paid`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -237,6 +240,14 @@ const ExpenseModal = ({ group, onClose }) => {
           {/* Balances Section */}
           <div className="balances-section">
             <h4>Balances</h4>
+            {/* Chart Visualization */}
+            <div className="balances-chart">
+              {balances && balances.owes && Object.keys(balances.owes).length > 0 ? (
+                <BalancesChart balances={balances} />
+              ) : (
+                <p className="no-balances">No outstanding balances.</p>
+              )}
+            </div>
             {balances && balances.owes && Object.keys(balances.owes).length > 0 ? (
               <div className="balances-list">
                 {Object.entries(balances.owes).map(([debtor, amount]) => (
@@ -477,7 +488,7 @@ const GroupSplit = () => {
   // 处理创建群组
   const handleCreateGroup = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/group/create`, {
+      const response = await fetch(`${API_BASE_URL}/group/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -506,7 +517,7 @@ const GroupSplit = () => {
   const handleFetchGroups = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/group/fetch-groups?userId=${uid}`, {
+      const response = await fetch(`${API_BASE_URL}/group/fetch-groups?userId=${uid}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -561,7 +572,7 @@ const GroupSplit = () => {
   }; */
   const updateEntriesForGroup = async (entry, groupId, entryId) => {
     try {
-      const balances = entry.balances; // 新的 balances 数据
+      const balances = entry.balances; 
       const newEntry = {
         amount: entry.amount,
         created_at: entry.created_at,
@@ -573,16 +584,15 @@ const GroupSplit = () => {
   
       // Update group state with new entries and updated balances
       setGroups((prevGroups) => {
-        const currentBalances = prevGroups[groupId]?.balances || {}; // 获取当前的 balances
+        const currentBalances = prevGroups[groupId]?.balances || {};
   
-        // 更新每个相关欠款人的数据
         const updatedBalances = { ...currentBalances };
         Object.keys(balances).forEach((user) => {
           updatedBalances[user] = {
-            ...currentBalances[user], // 保留旧数据
+            ...currentBalances[user],
             owes: {
-              ...currentBalances[user]?.owes, // 保留旧的 owes 数据
-              ...balances[user]?.owes, // 更新新的 owes 数据
+              ...currentBalances[user]?.owes,
+              ...balances[user]?.owes,
             },
           };
         });
@@ -595,7 +605,7 @@ const GroupSplit = () => {
               ...prevGroups[groupId].entriesInfo,
               [entryId]: newEntry,
             },
-            balances: updatedBalances, // 只更新涉及的欠款人
+            balances: updatedBalances,
           },
         };
       });
