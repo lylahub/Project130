@@ -11,6 +11,9 @@ if (!process.env.REACT_APP_FIREBASE_API_KEY) {
     dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
 
+console.log('Resolved path:', path.resolve(process.cwd(), '.env'));
+
+
 
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";

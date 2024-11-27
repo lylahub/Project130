@@ -5,6 +5,29 @@ import GroupBudget from '../groupBudget.js';
 import express from 'express';
 import { Server } from 'http';
 
+// Mock firebaseConfig.js, fixed path not found error
+jest.mock('../firebaseConfig.js', () => ({
+  db: {}, // Mocked Firestore database object
+  storage: {}, // Mocked Storage object
+}));
+
+jest.mock('firebase/firestore', () => ({
+  collection: jest.fn(),
+  addDoc: jest.fn(),
+  getDocs: jest.fn(),
+  setDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
+  orderBy: jest.fn(),
+  doc: jest.fn(),
+  query: jest.fn(),
+  getDoc: jest.fn(),
+  where: jest.fn(),
+  serverTimestamp: jest.fn(),
+  runTransaction: jest.fn(),
+  writeBatch: jest.fn(),
+}));
+
 // Test suite for web socket, unresolved issue exists: meta url
 describe('WebSocket Server', () => {
   let server;

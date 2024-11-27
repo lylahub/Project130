@@ -1,9 +1,13 @@
 export default {
     transform: {
-      "^.+\\.js$": "babel-jest",
+      "^.+\\.js$": [
+        "babel-jest",
+        {
+          presets: ["@babel/preset-env"],
+        },
+      ],
     },
-    //extensionsToTreatAsEsm: ['.js'],
-    testEnvironment: "node",
+    testEnvironment: "node", // 确保 Jest 使用 Node.js 环境
   };
   
   
