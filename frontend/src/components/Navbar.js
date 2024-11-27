@@ -65,7 +65,6 @@ const Navbar = ({ username }) => {
             {isDropdownOpen && (
                 <ul className="navbar-dropdown-menu">
                   <li><Link to="/profile">Profile</Link></li>
-                  <li><Link to="/settings">Settings</Link></li>
                   <li><Link to="/login">Logout</Link></li>
                 </ul>
             )}

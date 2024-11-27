@@ -114,16 +114,16 @@ const Profile = () => {
             <Navbar username={profile.username} />
             <div className="content-container">
                 <div className="profile-section">
-                    <h1>Profile</h1>
 
                     {/* Profile picture section */}
                     <div className="profile-picture">
                         <img
-                            src={profile.profile_pic} // Show profile picture from state
+                            src={profile.profile_pic === 'https://via.placeholder.com/150' 
+                                ? require('../components/logo.png') // 假設 logo 是 PNG 格式
+                                : profile.profile_pic}
                             alt="Profile"
                             className="profile-img"
                         />
-                        {/* Allow uploading profile picture in edit mode */}
                         {isEditing && (
                             <input
                                 type="file"
