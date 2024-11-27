@@ -16,6 +16,15 @@ import { BalancesChart } from '../chart'
 //TODO: The above question is due to delay update, same occurred when logging in it cannot fetch groups on time
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
+const fetchUsername = async (uid) => {
+  const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch username");
+  }
+  const data = await response.json();
+  return data.username;
+};
+
 const ExpenseModal = ({ group, onClose }) => {
   const { uid } = useUser();
   const [expenseInputs, setExpenseInputs] = useState([
@@ -480,7 +489,7 @@ const GroupSplit = () => {
   const [participantEmails, setParticipantEmails] = useState(""); // 新增 participantEmails 状态
   const [selectedGroup, setSelectedGroup] = useState(null);
   const { uid } = useUser();
-  const username = "Baby"; // 假设这是一个临时的用户名
+  const [username, setUsername] = useState('');
   const socket = useContext(WebSocketContext);
   const [loading, setLoading] = useState(true); 
 
@@ -657,9 +666,18 @@ const GroupSplit = () => {
 
 
   useEffect(() => {
+    const fetchData = async () => {
+      // Fetch the username based on the uid
+      const fetchedUsername = await fetchUsername(uid);
+      setUsername(fetchedUsername);
+    };
+
+    fetchData();
+
     if (uid) {
       handleFetchGroups();
     }
+    
   }, [uid]);
 
   // WebSocket
