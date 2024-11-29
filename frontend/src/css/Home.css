@@ -12,13 +12,44 @@
 }
 
 /* Main Layout */
-.home-block-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+.home-blocks-wrapper {
+  display: flex;
+  flex-direction: column;
   gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* Overview Card */
+.overview-card {
+  width: 100%;
+}
+
+.overview-content {
+  display: flex;
+  padding: 32px;
+  gap: 48px;
+}
+
+.category-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.chart-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+}
+
+/* Lower section layout */
+.lower-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
 }
 
 /* Common Card Styles */
@@ -34,27 +65,35 @@
   box-shadow: 0 12px 32px var(--shadow-color);
 }
 
-/* Left Section */
-.left-section {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-/* Chart Section */
-.chart-section {
+.add-category-section {
   padding: 32px;
+  height: fit-content; /* 確保高度適應內容 */
 }
 
+.add-category-section .input-container {
+  margin-bottom: 20px; /* 給底部留出空間 */
+}
 
-.chart-section h2 {
+/* Add Transaction Section */
+.add-transaction-section {
+  padding: 32px;
+  height: fit-content;
+}
+
+.add-transaction-section .input-container {
+  margin-bottom: 20px;
+}
+
+/* Headings */
+h2 {
   color: var(--text-secondary);
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 24px;
 }
 
-.overall-amounts {
+/* Amounts Section */
+.amounts-section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
@@ -121,57 +160,17 @@
   color: var(--text-color);
 }
 
-/* Transactions Section */
-.transactions-section {
-  padding: 32px;
-}
-
-.transactions-section h2 {
-  color: var(--text-secondary);
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
 .selected-category-amounts {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   margin-bottom: 32px;
-}
-
-.transaction-item {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 24px;
   padding: 16px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  transition: background-color 0.2s ease;
+  background: var(--background-third);
+  border-radius: 12px;
 }
 
-.transaction-item:hover {
-  background-color: var(--hover-bg-color);
-}
-
-.transaction-item:last-child {
-  border-bottom: none;
-}
-
-/* Right Section Forms */
-.right-section > div {
-  padding: 32px;
-  margin-bottom: 32px;
-}
-
-.right-section h2 {
-  color: var(--text-secondary);
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
+/* Input Styles */
 .input-container {
   display: flex;
   flex-direction: column;
@@ -210,7 +209,8 @@
 
 /* Icon Selector */
 .icon-selector {
-  margin-top: 24px;
+  margin-top: 20px;
+  margin-bottom: 20px; /* 給圖標選擇器底部留出空間 */
 }
 
 .icon-list {
@@ -218,6 +218,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-top: 16px;
+  margin-bottom: 16px; /* 確保有足夠空間 */
 }
 
 .icon-item {
@@ -247,7 +248,7 @@
   color: var(--primary-color);
 }
 
-/* Buttons */
+/* Button Styles */
 .button {
   padding: 12px 24px;
   border-radius: 12px;
@@ -270,18 +271,36 @@
   transform: translateY(0);
 }
 
+/* Transaction History */
+.transactions-section {
+  padding: 32px;
+  height: fit-content;
+}
+
+.transaction-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  transition: background-color 0.2s ease;
+}
+
+.transaction-item:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
 /* Transaction Amount Styles */
 .transaction-item .amount {
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 14px;
-}
-
-:root {
-  /* Income/Expense Colors */
-  --income-color: #10B981;
-  --expense-color: #EF4444;
 }
 
 .transaction-item .amount.income {
@@ -294,15 +313,27 @@
   background-color: rgba(239, 68, 68, 0.1);
 }
 
+.action-card {
+  height: fit-content;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .home-block-container {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  .overview-content {
+    flex-direction: column;
   }
   
-  .category-list {
-    grid-template-columns: repeat(3, 1fr);
+  .chart-container {
+    max-width: 100%;
+  }
+  
+  .lower-section {
+    grid-template-columns: 1fr;
+  }
+
+  .transactions-section,
+  .action-card {
+    order: 0; /* 重置順序 */
   }
 }
 
@@ -311,12 +342,15 @@
     padding: 16px;
   }
   
+  .overview-content {
+    padding: 24px;
+  }
+  
   .category-list {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .overall-amounts,
-  .selected-category-amounts {
+  .amounts-section {
     grid-template-columns: 1fr;
   }
   
@@ -333,5 +367,9 @@
 @media (max-width: 480px) {
   .category-list {
     grid-template-columns: 1fr;
+  }
+  
+  .icon-list {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

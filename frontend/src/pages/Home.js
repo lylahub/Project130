@@ -252,48 +252,55 @@ const Home = () => {
       />
       
       <div className="home-content">
-        <div className="home-block-container">
-          {/* Left Section */}
-          <div className="left-section">
-            {/* Chart Section */}
-            <div className="chart-section card">
-            <div className="pie-chart">
-              {(selectedCategoryId === 'overall' || !selectedCategoryId)&&
-              <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>}
-            </div>
-              <h2>Category Overview</h2>
-              
-              {/* Overall Amounts */}
-              <div className="overall-amounts">
-                <div className="amount-card">
-                  <p>Overall Total Expense</p>
-                  <strong>${overallAmounts.totalAmount}</strong>
-                </div>
-                <div className="amount-card">
-                  <p>Monthly Total Expense</p>
-                  <strong>${overallAmounts.monthlyAmount}</strong>
-                </div>
-              </div>
-              {/* Categories List */}
-              <div className="category-list">
-                {categories?.map((category) => (
-                  <div
-                    key={category.id}
-                    className={`category-item ${selectedCategoryId === category.id ? 'active' : ''}`}
-                    onClick={() => handleCategoryClick(category.id)}
-                  >
-                    <i className={`fas ${category.icon}`}></i>
-                    <span>{category.name}</span>
+        <div className="home-blocks-wrapper">
+          {/* Overview Card */}
+          <div className="overview-card card">
+            <div className="overview-content">
+              {/* Left side with category info */}
+              <div className="category-info">
+                <h2>Category Overview</h2>
+                
+                <div className="amounts-section">
+                  <div className="amount-card">
+                    <p>Overall Total Expense</p>
+                    <strong>${overallAmounts.totalAmount}</strong>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="amount-card">
+                    <p>Monthly Total Expense</p>
+                    <strong>${overallAmounts.monthlyAmount}</strong>
+                  </div>
+                </div>
   
-            {/* Transactions Section */}
+                <div className="category-list">
+                  {categories?.map((category) => (
+                    <div
+                      key={category.id}
+                      className={`category-item ${selectedCategoryId === category.id ? 'active' : ''}`}
+                      onClick={() => handleCategoryClick(category.id)}
+                    >
+                      <i className={`fas ${category.icon}`}></i>
+                      <span>{category.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+  
+              {/* Right side with pie chart */}
+              {(selectedCategoryId === 'overall' || !selectedCategoryId) && (
+                <div className="chart-visualization">
+                  <h2>Expense Overview</h2>
+                  <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>
+                </div>
+              )}
+            </div>
+          </div>
+  
+          {/* Lower section */}
+          <div className="lower-section">
+            {/* Transaction History - Left side */}
             <div className="transactions-section card">
               <h2>Transaction History</h2>
               
-              {/* Selected Category Amounts */}
               {selectedCategoryId && selectedCategoryId !== 'overall' && (
                 <div className="selected-category-amounts">
                   <div className="amount-card">
@@ -307,7 +314,6 @@ const Home = () => {
                 </div>
               )}
   
-              {/* Transactions List */}
               <div className="transactions-list">
                 {filteredTransactions.map((transaction) => (
                   <div key={transaction.id} className="transaction-item">
@@ -320,88 +326,85 @@ const Home = () => {
                 ))}
               </div>
             </div>
-          </div>
   
-          {/* Right Section */}
-          <div className="right-section">
-            {/* Add Category Section */}
-            <div className="add-category-section card">
-              <h2>Add New Category</h2>
-              <div className="input-container">
-                <div className="input-group">
-                  <label>Category Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter category name"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                  />
-                </div>
+            {/* Action Card - Right side */}
+            <div className="action-card">
+              {(selectedCategoryId === 'overall' || !selectedCategoryId) ? (
+                <div className="add-category-section card">
+                  <h2>Add New Category</h2>
+                  <div className="input-container">
+                    <div className="input-group">
+                      <label>Category Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter category name"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                      />
+                    </div>
   
-                {/* Icon Selector */}
-                <div className="icon-selector">
-                  <label>Select Icon</label>
-                  <div className="icon-list">
-                    {icons.map((icon, index) => (
-                      <div 
-                        key={index}
-                        className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
-                        onClick={() => setSelectedIcon(icon)}
-                      >
-                        <i className={`fas ${icon}`}></i>
+                    <div className="icon-selector">
+                      <label>Select Icon</label>
+                      <div className="icon-list">
+                        {icons.map((icon, index) => (
+                          <div 
+                            key={index}
+                            className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
+                            onClick={() => setSelectedIcon(icon)}
+                          >
+                            <i className={`fas ${icon}`}></i>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+  
+                    <button className="button" onClick={handleAddCategory}>
+                      Add Category
+                    </button>
                   </div>
                 </div>
+              ) : (
+                <div className="add-transaction-section card">
+                  <h2>Add Transaction</h2>
+                  <div className="input-container">
+                    <div className="input-group">
+                      <label>Transaction Type</label>
+                      <select
+                        value={transactionType}
+                        onChange={(e) => setTransactionType(e.target.value)}
+                      >
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                      </select>
+                    </div>
   
-                <button className="button" onClick={handleAddCategory}>
-                  Add Category
-                </button>
-              </div>
+                    <div className="input-group">
+                      <label>Amount</label>
+                      <input
+                        type="number"
+                        placeholder="Enter amount"
+                        value={newTransactionAmount}
+                        onChange={(e) => setNewTransactionAmount(e.target.value)}
+                      />
+                    </div>
+  
+                    <div className="input-group">
+                      <label>Memo</label>
+                      <input
+                        type="text"
+                        placeholder="Enter memo"
+                        value={newTransactionMemo}
+                        onChange={(e) => setNewTransactionMemo(e.target.value)}
+                      />
+                    </div>
+  
+                    <button className="button" onClick={handleAddTransaction}>
+                      Add Transaction
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-  
-            {/* Add Transaction Section */}
-            {selectedCategoryId && selectedCategoryId !== 'overall' && (
-              <div className="add-transaction-section card">
-                <h2>Add Transaction</h2>
-                <div className="input-container">
-                  <div className="input-group">
-                    <label>Transaction Type</label>
-                    <select
-                      value={transactionType}
-                      onChange={(e) => setTransactionType(e.target.value)}
-                    >
-                      <option value="income">Income</option>
-                      <option value="expense">Expense</option>
-                    </select>
-                  </div>
-  
-                  <div className="input-group">
-                    <label>Amount</label>
-                    <input
-                      type="number"
-                      placeholder="Enter amount"
-                      value={newTransactionAmount}
-                      onChange={(e) => setNewTransactionAmount(e.target.value)}
-                    />
-                  </div>
-  
-                  <div className="input-group">
-                    <label>Memo</label>
-                    <input
-                      type="text"
-                      placeholder="Enter memo"
-                      value={newTransactionMemo}
-                      onChange={(e) => setNewTransactionMemo(e.target.value)}
-                    />
-                  </div>
-  
-                  <button className="button" onClick={handleAddTransaction}>
-                    Add Transaction
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

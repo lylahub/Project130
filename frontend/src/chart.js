@@ -69,7 +69,7 @@ const generateColors = (count) => {
     const title = "Expense Overview"
     const chartRef = useRef(null);
     let myChart = null;
-    console.log("Category data and transaction data passed in:", categories, transactions);
+    
     useEffect(() => {
       const categoryTotals = categories.map((category) => {
         const total = transactions
@@ -105,24 +105,29 @@ const generateColors = (count) => {
         data: data,
         options: {
           responsive: true,
+          maintainAspectRatio: true,
           plugins: {
             legend: {
-              position: 'top',
+              position: 'bottom',
+              display: true,
             },
+            title: {
+              display: true,
+              text: title,
+              font: {
+                size: 16
+              }
+            }
           },
         },
       });
-
+  
       return () => {
         if (myChart) myChart.destroy();
       };
     }, [categories, transactions]);
   
-    return (
-        <div className="chart-section" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            {title && <h3 style={{ marginBottom: '10px', textAlign: 'center' }}>{title}</h3>}
-            <canvas ref={chartRef} style={{ width: '300px', height: '300px' }} />
-        </div>);
+    return <canvas ref={chartRef} />;
   };
 
 export { BalancesChart, CategoryChartExpense };
