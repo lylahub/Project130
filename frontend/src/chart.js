@@ -14,56 +14,116 @@ const BalancesChart = ({ balances }) => {
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
     if (myChart) {
-      myChart.destroy(); //destroy the chart if already existed
+      myChart.destroy();
     }
+
     myChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: Object.keys(balances.owes),
         datasets: [
           {
-            label: 'Debt situation',
+            label: 'Balance',
             data: Object.values(balances.owes),
-            //if anyone owes me money, green, otherwise red
             backgroundColor: Object.values(balances.owes).map((value) =>
-                value > 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 99, 132, 0.2)'
-                ),
-                borderColor: Object.values(balances.owes).map((value) =>
-                value > 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)'
-                ),
-
-            borderWidth: 1,
+              value > 0 ? '#94B49F' : '#FCB5AC'
+            ),
+            borderColor: Object.values(balances.owes).map((value) =>
+              value > 0 ? '#94B49F' : '#FCB5AC'
+            ),
+            borderWidth: 0,
+            borderRadius: 6,
           },
         ],
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+          }
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const value = context.raw;
+                return value > 0 
+                  ? `Owes you: $${Math.abs(value).toFixed(2)}`
+                  : `You owe: $${Math.abs(value).toFixed(2)}`;
+              }
+            }
+          }
+        },
         scales: {
           y: {
             beginAtZero: true,
+            grid: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.1)',
+            },
+            ticks: {
+              callback: function(value, index, values) {
+                // 判斷數值的正負號並相應顯示
+                const isNegative = value < 0;
+                // 因為資料是反向的，所以要反過來顯示正負號
+                const displayValue = isNegative ? -Math.abs(value) : Math.abs(value);
+                return '$' + displayValue.toFixed(2);
+              },
+              font: {
+                size: 12
+              }
+            },
           },
-        },
-      },
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                size: 12
+              }
+            }
+          }
+        }
+      }
     });
 
     return () => {
-      if (myChart) myChart.destroy(); // 清理图表实例
+      if (myChart) myChart.destroy();
     };
   }, [balances]);
 
-  return <canvas ref={chartRef} />;
+  return (
+    <div style={{ height: '300px', width: '100%' }}>
+      <canvas ref={chartRef} />
+    </div>
+  );
 };
 
 const generateColors = (count) => {
-    const colors = [];
-    for (let i = 0; i < count; i++) {
-      const hue = (i * (360 / count)) % 360;
-      const saturation = 70; 
-      const lightness = 50; 
-      colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
-    }
-    return colors;
-  };
+    // 定義你想要的顏色
+  const colorPalette = [
+    '#D4B499',   // 暖棕色
+    '#C7BEA2',   // 淺卡其
+    '#AAA492',   // 灰褐色
+    '#9A9483',   // 深灰褐
+    '#A49592',   // 玫瑰灰
+    '#B4A397',   // 淺咖啡
+    '#CDC3BD',   // 灰粉
+    '#A7AAA4'    // 冷灰色
+  ];
+
+  // 如果類別數量超過顏色數量，就循環使用
+  return Array(count).fill().map((_, i) => colorPalette[i % colorPalette.length]);
+};
 
   const CategoryChartExpense = ({ categories, transactions }) => {
     const title = "Expense Overview"
