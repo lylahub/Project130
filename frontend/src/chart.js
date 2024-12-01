@@ -7,7 +7,7 @@ import {
 Chart.register(...registerables);
 
 //chart for group budget: bar
-const BalancesChart = ({ balances }) => {
+const BalancesChart = ({ balances, uidToUsername }) => {
   const chartRef = useRef(null);
   let myChart = null;
 
@@ -16,10 +16,13 @@ const BalancesChart = ({ balances }) => {
     if (myChart) {
       myChart.destroy(); //destroy the chart if already existed
     }
+
+    const labels = Object.keys(balances.owes).map(uid => uidToUsername[uid] || uid); // Replace UID with username
+
     myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Object.keys(balances.owes),
+        labels,
         datasets: [
           {
             label: 'Debt situation',
@@ -49,7 +52,7 @@ const BalancesChart = ({ balances }) => {
     return () => {
       if (myChart) myChart.destroy(); // 清理图表实例
     };
-  }, [balances]);
+  }, [balances, uidToUsername]);
 
   return <canvas ref={chartRef} />;
 };

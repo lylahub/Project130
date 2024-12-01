@@ -3,6 +3,7 @@ import express from "express";
 import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
 import { getUserData, updateUserData, getUsernameByUid } from "./user.js";
+import { adminDb } from './firebaseConfig.js'; // Adjust the path as necessary
 
 const router = express.Router();
 
@@ -420,6 +421,64 @@ export default function (groupBudgets, clients) {
           res.status(500).json({ error: 'Failed to fetch username' });
         }
       });
+
+    // Fetch usernames for a list of UIDs
+    // router.post("/get-usernames", async (req, res) => {
+    //     const { uids } = req.body;
+    
+    //     if (!Array.isArray(uids)) {
+    //         return res.status(400).json({ error: "Invalid request format. UIDs should be an array." });
+    //     }
+    
+    //     try {
+    //     const db = admin.firestore(); // Use Firebase Admin SDK
+    //     const usersRef = db.collection("users");
+    //     const usernames = {};
+    
+    //     for (const uid of uids) {
+    //         const userDoc = await usersRef.doc(uid).get();
+    //         if (userDoc.exists) {
+    //         usernames[uid] = userDoc.data().username || "Unknown User";
+    //         } else {
+    //         usernames[uid] = "Unknown User";
+    //         }
+    //     }
+    
+    //     res.status(200).json(usernames);
+    //     } catch (error) {
+    //     console.error("Error fetching usernames:", error);
+    //     res.status(500).json({ error: "Failed to fetch usernames" });
+    //     }
+    // });
+
+    router.post('/get-usernames', async (req, res) => {
+        try {
+            const { uids } = req.body;
+            if (!Array.isArray(uids)) {
+                return res.status(400).json({ error: "Invalid input" });
+            }
+            
+            console.log('Is adminDb initialized:', !!adminDb);
+            const usersRef = adminDb.collection('users');
+            const usernames = {};
+            const promises = uids.map(async (uid) => {
+                const userDoc = await usersRef.doc(uid).get();
+                if (userDoc.exists) {
+                    usernames[uid] = userDoc.data().username;
+                } else {
+                    usernames[uid] = null; // Or handle missing users differently
+                }
+            });
+    
+            await Promise.all(promises);
+    
+            res.json(usernames);
+        } catch (error) {
+            console.error("Error fetching usernames:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    });
+    
 
     return router;
 }
