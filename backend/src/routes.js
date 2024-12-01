@@ -423,34 +423,6 @@ export default function (groupBudgets, clients) {
       });
 
     // Fetch usernames for a list of UIDs
-    // router.post("/get-usernames", async (req, res) => {
-    //     const { uids } = req.body;
-    
-    //     if (!Array.isArray(uids)) {
-    //         return res.status(400).json({ error: "Invalid request format. UIDs should be an array." });
-    //     }
-    
-    //     try {
-    //     const db = admin.firestore(); // Use Firebase Admin SDK
-    //     const usersRef = db.collection("users");
-    //     const usernames = {};
-    
-    //     for (const uid of uids) {
-    //         const userDoc = await usersRef.doc(uid).get();
-    //         if (userDoc.exists) {
-    //         usernames[uid] = userDoc.data().username || "Unknown User";
-    //         } else {
-    //         usernames[uid] = "Unknown User";
-    //         }
-    //     }
-    
-    //     res.status(200).json(usernames);
-    //     } catch (error) {
-    //     console.error("Error fetching usernames:", error);
-    //     res.status(500).json({ error: "Failed to fetch usernames" });
-    //     }
-    // });
-
     router.post('/get-usernames', async (req, res) => {
         try {
             const { uids } = req.body;
