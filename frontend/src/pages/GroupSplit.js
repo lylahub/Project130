@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import '../css/GroupSplit/base.css';
 import '../css/GroupSplit/expenseform.css';
@@ -25,7 +25,26 @@ const fetchUsername = async (uid) => {
   return data.username;
 };
 
-const ExpenseModal = ({ group, onClose }) => {
+const fetchUsernamesForGroup = async (participants) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/get-usernames`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uids: participants }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch usernames");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching usernames:", error);
+    return {};
+  }
+};
+
+const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   const { uid } = useUser();
   const [expenseInputs, setExpenseInputs] = useState([
     {
@@ -252,7 +271,7 @@ const ExpenseModal = ({ group, onClose }) => {
             {/* Chart Visualization */}
             <div className="balances-chart">
               {balances && balances.owes && Object.keys(balances.owes).length > 0 ? (
-                <BalancesChart balances={balances} />
+                <BalancesChart balances={balances} uidToUsername={uidToUsername} />
               ) : (
                 <p className="no-balances">No outstanding balances.</p>
               )}
@@ -264,7 +283,7 @@ const ExpenseModal = ({ group, onClose }) => {
                     {amount < 0 ? (
                       <>
                         <p>
-                          <strong>You owe {debtor}:</strong> 
+                          <strong>You owe {uidToUsername[debtor] || debtor}:</strong> 
                           <span className="amount negative">
                             ${Math.abs(parseFloat(amount)).toFixed(2)}
                           </span>
@@ -278,7 +297,7 @@ const ExpenseModal = ({ group, onClose }) => {
                       </>
                     ) : (
                       <p>
-                        <strong>{debtor} owes you:</strong> 
+                        <strong>{uidToUsername[debtor] || debtor} owes you:</strong> 
                         <span className="amount positive">
                           ${parseFloat(amount).toFixed(2)}
                         </span>
@@ -303,7 +322,7 @@ const ExpenseModal = ({ group, onClose }) => {
                 <option value="">Who paid?</option>
                 {group.participants.map((participant) => (
                   <option key={participant} value={participant}>
-                    {participant}
+                    {uidToUsername[participant] || participant}
                   </option>
                 ))}
               </select>
@@ -365,7 +384,7 @@ const ExpenseModal = ({ group, onClose }) => {
                 <div className="custom-split-list">
                   {group.participants.map((participant) => (
                     <div key={participant} className="participant-split">
-                      <label>{participant}:</label>
+                      <label>{uidToUsername[participant] || participant}:</label>
                       <input
                         type="number"
                         placeholder="Enter ratio in %"
@@ -383,9 +402,9 @@ const ExpenseModal = ({ group, onClose }) => {
                 {settlementResults.settlements.map((settlement, index) => (
                   <div key={index} className="settlement-item">
                     <div className="settlement-details">
-                      <span className="from-tag">{settlement.from}</span>
+                      <span className="from-tag">{uidToUsername[settlement.from] || settlement.from}</span>
                       <span className="settlement-arrow">→</span>
-                      <span className="to-tag">{settlement.to}</span>
+                      <span className="to-tag">{uidToUsername[settlement.to] || settlement.to}</span>
                     </div>
                     <div className="settlement-amount">
                       ${parseFloat(settlement.amount).toFixed(2)}
@@ -412,7 +431,7 @@ const ExpenseModal = ({ group, onClose }) => {
                 <div className="info-row">
                   <User className="icon" />
                   <span className="label">Payer:</span>
-                  <span className="value">{entry.payer}</span>
+                  <span className="value">{uidToUsername[entry.payer] || entry.payer}</span>
                 </div>
                 <div className="info-row">
                   <DollarSign className="icon" />
@@ -443,7 +462,7 @@ const ExpenseModal = ({ group, onClose }) => {
                 <div className="participants-list">
                   {Object.entries(entry.participants || {}).map(([participant, share]) => (
                     <div key={participant} className="participant-row">
-                      <span>{participant}</span>
+                      <span>{uidToUsername[participant] || participant}</span>
                       <span className={`share ${participant === entry.payer ? 'income' : 'expense'}`}>
                         ${parseFloat(share).toFixed(2)}
                       </span>
@@ -490,6 +509,7 @@ const GroupSplit = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const { uid } = useUser();
   const [username, setUsername] = useState('');
+  const [uidToUsername, setUidToUsername] = useState({});
   const socket = useContext(WebSocketContext);
   const [loading, setLoading] = useState(true); 
 
@@ -540,6 +560,15 @@ const GroupSplit = () => {
       const data = await response.json();
       if (data.groups) {
         setGroups(data.groups);
+        // Extract all participant UIDs
+        const allParticipants = new Set();
+        Object.values(data.groups).forEach(group => {
+          group.participants.forEach(uid => allParticipants.add(uid));
+        });
+
+        // Fetch usernames for all UIDs
+        const usernames = await fetchUsernamesForGroup(Array.from(allParticipants));
+        setUidToUsername(usernames);
         console.log("Groups", data.groups);
       } else {
         console.error("Failed to fetch groups:", data.error);
@@ -659,10 +688,27 @@ const GroupSplit = () => {
         });
 
         //console.log("Updated balances:", groups[groupId]?.balances);
-    } catch (error) {
-        console.error("Error updating balances for group:", error.message);
-    }
-};
+      } catch (error) {
+          console.error("Error updating balances for group:", error.message);
+      }
+  };
+
+  const allParticipantUids = useMemo(() => {
+    const uids = new Set();
+
+    Object.values(groups).forEach((group) => {
+      // Add participants to the set
+      group.participants.forEach((participant) => uids.add(participant));
+
+      // Add UIDs from balances to the set
+      if (group.balances) {
+        Object.keys(group.balances).forEach((uid) => uids.add(uid));
+      }
+    });
+
+    return [...uids]; // Convert Set to Array
+  }, [groups]);
+
 
 
   useEffect(() => {
@@ -679,6 +725,19 @@ const GroupSplit = () => {
     }
     
   }, [uid]);
+
+  // fetch all uid
+  useEffect(() => {
+    const fetchUsernamesForAll = async () => {
+      const uncachedUids = Array.from(allParticipantUids).filter((uid) => !uidToUsername[uid]);
+      if (uncachedUids.length > 0) {
+        const fetchedUsernames = await fetchUsernamesForGroup(uncachedUids); // Batch API call
+        setUidToUsername((prev) => ({ ...prev, ...fetchedUsernames }));
+      }
+    };
+  
+    fetchUsernamesForAll();
+  }, [allParticipantUids]); // Dependency only on `allParticipantUids`  
 
   // WebSocket
   useEffect(() => {
@@ -906,6 +965,7 @@ const GroupCard = ({ group, onClick }) => {
           /* reload when the entry info is updated */
             key={JSON.stringify(groups[selectedGroup.groupId].entriesInfo)}
             group={groups[selectedGroup.groupId]}
+            uidToUsername={uidToUsername} // Pass uidToUsername
             socket={socket} 
             onClose={() => setSelectedGroup(null)} 
           />

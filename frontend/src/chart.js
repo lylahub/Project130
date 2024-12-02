@@ -7,7 +7,7 @@ import {
 Chart.register(...registerables);
 
 //chart for group budget: bar
-const BalancesChart = ({ balances }) => {
+const BalancesChart = ({ balances, uidToUsername }) => {
   const chartRef = useRef(null);
   let myChart = null;
 
@@ -17,10 +17,12 @@ const BalancesChart = ({ balances }) => {
       myChart.destroy();
     }
 
+    const labels = Object.keys(balances.owes).map(uid => uidToUsername[uid] || uid); // Replace UID with username
+
     myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: Object.keys(balances.owes),
+        labels,
         datasets: [
           {
             label: 'Balance',
@@ -99,7 +101,7 @@ const BalancesChart = ({ balances }) => {
     return () => {
       if (myChart) myChart.destroy();
     };
-  }, [balances]);
+  }, [balances, uidToUsername]);
 
   return (
     <div style={{ height: '300px', width: '100%' }}>
