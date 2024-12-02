@@ -192,4 +192,69 @@ const generateColors = (count) => {
     return <canvas ref={chartRef} />;
   };
 
-export { BalancesChart, CategoryChartExpense };
+  const CategoryChartIncome = ({ categories, transactions }) => {
+    const title = "Income Overview";
+    const chartRef = useRef(null);
+    let myChart = null;
+  
+    useEffect(() => {
+      const categoryTotals = categories.map((category) => {
+        const total = transactions
+          .filter((transaction) => transaction.categoryId === category.id && transaction.type === 'income')
+          .reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+        return {
+          name: category.name,
+          total,
+        };
+      });
+  
+      const filteredCategories = categoryTotals.filter((category) => category.total > 0);
+      const backgroundColors = generateColors(filteredCategories.length);
+  
+      const data = {
+        labels: filteredCategories.map((category) => category.name),
+        datasets: [
+          {
+            data: filteredCategories.map((category) => category.total),
+            backgroundColor: backgroundColors,
+            borderWidth: 1,
+          },
+        ],
+      };
+  
+      const ctx = chartRef.current.getContext('2d');
+      if (myChart) {
+        myChart.destroy();
+      }
+  
+      myChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              display: true,
+            },
+            title: {
+              display: true,
+              text: title,
+              font: {
+                size: 16,
+              },
+            },
+          },
+        },
+      });
+  
+      return () => {
+        if (myChart) myChart.destroy();
+      };
+    }, [categories, transactions]);
+  
+    return <canvas ref={chartRef} />;
+  };
+  
+export { BalancesChart, CategoryChartExpense, CategoryChartIncome };

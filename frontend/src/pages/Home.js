@@ -5,7 +5,7 @@ import { useUser } from '../userContext.js';
 import Navbar from '../components/Navbar';
 import '../css/Home.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { CategoryChartExpense } from '../chart.js';
+import { CategoryChartExpense, CategoryChartIncome } from '../chart.js';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 console.log()
@@ -290,6 +290,8 @@ const Home = () => {
                 <div className="chart-visualization">
                   <h2>Expense Overview</h2>
                   <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>
+                  <h2>Income Overview</h2>
+                  <CategoryChartIncome categories={categories} transactions={filteredTransactions} />
                 </div>
               )}
             </div>
