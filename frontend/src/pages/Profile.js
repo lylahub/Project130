@@ -71,16 +71,44 @@ const Profile = () => {
     };
 
     // Handle password change with validation
-    const handlePasswordChange = (e) => {
+    // const handlePasswordChange = (e) => {
+    //     e.preventDefault();
+    //     if (newPassword === confirmPassword) {
+    //         alert("Password updated successfully!");
+    //         setNewPassword(''); // Clear password fields
+    //         setConfirmPassword('');
+    //     } else {
+    //         alert("Passwords do not match."); // Show error if passwords don't match
+    //     }
+    // };
+    const handlePasswordChange = async (e) => {
         e.preventDefault();
-        if (newPassword === confirmPassword) {
-            alert("Password updated successfully!");
-            setNewPassword(''); // Clear password fields
-            setConfirmPassword('');
-        } else {
-            alert("Passwords do not match."); // Show error if passwords don't match
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
         }
-    };
+    
+        try {
+            const response = await fetch('http://localhost:3001/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: profile.email, newPassword }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                alert('Password updated successfully!');
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                alert(`Failed to update password: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error updating password:', error);
+            alert('An error occurred while updating the password.');
+        }
+    };    
 
     // Save profile changes
     const handleSaveProfile = async () => {

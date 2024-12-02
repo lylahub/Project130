@@ -3,7 +3,7 @@ import express from "express";
 import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
 import { getUserData, updateUserData, getUsernameByUid } from "./user.js";
-import { adminDb } from './firebaseConfig.js'; // Adjust the path as necessary
+import { admin, adminDb } from './firebaseConfig.js'; // Adjust the path as necessary
 
 const router = express.Router();
 
@@ -372,20 +372,44 @@ export default function (groupBudgets, clients) {
         }
     });
 
-    // Reset password
-    router.post("/reset-password", async (req, res) => {
-        const { email } = req.body;
-        if (!email) {
-            return res.status(400).json({ error: "Please provide an email address for password reset." });
+    // // Reset password
+    // router.post("/reset-password", async (req, res) => {
+    //     const { email } = req.body;
+    //     if (!email) {
+    //         return res.status(400).json({ error: "Please provide an email address for password reset." });
+    //     }
+    //     try {
+    //         await resetPassword(email);
+    //         res.status(200).json({ message: "Password reset email sent successfully!" });
+    //     } catch (error) {
+    //         res.status(400).json({ error: error.message });
+    //     }
+    // });
+    // Direct password update route
+    router.post('/update-password', async (req, res) => {
+        const { email, newPassword } = req.body;
+    
+        if (!email || !newPassword) {
+            return res.status(400).json({ error: 'Email and new password are required.' });
         }
+    
         try {
-            await resetPassword(email);
-            res.status(200).json({ message: "Password reset email sent successfully!" });
+            // Find user by email using Firebase Admin SDK
+            const user = await admin.auth().getUserByEmail(email);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found.' });
+            }
+    
+            // Update user's password
+            await admin.auth().updateUser(user.uid, { password: newPassword });
+    
+            res.status(200).json({ message: 'Password updated successfully!' });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Error updating password:', error.message);
+            res.status(500).json({ error: error.message });
         }
     });
-
+    
     // get user data
     router.get("/user/:uid", async (req, res) => {
         const { uid } = req.params;
