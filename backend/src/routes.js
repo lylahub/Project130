@@ -372,19 +372,6 @@ export default function (groupBudgets, clients) {
         }
     });
 
-    // // Reset password
-    // router.post("/reset-password", async (req, res) => {
-    //     const { email } = req.body;
-    //     if (!email) {
-    //         return res.status(400).json({ error: "Please provide an email address for password reset." });
-    //     }
-    //     try {
-    //         await resetPassword(email);
-    //         res.status(200).json({ message: "Password reset email sent successfully!" });
-    //     } catch (error) {
-    //         res.status(400).json({ error: error.message });
-    //     }
-    // });
     // Direct password update route
     router.post('/update-password', async (req, res) => {
         const { email, newPassword } = req.body;
