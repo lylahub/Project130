@@ -219,7 +219,7 @@ const Home = () => {
       return;
     }
     const amount = parseFloat(newTransactionAmount);
-    if (isNaN(amount)) {
+    if (isNaN(amount) | amount < 0) {
       alert("Please enter a valid number for the amount");
       return;
     }
@@ -262,11 +262,11 @@ const Home = () => {
                 
                 <div className="amounts-section">
                   <div className="amount-card">
-                    <p>Overall Total Expense</p>
+                    <p>Overall Total Income</p>
                     <strong>${overallAmounts.totalAmount}</strong>
                   </div>
                   <div className="amount-card">
-                    <p>Monthly Total Expense</p>
+                    <p>Monthly Total Income</p>
                     <strong>${overallAmounts.monthlyAmount}</strong>
                   </div>
                 </div>
