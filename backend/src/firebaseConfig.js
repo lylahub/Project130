@@ -54,13 +54,11 @@ const firebaseConfig = {
 
     let adminDb;
     if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert(adminConfig),
-    });
-    adminDb = admin.firestore(); // Initialize Firestore for Admin SDK
+        admin.initializeApp({
+            credential: admin.credential.cert(adminConfig),
+        });
     }
-
-    console.log('Firebase Admin Config:', admin.apps.length > 0);
+    adminDb = admin.firestore();
 
     // Export both client and admin SDKs
-    export { app, db, auth, storage, adminDb };
+    export { app, db, auth, storage, admin, adminDb };
