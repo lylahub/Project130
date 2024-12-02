@@ -54,29 +54,6 @@ const Profile = () => {
     };
 
     // Handle profile picture upload
-    // const handleImageUpload = async (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onloadend = async () => {
-    //             const updatedProfile = { ...profile, profile_pic: reader.result }; // Save image as Base64 string
-    //             setProfile(updatedProfile);
-
-    //             // Update backend
-    //             try {
-    //                 await fetch(`http://localhost:3001/user/${uid}`, {
-    //                     method: "PUT",
-    //                     headers: { "Content-Type": "application/json" },
-    //                     body: JSON.stringify({ profile_pic: reader.result }),
-    //                 });
-    //                 alert("Profile picture updated successfully!");
-    //             } catch (error) {
-    //                 console.error("Error updating profile picture:", error);
-    //             }
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -106,26 +83,6 @@ const Profile = () => {
     };
 
     // Save profile changes
-    // const handleSaveProfile = async () => {
-    //     try {
-    //         const updates = {
-    //             username: profile.username,
-    //             email: profile.email,
-    //             bio: profile.bio,
-    //         };
-
-    //         await fetch(`http://localhost:3001/user/${uid}`, {
-    //             method: "PUT",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify(updates),
-    //         });
-
-    //         alert("Profile updated successfully!");
-    //         setIsEditing(false); // Exit edit mode
-    //     } catch (error) {
-    //         console.error("Error saving profile:", error);
-    //     }
-    // };
     const handleSaveProfile = async () => {
         try {
             await fetch(`http://localhost:3001/user/${uid}`, {
