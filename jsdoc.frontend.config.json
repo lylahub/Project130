@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["./frontend/src"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs/frontend",
+    "recurse": true
+  }
+}

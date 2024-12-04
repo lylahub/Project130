@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// src/App.js
+/**
+ * @file App.js
+ * @description This file serves as the main entry point for the React application, managing routes and context providers.
+ */
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from "framer-motion";
+import { UserProvider, useUser } from "./userContext.js";
+import { WebSocketProvider } from "./WebsocketContext.js";
+import { useEffect } from 'react';
+import "./App.css";
+import './css/theme.css';
+
+// import pages
+import Home from './pages/Home.js';
+import GroupSplit from './pages/GroupSplit.js';
+import IncomeRecommendation from './pages/IncomeRe.js';
+import Profile from "./pages/Profile";
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+
+/**
+ * AppRouter Component
+ *
+ * @component
+ * @description Manages the application's routes and handles conditional rendering based on user authentication state.
+ * @returns {JSX.Element} The rendered AppRouter component.
+ */
+function AppRouter() {
+  const location = useLocation(); // useLocation在Router内部使用
+  const { uid, setUid } = useUser();
+
+  useEffect(() => {
+    if (uid) {
+      console.log("User has logged in successfully with UID:", uid);
+    }
+  }, [uid]);
+
+  return (
+    &lt;AnimatePresence mode="wait">
+      &lt;Routes location={location} key={location.pathname}>
+        &lt;Route path="/" element={&lt;Navigate to={uid ? "/sb" : "/login"} replace />} />
+        &lt;Route path="/login" element={&lt;Login />} />
+        &lt;Route path="/signup" element={&lt;SignUp />} />
+        {uid ? (
+          &lt;>
+            &lt;Route path="/sb" element={&lt;Home />} />
+            &lt;Route path="/group-split" element={&lt;GroupSplit />} />
+            &lt;Route path="/income-re" element={&lt;IncomeRecommendation />} />
+            &lt;Route path="/profile" element={&lt;Profile />} />
+          &lt;/>
+        ) : (
+          &lt;Route path="*" element={&lt;Navigate to="/login" replace />} />
+        )}
+      &lt;/Routes>
+    &lt;/AnimatePresence>
+  );
+}
+
+
+/**
+ * App Component
+ *
+ * @component
+ * @description Wraps the application with necessary providers such as UserProvider and WebSocketProvider, and initializes routing.
+ * @returns {JSX.Element} The rendered App component.
+ */
+function App() {
+  return (
+    &lt;Router>
+      &lt;UserProvider>
+        &lt;WebSocketProvider>
+          &lt;AppRouter />
+        &lt;/WebSocketProvider>
+      &lt;/UserProvider>
+    &lt;/Router>
+  );
+}
+
+export default App;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#BalancesChart">BalancesChart</a></li><li><a href="global.html#CategoryChartExpense">CategoryChartExpense</a></li><li><a href="global.html#CategoryChartIncome">CategoryChartIncome</a></li><li><a href="global.html#ExpenseModal">ExpenseModal</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IncomeRecommendation">IncomeRecommendation</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#WebSocketProvider">WebSocketProvider</a></li><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#addTransaction">addTransaction</a></li><li><a href="global.html#fetchAllTransactions">fetchAllTransactions</a></li><li><a href="global.html#fetchUserCategories">fetchUserCategories</a></li><li><a href="global.html#fetchUsername">fetchUsername</a></li><li><a href="global.html#fetchUsernamesForGroup">fetchUsernamesForGroup</a></li><li><a href="global.html#generateColors">generateColors</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getOverallAmounts">getOverallAmounts</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mockOverallAmounts">mockOverallAmounts</a></li><li><a href="global.html#mockTransactions">mockTransactions</a></li><li><a href="global.html#renderGroupSplit">renderGroupSplit</a></li><li><a href="global.html#renderHome">renderHome</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#useUser">useUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 01:23:37 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
