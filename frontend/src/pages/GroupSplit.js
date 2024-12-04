@@ -44,8 +44,11 @@ const fetchUsernamesForGroup = async (participants) => {
   }
 };
 
+// Main expense management modal component - handles split bills and group expenses
 const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   const { uid } = useUser();
+  
+  // Initialize expense input state with default structure
   const [expenseInputs, setExpenseInputs] = useState([
     {
       id: Date.now(),
@@ -54,6 +57,8 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
       description: ''
     }
   ]);
+
+  // Track split strategy and custom split calculations
   const [splitStrategy, setSplitStrategy] = useState("EqualSplit");
   const [customSplits, setCustomSplits] = useState({});
   const [settlementResults, setSettlementResults] = useState({
@@ -62,12 +67,15 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
     settlements: [],
     shares: {}
   });
+
+  // Manage transaction display and balance tracking
   const [entriesInfo, setEntriesInfo] = useState(group.entriesInfo || {});
   const [showTransactions, setShowTransactions] = useState(false);
   const [balances, setBalances] = useState(
     group && group.balances && group.balances[uid] ? group.balances[uid] : {}
   );
   
+  // Utility function to format timestamps into readable dates
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
     
@@ -81,16 +89,16 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
         minute: '2-digit'
       }).format(date);
     }
-  
     return 'Invalid Date';
   };
-  
-  //changing concrete strategies
+
+  // Handler for switching between equal and custom split strategies
   const handleStrategyChange = (e) => {
     setSplitStrategy(e.target.value);
     setSettlementResults({ ...settlementResults, settlements: [] });
   };
 
+  // Manage participant ratios for custom splits
   const handleCustomSplitChange = (participant, value) => {
     setCustomSplits({
       ...customSplits,
@@ -98,16 +106,18 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
     });
   };
 
+  // Toggle transaction history visibility
   const handleShowTransactions = () => {
     setShowTransactions(!showTransactions);
   };
 
+  // Validate custom split percentages sum to 100%
   const isPercentageValid = () => {
     const totalPercentage = Object.values(customSplits).reduce((sum, percentage) => sum + percentage, 0);
     return totalPercentage === 100;
   };
 
-  //Adding entry, message will be propagated via websocket to update the UI
+  // Add new expense entry and trigger websocket update
   const handleAddEntry = async () => {
     const response = await fetch(`${API_BASE_URL}/group/add-entry`, {
       method: "POST",
@@ -128,7 +138,7 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
     }
   };
   
-  //calculate the inputs depending on the chosen strategy
+  // Calculate expense splits based on selected strategy
   const handleCalculate = async () => {
     const isValid = expenseInputs.every(input => input.paidBy && input.amount && input.description);
 
@@ -143,9 +153,10 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
     }
 
     const amount = expenseInputs.reduce((sum, input) => sum + parseFloat(input.amount), 0);
-    const payer = expenseInputs[0].paidBy; //this can be simplified
+    const payer = expenseInputs[0].paidBy;
 
     try {
+      // Call API to calculate settlements based on split strategy
       const response = await fetch(`${API_BASE_URL}/group/calculate-settlement`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,7 +175,6 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
         throw new Error(errorData.error || "Failed to calculate settlement");
       }
 
-      //result = shares
       const result = await response.json();
       setSettlementResults(result);
     } catch (error) {
@@ -172,16 +182,15 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
     }
   };
   
-  //logic for paying balances
+  // Process payments and update transaction statuses
   const handlePayBalances = async (debtor, payAmount = null, entryId = null) => {
-    //balances is stored as 
-    const amount = balances.owes[debtor] || 0; // pay to who
+    const amount = balances.owes[debtor] || 0;
     if (!amount) {
       alert("No balance right now!");
       return;
     }
     try {
-      // Step 1: Pay the balance
+      // Step 1: Process the payment
       const payBalanceResponse = await fetch(`${API_BASE_URL}/group/pay-balance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -198,10 +207,9 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
         throw new Error("Failed to clear balance");
       }
   
-      //Mark as paid (specific transaction or all)
+      // Step 2: Mark transactions as paid
       if (entryId) {
-        console.log("Entry ID")
-        // Mark the specific transaction as paid
+        // Mark specific transaction as paid
         const markTransactionResponse = await fetch(`${API_BASE_URL}/group/mark-paid`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -216,11 +224,8 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
         if (!markTransactionResponse.ok) {
           throw new Error("Failed to mark transaction as paid");
         }
-  
-        const markTransactionData = await markTransactionResponse.json();
-        console.log("Transaction marked as paid:", markTransactionData);
       } else {
-        // Mark all transactions involving the debtor as paid
+        // Mark all relevant transactions as paid
         const markAllResponse = await fetch(`${API_BASE_URL}/group/mark-all-paid`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -234,15 +239,13 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
         if (!markAllResponse.ok) {
           throw new Error("Failed to mark all transactions as paid");
         }
-  
-        const markAllData = await markAllResponse.json();
-        console.log("All transactions marked as paid:", markAllData);
       }
     } catch (error) {
       console.error("Error updating balances:", error);
     }
   };  
 
+  // Update local state when group data changes
   useEffect(() => {
     if (group.entriesInfo) {
       setEntriesInfo(group.entriesInfo || {});

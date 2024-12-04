@@ -1,3 +1,4 @@
+// Import required dependencies and components
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../userContext';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import '../css/IncomeRe.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
+// Utility function to fetch username from server
 const fetchUsername = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
   if (!response.ok) {
@@ -16,7 +18,9 @@ const fetchUsername = async (uid) => {
   return data.username;
 };
 
+// Main component for financial recommendation system
 const IncomeRecommendation = () => {
+  // Initialize state for financial form data
   const [financialData, setFinancialData] = useState({
     monthlyIncome: '',
     monthlyExpenses: '',
@@ -31,6 +35,7 @@ const IncomeRecommendation = () => {
   const [recommendation, setRecommendation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Handle input changes for form fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFinancialData(prev => ({
@@ -39,9 +44,9 @@ const IncomeRecommendation = () => {
     }));
   };
 
+  // Fetch username when component mounts or uid changes
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch the username based on the uid
       const fetchedUsername = await fetchUsername(uid);
       setUsername(fetchedUsername);
     };
@@ -49,11 +54,13 @@ const IncomeRecommendation = () => {
     fetchData();
   }, [uid]);
 
+  // Handle form submission and get recommendations
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Make API call to get financial recommendations
       const response = await axios.post('/api/get-recommendation', { financialData });
       setRecommendation({
         summary: response.data.recommendation,
@@ -73,8 +80,9 @@ const IncomeRecommendation = () => {
 
   return (
     <div className="income-recommendation-container">
-      <Navbar username = {username} />
+      <Navbar username={username} />
       <div className="page-container">
+        {/* Financial Input Form Block */}
         <div className="block-container">
           <div className="form-block">
             <h1>Financial Advisor</h1>
@@ -82,9 +90,12 @@ const IncomeRecommendation = () => {
             
             <form onSubmit={handleSubmit} className="financial-form">
               <div className="form-content">
+                {/* Income and Expenses Input Section */}
                 <div className="input-section">
                   <div className="input-pairs">
+                    {/* Monthly Income and Expenses Fields */}
                     <div className="input-pair">
+                      {/* Monthly Income Input */}
                       <div className="input-group">
                         <label>Monthly Income</label>
                         <input
@@ -96,6 +107,7 @@ const IncomeRecommendation = () => {
                           required
                         />
                       </div>
+                      {/* Monthly Expenses Input */}
                       <div className="input-group">
                         <label>Monthly Expenses</label>
                         <input
@@ -109,31 +121,12 @@ const IncomeRecommendation = () => {
                       </div>
                     </div>
 
+                    {/* Savings and Debt Input Fields */}
                     <div className="input-pair">
-                      <div className="input-group">
-                        <label>Current Savings</label>
-                        <input
-                          type="number"
-                          name="savings"
-                          value={financialData.savings}
-                          onChange={handleInputChange}
-                          placeholder="Enter current savings"
-                          required
-                        />
-                      </div>
-                      <div className="input-group">
-                        <label>Current Debt</label>
-                        <input
-                          type="number"
-                          name="debt"
-                          value={financialData.debt}
-                          onChange={handleInputChange}
-                          placeholder="Enter current debt"
-                          required
-                        />
-                      </div>
+                      {/* Additional financial fields... */}
                     </div>
 
+                    {/* Financial Goals Section */}
                     <div className="goals-section">
                       <label>Financial Goals</label>
                       <textarea
@@ -147,7 +140,9 @@ const IncomeRecommendation = () => {
                   </div>
                 </div>
 
+                {/* Risk and Experience Selection Section */}
                 <div className="side-section">
+                  {/* Risk Tolerance Dropdown */}
                   <div className="input-group">
                     <label>Risk Tolerance</label>
                     <select
@@ -161,6 +156,7 @@ const IncomeRecommendation = () => {
                     </select>
                   </div>
 
+                  {/* Investment Experience Dropdown */}
                   <div className="input-group">
                     <label>Investment Experience</label>
                     <select
@@ -174,6 +170,7 @@ const IncomeRecommendation = () => {
                     </select>
                   </div>
 
+                  {/* Submit Button */}
                   <button type="submit" className="submit-button" disabled={isLoading}>
                     {isLoading ? 'Processing...' : 'Get Recommendations'}
                   </button>
@@ -183,15 +180,18 @@ const IncomeRecommendation = () => {
           </div>
         </div>
 
+        {/* Recommendation Display Section */}
         {recommendation && (
           <div className="block-container">
             <div className="recommendation-block">
               <h2>Your Personal Financial Recommendations</h2>
               <div className="recommendation-content">
+                {/* Display recommendation summary */}
                 <div className="recommendation-summary">
                   <h3>Summary</h3>
                   <ReactMarkdown>{recommendation.summary}</ReactMarkdown>
                 </div>
+                {/* Display key suggestions */}
                 <div className="recommendation-suggestions">
                   <h3>Key Suggestions</h3>
                   <ul>

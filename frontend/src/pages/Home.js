@@ -142,101 +142,129 @@ const Home = () => {
     "fa-shopping-cart"   // Shopping
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedCategories = await fetchUserCategories(uid);
-      console.log(fetchedCategories)
-      
-      if (fetchedCategories.length === 0) {
-        await addDefaultCategories(uid, default_icons);
-        const defaultCategories = await fetchUserCategories(uid);
-        setCategories([{ id: 'overall', name: 'Overall', icon: 'fa-list' }, ...defaultCategories]);
-      } else {
-        setCategories([{ id: 'overall', name: 'Overall', icon: 'fa-list' }, ...fetchedCategories]);
-      }
-
-      const fetchedTransactions = await fetchAllTransactions(uid);
-      console.log("Transactions: ", fetchedTransactions)
-      const fetchedOverallAmounts = await getOverallAmounts(uid);
-      setTransactions(fetchedTransactions);
-      setFilteredTransactions(fetchedTransactions); 
-      setOverallAmounts({
-        totalAmount: fetchedOverallAmounts.totalAmount,
-        monthlyAmount: fetchedOverallAmounts.monthlyAmount
-      });
-
-      // Fetch the username based on the uid
-      const fetchedUsername = await fetchUsername(uid);
-      setUsername(fetchedUsername);
-    };
-
-    fetchData();
-  }, [uid]);
-
-
-  const handleCategoryClick = async (categoryId) => {
-    setSelectedCategoryId(categoryId);
-
-    if (categoryId === 'overall') {
-      const allTransactions = await fetchAllTransactions(uid);
-      setFilteredTransactions(allTransactions);
-      setSelectedCategoryAmounts({
-        totalAmount: overallAmounts.totalAmount,
-        monthlyAmount: overallAmounts.monthlyAmount
-      });
-    } else if (categoryId) {
-      const categoryTransactions = await getCategoryDetails(uid, categoryId);
-      const amounts = await getCategoryAmount(uid, categoryId);
-      setFilteredTransactions(categoryTransactions);
-      if (amounts) {
-        setSelectedCategoryAmounts({
-          monthlyAmount: amounts.monthlyAmount || 0,
-          totalAmount: amounts.totalAmount || 0
-        });
-      }
+// Initialize data and fetch necessary information when component mounts or user changes
+useEffect(() => {
+  const fetchData = async () => {
+    // Fetch user's existing categories
+    const fetchedCategories = await fetchUserCategories(uid);
+    console.log(fetchedCategories)
+    
+    // If no categories exist, create default ones and fetch them
+    if (fetchedCategories.length === 0) {
+      await addDefaultCategories(uid, default_icons);
+      const defaultCategories = await fetchUserCategories(uid);
+      // Add 'overall' category to the beginning of the list
+      setCategories([{ id: 'overall', name: 'Overall', icon: 'fa-list' }, ...defaultCategories]);
     } else {
-      setFilteredTransactions(transactions); 
+      setCategories([{ id: 'overall', name: 'Overall', icon: 'fa-list' }, ...fetchedCategories]);
     }
-  };
 
-  const handleAddCategory = async () => {
-    const result = await addNewCategory(uid, newCategoryName, selectedIcon);
-    if (result) {
-      const newCategory = { id: result.category.categoryData.categoryId, name: newCategoryName, icon: selectedIcon };
-      setCategories((prevCategories) => [...prevCategories, newCategory]);
-      setNewCategoryName('');
-      setSelectedIcon('');
-      await handleCategoryClick(result.category.categoryData.categoryId);
-      setFilteredTransactions([]);
-    } else {
-      alert("Category could not be added: Duplicated categories");
-    }
-  };
-
-  const handleAddTransaction = async () => {
-    if (!selectedCategoryId) {
-      alert("Please select a category");
-      return;
-    }
-    const amount = parseFloat(newTransactionAmount);
-    if (isNaN(amount) | amount < 0) {
-      alert("Please enter a valid number for the amount");
-      return;
-    }
-    const result = await addTransaction(uid, selectedCategoryId, amount, newTransactionMemo, transactionType);
+    // Fetch all transactions and overall amounts
+    const fetchedTransactions = await fetchAllTransactions(uid);
+    console.log("Transactions: ", fetchedTransactions)
+    const fetchedOverallAmounts = await getOverallAmounts(uid);
+    
+    // Update state with fetched data
+    setTransactions(fetchedTransactions);
+    setFilteredTransactions(fetchedTransactions); 
     setOverallAmounts({
-      totalAmount: result.entry.overallTotalAmount,
-      monthlyAmount: result.entry.overallMonthlyAmount,
+      totalAmount: fetchedOverallAmounts.totalAmount,
+      monthlyAmount: fetchedOverallAmounts.monthlyAmount
     });
-    setSelectedCategoryAmounts({
-      totalAmount: result.entry.totalAmount,
-      monthlyAmount: result.entry.monthlyAmount,
-    });
-    const updatedTransactions = await getCategoryDetails(uid, selectedCategoryId);
-    setFilteredTransactions(updatedTransactions);
-    setNewTransactionAmount('');
-    setNewTransactionMemo('');
+
+    const fetchedUsername = await fetchUsername(uid);
+    setUsername(fetchedUsername);
   };
+
+  fetchData();
+}, [uid]);
+
+// Handle category selection and update related data
+const handleCategoryClick = async (categoryId) => {
+  // Update selected category in state
+  setSelectedCategoryId(categoryId);
+
+  // Handle 'overall' category view
+  if (categoryId === 'overall') {
+    const allTransactions = await fetchAllTransactions(uid);
+    setFilteredTransactions(allTransactions);
+    setSelectedCategoryAmounts({
+      totalAmount: overallAmounts.totalAmount,
+      monthlyAmount: overallAmounts.monthlyAmount
+    });
+  } else if (categoryId) {
+    // Get specific category transactions and amounts
+    const categoryTransactions = await getCategoryDetails(uid, categoryId);
+    const amounts = await getCategoryAmount(uid, categoryId);
+    setFilteredTransactions(categoryTransactions);
+    // Update category amounts if available
+    if (amounts) {
+      setSelectedCategoryAmounts({
+        monthlyAmount: amounts.monthlyAmount || 0,
+        totalAmount: amounts.totalAmount || 0
+      });
+    }
+  } else {
+    setFilteredTransactions(transactions); 
+  }
+};
+
+// Create new category and handle UI updates
+const handleAddCategory = async () => {
+  const result = await addNewCategory(uid, newCategoryName, selectedIcon);
+  if (result) {
+    // Create new category object with returned data
+    const newCategory = { 
+      id: result.category.categoryData.categoryId, 
+      name: newCategoryName, 
+      icon: selectedIcon 
+    };
+    // Add new category to state and reset form
+    setCategories((prevCategories) => [...prevCategories, newCategory]);
+    setNewCategoryName('');
+    setSelectedIcon('');
+    // Switch view to new category and clear transactions
+    await handleCategoryClick(result.category.categoryData.categoryId);
+    setFilteredTransactions([]);
+  } else {
+    alert("Category could not be added: Duplicated categories");
+  }
+};
+
+// Add new transaction and update category/overall amounts
+const handleAddTransaction = async () => {
+  // Validate category selection
+  if (!selectedCategoryId) {
+    alert("Please select a category");
+    return;
+  }
+  // Validate amount input
+  const amount = parseFloat(newTransactionAmount);
+  if (isNaN(amount) | amount < 0) {
+    alert("Please enter a valid number for the amount");
+    return;
+  }
+  // Add transaction and get updated amounts
+  const result = await addTransaction(uid, selectedCategoryId, amount, newTransactionMemo, transactionType);
+  
+  // Update overall totals
+  setOverallAmounts({
+    totalAmount: result.entry.overallTotalAmount,
+    monthlyAmount: result.entry.overallMonthlyAmount,
+  });
+  
+  // Update category totals
+  setSelectedCategoryAmounts({
+    totalAmount: result.entry.totalAmount,
+    monthlyAmount: result.entry.monthlyAmount,
+  });
+  
+  // Refresh transaction list and reset form
+  const updatedTransactions = await getCategoryDetails(uid, selectedCategoryId);
+  setFilteredTransactions(updatedTransactions);
+  setNewTransactionAmount('');
+  setNewTransactionMemo('');
+};
 
   return (
     <div className="home-container">

@@ -1,11 +1,11 @@
 /* 顏色變量定義 */
 :root {
-  --primary-color: #2c3e50;      /* 主要背景色 */
-  --secondary-color: #34495e;    /* 次要背景色 */
-  --text-color: #ecf0f1;         /* 文字顏色 */
-  --hover-bg-color: rgba(255,255,255,0.1); /* hover效果背景色 */
-  --active-bg-color: rgba(255,255,255,0.2); /* active效果背景色 */
-  --shadow-color: rgba(0,0,0,0.1); /* 陰影顏色 */
+  --primary-color: #2c3e50;      
+  --secondary-color: #34495e;    
+  --text-color: #ecf0f1;         
+  --hover-bg-color: rgba(255,255,255,0.1); 
+  --active-bg-color: rgba(255,255,255,0.2); 
+  --shadow-color: rgba(0,0,0,0.1); 
 }
 
 .navbar {
