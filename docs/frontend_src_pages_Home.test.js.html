@@ -1,4 +1,32 @@
-// src/pages/Home.test.js
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend/src/pages/Home.test.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend/src/pages/Home.test.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// src/pages/Home.test.js
 /**
  * @file Home.test.js
  * @description Unit tests for the Home component using React Testing Library.
@@ -29,9 +57,9 @@ jest.mock('../chart', () => ({
    * @returns {JSX.Element} Mocked chart visualization.
    */
   CategoryChartExpense: ({ categories, transactions }) => (
-    <div data-testid="mock-chart">
+    &lt;div data-testid="mock-chart">
       Mock Chart: {categories.length} categories, {transactions.length} transactions
-    </div>
+    &lt;/div>
   )
 }));
 
@@ -71,9 +99,9 @@ const mockOverallAmounts = {
  */
 const renderHome = () => {
   return render(
-    <BrowserRouter>
-      <Home />
-    </BrowserRouter>
+    &lt;BrowserRouter>
+      &lt;Home />
+    &lt;/BrowserRouter>
   );
 };
 
@@ -170,7 +198,7 @@ describe('Home Component', () => {
 
     // Override the fetch mock for this specific test
     global.fetch.mockImplementation((url, options = {}) => {
-      if (options.method === 'POST' && url.includes('/categories')) {
+      if (options.method === 'POST' &amp;&amp; url.includes('/categories')) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve(mockAddCategory)
@@ -226,4 +254,26 @@ describe('Home Component', () => {
       );
     });
   });
-});
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#BalancesChart">BalancesChart</a></li><li><a href="global.html#CategoryChartExpense">CategoryChartExpense</a></li><li><a href="global.html#CategoryChartIncome">CategoryChartIncome</a></li><li><a href="global.html#ExpenseModal">ExpenseModal</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IncomeRecommendation">IncomeRecommendation</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#WebSocketProvider">WebSocketProvider</a></li><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#addTransaction">addTransaction</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchAllTransactions">fetchAllTransactions</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#fetchUserCategories">fetchUserCategories</a></li><li><a href="global.html#fetchUsername">fetchUsername</a></li><li><a href="global.html#fetchUsernamesForGroup">fetchUsernamesForGroup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateColors">generateColors</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getOverallAmounts">getOverallAmounts</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mockOverallAmounts">mockOverallAmounts</a></li><li><a href="global.html#mockTransactions">mockTransactions</a></li><li><a href="global.html#renderGroupSplit">renderGroupSplit</a></li><li><a href="global.html#renderHome">renderHome</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li><li><a href="global.html#useUser">useUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 01:18:45 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

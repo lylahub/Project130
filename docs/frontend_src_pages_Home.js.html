@@ -1,4 +1,32 @@
-// src/pages/Home.js
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend/src/pages/Home.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend/src/pages/Home.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// src/pages/Home.js
 
 /**
  * @file Home.js
@@ -20,7 +48,7 @@ console.log()
  *
  * @async
  * @param {string} uid - The user ID.
- * @returns {Promise<Array>} An array of category objects.
+ * @returns {Promise&lt;Array>} An array of category objects.
  */
 const fetchUserCategories = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/categories/user-categories?userId=${uid}`);
@@ -33,7 +61,7 @@ const fetchUserCategories = async (uid) => {
  *
  * @async
  * @param {string} uid - The user ID.
- * @returns {Promise<Array>} An array of transaction objects.
+ * @returns {Promise&lt;Array>} An array of transaction objects.
  */
 const fetchAllTransactions = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/categories/transactions?userId=${uid}`);
@@ -47,10 +75,10 @@ const fetchAllTransactions = async (uid) => {
  * @async
  * @param {string} uid - The user ID.
  * @param {string} categoryName - The category name.
- * @returns {Promise<Object>} An object containing monthly and total amounts.
+ * @returns {Promise&lt;Object>} An object containing monthly and total amounts.
  */
 const getCategoryAmount = async (uid, categoryName) => {
-  const response = await fetch(`${API_BASE_URL}/categories/amount?userId=${uid}&categoryName=${categoryName}`);
+  const response = await fetch(`${API_BASE_URL}/categories/amount?userId=${uid}&amp;categoryName=${categoryName}`);
   const data = await response.json();
   return data.amounts;
 };
@@ -61,11 +89,11 @@ const getCategoryAmount = async (uid, categoryName) => {
  * @async
  * @param {string} userId - The user ID.
  * @param {string} categoryName - The category name.
- * @returns {Promise<Array>} An array of transaction entries.
+ * @returns {Promise&lt;Array>} An array of transaction entries.
  */
 const getCategoryDetails = async (userId, categoryName) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/categories/details?userId=${userId}&categoryName=${categoryName}`);
+    const response = await fetch(`${API_BASE_URL}/categories/details?userId=${userId}&amp;categoryName=${categoryName}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch category details: ${response.statusText}`);
     }
@@ -90,7 +118,7 @@ const getCategoryDetails = async (userId, categoryName) => {
  * @param {string} uid - The user ID.
  * @param {string} categoryName - The name of the new category.
  * @param {string} icon - The icon class for the category.
- * @returns {Promise<Object>} The result of the API call.
+ * @returns {Promise&lt;Object>} The result of the API call.
  */
 const addNewCategory = async (uid, categoryName, icon) => {
   const response = await fetch(`${API_BASE_URL}/categories`, {
@@ -114,7 +142,7 @@ const addNewCategory = async (uid, categoryName, icon) => {
  * @param {number} amount - The transaction amount.
  * @param {string} memo - A note for the transaction.
  * @param {string} incomeExpense - The type of transaction ('income' or 'expense').
- * @returns {Promise<Object>} The result of the API call.
+ * @returns {Promise&lt;Object>} The result of the API call.
  */
 const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
   const response = await fetch(`${API_BASE_URL}/categories/entry`, {
@@ -135,8 +163,8 @@ const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
  *
  * @async
  * @param {string} uid - The user ID.
- * @param {Array<string>} icons - An array of default icon classes.
- * @returns {Promise<Object>} The result of the API call.
+ * @param {Array&lt;string>} icons - An array of default icon classes.
+ * @returns {Promise&lt;Object>} The result of the API call.
  */
 const addDefaultCategories = async(uid, icons) => {
   const response = await fetch(`${API_BASE_URL}/categories/default`, {
@@ -156,7 +184,7 @@ const addDefaultCategories = async(uid, icons) => {
  *
  * @async
  * @param {string} userId - The user ID.
- * @returns {Promise<Object>} An object containing total and monthly amounts.
+ * @returns {Promise&lt;Object>} An object containing total and monthly amounts.
  */
 const getOverallAmounts = async (userId) => {
   const response = await fetch(`${API_BASE_URL}/categories/overall?userId=${userId}`);
@@ -172,7 +200,7 @@ const getOverallAmounts = async (userId) => {
  *
  * @async
  * @param {string} uid - The user ID.
- * @returns {Promise<string>} The username of the user.
+ * @returns {Promise&lt;string>} The username of the user.
  */
 const fetchUsername = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
@@ -322,7 +350,7 @@ const handleAddTransaction = async () => {
   }
   // Validate amount input
   const amount = parseFloat(newTransactionAmount);
-  if (isNaN(amount) | amount < 0) {
+  if (isNaN(amount) | amount &lt; 0) {
     alert("Please enter a valid number for the amount");
     return;
   }
@@ -349,8 +377,8 @@ const handleAddTransaction = async () => {
 };
 
   return (
-    <div className="home-container">
-      <Navbar
+    &lt;div className="home-container">
+      &lt;Navbar
         username={username}
         tabs={[
           { id: 1, label: "Tab 1" },
@@ -361,166 +389,189 @@ const handleAddTransaction = async () => {
         onTabChange={setActiveTab}
       />
       
-      <div className="home-content">
-        <div className="home-blocks-wrapper">
+      &lt;div className="home-content">
+        &lt;div className="home-blocks-wrapper">
           {/* Overview Card */}
-          <div className="overview-card card">
-            <div className="overview-content">
+          &lt;div className="overview-card card">
+            &lt;div className="overview-content">
               {/* Left side with category info */}
-              <div className="category-info">
-                <h2>Category Overview</h2>
+              &lt;div className="category-info">
+                &lt;h2>Category Overview&lt;/h2>
                 
-                <div className="amounts-section">
-                  <div className="amount-card">
-                    <p>Overall Total Income</p>
-                    <strong>${overallAmounts.totalAmount}</strong>
-                  </div>
-                  <div className="amount-card">
-                    <p>Monthly Total Income</p>
-                    <strong>${overallAmounts.monthlyAmount}</strong>
-                  </div>
-                </div>
+                &lt;div className="amounts-section">
+                  &lt;div className="amount-card">
+                    &lt;p>Overall Total Income&lt;/p>
+                    &lt;strong>${overallAmounts.totalAmount}&lt;/strong>
+                  &lt;/div>
+                  &lt;div className="amount-card">
+                    &lt;p>Monthly Total Income&lt;/p>
+                    &lt;strong>${overallAmounts.monthlyAmount}&lt;/strong>
+                  &lt;/div>
+                &lt;/div>
   
-                <div className="category-list">
+                &lt;div className="category-list">
                   {categories?.map((category) => (
-                    <div
+                    &lt;div
                       key={category.id}
                       className={`category-item ${selectedCategoryId === category.id ? 'active' : ''}`}
                       onClick={() => handleCategoryClick(category.id)}
                     >
-                      <i className={`fas ${category.icon}`}></i>
-                      <span>{category.name}</span>
-                    </div>
+                      &lt;i className={`fas ${category.icon}`}>&lt;/i>
+                      &lt;span>{category.name}&lt;/span>
+                    &lt;/div>
                   ))}
-                </div>
-              </div>
+                &lt;/div>
+              &lt;/div>
   
               {/* Right side with pie chart */}
-              {(selectedCategoryId === 'overall' || !selectedCategoryId) && (
-                <div className="chart-visualization">
-                  <h2>Expense Overview</h2>
-                  <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>
-                  <h2>Income Overview</h2>
-                  <CategoryChartIncome categories={categories} transactions={filteredTransactions} />
-                </div>
+              {(selectedCategoryId === 'overall' || !selectedCategoryId) &amp;&amp; (
+                &lt;div className="chart-visualization">
+                  &lt;h2>Expense Overview&lt;/h2>
+                  &lt;CategoryChartExpense categories={categories} transactions={filteredTransactions}/>
+                  &lt;h2>Income Overview&lt;/h2>
+                  &lt;CategoryChartIncome categories={categories} transactions={filteredTransactions} />
+                &lt;/div>
               )}
-            </div>
-          </div>
+            &lt;/div>
+          &lt;/div>
   
           {/* Lower section */}
-          <div className="lower-section">
+          &lt;div className="lower-section">
             {/* Transaction History - Left side */}
-            <div className="transactions-section card">
-              <h2>Transaction History</h2>
+            &lt;div className="transactions-section card">
+              &lt;h2>Transaction History&lt;/h2>
               
-              {selectedCategoryId && selectedCategoryId !== 'overall' && (
-                <div className="selected-category-amounts">
-                  <div className="amount-card">
-                    <p>Category Total</p>
-                    <strong>${selectedCategoryAmounts.totalAmount || 0}</strong>
-                  </div>
-                  <div className="amount-card">
-                    <p>Category Monthly</p>
-                    <strong>${selectedCategoryAmounts.monthlyAmount || 0}</strong>
-                  </div>
-                </div>
+              {selectedCategoryId &amp;&amp; selectedCategoryId !== 'overall' &amp;&amp; (
+                &lt;div className="selected-category-amounts">
+                  &lt;div className="amount-card">
+                    &lt;p>Category Total&lt;/p>
+                    &lt;strong>${selectedCategoryAmounts.totalAmount || 0}&lt;/strong>
+                  &lt;/div>
+                  &lt;div className="amount-card">
+                    &lt;p>Category Monthly&lt;/p>
+                    &lt;strong>${selectedCategoryAmounts.monthlyAmount || 0}&lt;/strong>
+                  &lt;/div>
+                &lt;/div>
               )}
   
-              <div className="transactions-list">
+              &lt;div className="transactions-list">
                 {filteredTransactions.map((transaction) => (
-                  <div key={transaction.id} className="transaction-item">
-                    <span>{new Date(transaction.created_at?.seconds * 1000).toLocaleDateString()}</span>
-                    <span>{transaction.note}</span>
-                    <span className={`amount ${transaction.incomeExpense === 'income' ? 'income' : 'expense'}`}>
+                  &lt;div key={transaction.id} className="transaction-item">
+                    &lt;span>{new Date(transaction.created_at?.seconds * 1000).toLocaleDateString()}&lt;/span>
+                    &lt;span>{transaction.note}&lt;/span>
+                    &lt;span className={`amount ${transaction.incomeExpense === 'income' ? 'income' : 'expense'}`}>
                       ${transaction.amount}
-                    </span>
-                  </div>
+                    &lt;/span>
+                  &lt;/div>
                 ))}
-              </div>
-            </div>
+              &lt;/div>
+            &lt;/div>
   
             {/* Action Card - Right side */}
-            <div className="action-card">
+            &lt;div className="action-card">
               {(selectedCategoryId === 'overall' || !selectedCategoryId) ? (
-                <div className="add-category-section card">
-                  <h2>Add New Category</h2>
-                  <div className="input-container">
-                    <div className="input-group">
-                      <label>Category Name</label>
-                      <input
+                &lt;div className="add-category-section card">
+                  &lt;h2>Add New Category&lt;/h2>
+                  &lt;div className="input-container">
+                    &lt;div className="input-group">
+                      &lt;label>Category Name&lt;/label>
+                      &lt;input
                         type="text"
                         placeholder="Enter category name"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
                       />
-                    </div>
+                    &lt;/div>
   
-                    <div className="icon-selector">
-                      <label>Select Icon</label>
-                      <div className="icon-list">
+                    &lt;div className="icon-selector">
+                      &lt;label>Select Icon&lt;/label>
+                      &lt;div className="icon-list">
                         {icons.map((icon, index) => (
-                          <div 
+                          &lt;div 
                             key={index}
                             className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
                             onClick={() => setSelectedIcon(icon)}
                           >
-                            <i className={`fas ${icon}`}></i>
-                          </div>
+                            &lt;i className={`fas ${icon}`}>&lt;/i>
+                          &lt;/div>
                         ))}
-                      </div>
-                    </div>
+                      &lt;/div>
+                    &lt;/div>
   
-                    <button className="button" onClick={handleAddCategory}>
+                    &lt;button className="button" onClick={handleAddCategory}>
                       Add Category
-                    </button>
-                  </div>
-                </div>
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
               ) : (
-                <div className="add-transaction-section card">
-                  <h2>Add Transaction</h2>
-                  <div className="input-container">
-                    <div className="input-group">
-                      <label>Transaction Type</label>
-                      <select
+                &lt;div className="add-transaction-section card">
+                  &lt;h2>Add Transaction&lt;/h2>
+                  &lt;div className="input-container">
+                    &lt;div className="input-group">
+                      &lt;label>Transaction Type&lt;/label>
+                      &lt;select
                         value={transactionType}
                         onChange={(e) => setTransactionType(e.target.value)}
                       >
-                        <option value="income">Income</option>
-                        <option value="expense">Expense</option>
-                      </select>
-                    </div>
+                        &lt;option value="income">Income&lt;/option>
+                        &lt;option value="expense">Expense&lt;/option>
+                      &lt;/select>
+                    &lt;/div>
   
-                    <div className="input-group">
-                      <label>Amount</label>
-                      <input
+                    &lt;div className="input-group">
+                      &lt;label>Amount&lt;/label>
+                      &lt;input
                         type="number"
                         placeholder="Enter amount"
                         value={newTransactionAmount}
                         onChange={(e) => setNewTransactionAmount(e.target.value)}
                       />
-                    </div>
+                    &lt;/div>
   
-                    <div className="input-group">
-                      <label>Memo</label>
-                      <input
+                    &lt;div className="input-group">
+                      &lt;label>Memo&lt;/label>
+                      &lt;input
                         type="text"
                         placeholder="Enter memo"
                         value={newTransactionMemo}
                         onChange={(e) => setNewTransactionMemo(e.target.value)}
                       />
-                    </div>
+                    &lt;/div>
   
-                    <button className="button" onClick={handleAddTransaction}>
+                    &lt;button className="button" onClick={handleAddTransaction}>
                       Add Transaction
-                    </button>
-                  </div>
-                </div>
+                    &lt;/button>
+                  &lt;/div>
+                &lt;/div>
               )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            &lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
   );
 };
 export default Home;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#BalancesChart">BalancesChart</a></li><li><a href="global.html#CategoryChartExpense">CategoryChartExpense</a></li><li><a href="global.html#CategoryChartIncome">CategoryChartIncome</a></li><li><a href="global.html#ExpenseModal">ExpenseModal</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IncomeRecommendation">IncomeRecommendation</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#WebSocketProvider">WebSocketProvider</a></li><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#addTransaction">addTransaction</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchAllTransactions">fetchAllTransactions</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#fetchUserCategories">fetchUserCategories</a></li><li><a href="global.html#fetchUsername">fetchUsername</a></li><li><a href="global.html#fetchUsernamesForGroup">fetchUsernamesForGroup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateColors">generateColors</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getOverallAmounts">getOverallAmounts</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mockOverallAmounts">mockOverallAmounts</a></li><li><a href="global.html#mockTransactions">mockTransactions</a></li><li><a href="global.html#renderGroupSplit">renderGroupSplit</a></li><li><a href="global.html#renderHome">renderHome</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li><li><a href="global.html#useUser">useUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 01:18:45 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

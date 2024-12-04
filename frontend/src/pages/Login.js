@@ -1,9 +1,21 @@
 // src/pages/Login.js
+/**
+ * @file Login.js
+ * @description This file contains the Login component for handling user authentication via email and password.
+ */
 import React, { useContext, useState } from 'react';
 import { useUser } from '../userContext';
 import '../css/Login.css';
 import logo from '../components/logo.png';
 
+/**
+ * Login Component.
+ *
+ * @component
+ * @description Renders the login form for user authentication. Allows users to log in using their email and password.
+ * Displays error messages if login fails.
+ * @returns {JSX.Element} The rendered Login component.
+ */
 const Login = () => {
   const { login } = useUser();
   const [email, setEmail] = useState('');
@@ -12,6 +24,13 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { setUid, uid } = useUser();
 
+  /**
+   * Handles form submission for login.
+   *
+   * @async
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>} Resolves when the login process is complete.
+   */
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); // Clear any previous error message

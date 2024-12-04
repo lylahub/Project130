@@ -1,4 +1,32 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend/src/pages/GroupSplit.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend/src/pages/GroupSplit.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useContext, useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import '../css/GroupSplit/base.css';
 import '../css/GroupSplit/expenseform.css';
@@ -20,7 +48,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
  * Fetches the username associated with a given user ID.
  *
  * @param {string} uid - User ID.
- * @returns {Promise<string>} - Resolves to the username.
+ * @returns {Promise&lt;string>} - Resolves to the username.
  * @throws {Error} If the request fails.
  */
 const fetchUsername = async (uid) => {
@@ -35,8 +63,8 @@ const fetchUsername = async (uid) => {
 /**
  * Fetches usernames for multiple user IDs.
  *
- * @param {Array<string>} participants - List of user IDs.
- * @returns {Promise<Object>} - Resolves to a mapping of user IDs to usernames.
+ * @param {Array&lt;string>} participants - List of user IDs.
+ * @returns {Promise&lt;Object>} - Resolves to a mapping of user IDs to usernames.
  * @throws {Error} If the request fails.
  */
 const fetchUsernamesForGroup = async (participants) => {
@@ -94,7 +122,7 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   const [entriesInfo, setEntriesInfo] = useState(group.entriesInfo || {});
   const [showTransactions, setShowTransactions] = useState(false);
   const [balances, setBalances] = useState(
-    group && group.balances && group.balances[uid] ? group.balances[uid] : {}
+    group &amp;&amp; group.balances &amp;&amp; group.balances[uid] ? group.balances[uid] : {}
   );
   
   // Utility function to format timestamps into readable dates
@@ -107,7 +135,7 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
     
-    if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
+    if (timestamp &amp;&amp; typeof timestamp === 'object' &amp;&amp; timestamp.seconds) {
       const date = new Date(timestamp.seconds * 1000);
       return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
@@ -184,14 +212,14 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   
   // Calculate expense splits based on selected strategy
   const handleCalculate = async () => {
-    const isValid = expenseInputs.every(input => input.paidBy && input.amount && input.description);
+    const isValid = expenseInputs.every(input => input.paidBy &amp;&amp; input.amount &amp;&amp; input.description);
 
     if (!isValid) {
       alert("Please fill in all expense details before calculating.");
       return;
     }
 
-    if (splitStrategy === "CustomSplit" && !isPercentageValid()) {
+    if (splitStrategy === "CustomSplit" &amp;&amp; !isPercentageValid()) {
       alert("The total percentage must be exactly 100%. Please adjust the values.");
       return;
     }
@@ -311,81 +339,81 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h2>{group.groupName}</h2>
-          <div className="modal-header-right">
-            <button className="show-transactions-btn" onClick={handleShowTransactions}>
+    &lt;div className="modal-overlay">
+      &lt;div className="modal-content">
+        &lt;div className="modal-header">
+          &lt;h2>{group.groupName}&lt;/h2>
+          &lt;div className="modal-header-right">
+            &lt;button className="show-transactions-btn" onClick={handleShowTransactions}>
               {showTransactions ? "Hide Transactions" : "Show Transactions"}
-            </button>
-            <button className="close-button" onClick={onClose}>&times;</button>
-          </div>
-        </div>
+            &lt;/button>
+            &lt;button className="close-button" onClick={onClose}>&amp;times;&lt;/button>
+          &lt;/div>
+        &lt;/div>
   
-        <div className="modal-body">
+        &lt;div className="modal-body">
           {/* Balances Section */}
-          <div className="balances-section">
-            <h4>Balances</h4>
+          &lt;div className="balances-section">
+            &lt;h4>Balances&lt;/h4>
             {/* Chart Visualization */}
-            <div className="balances-chart">
-              {balances && balances.owes && Object.keys(balances.owes).length > 0 ? (
-                <BalancesChart balances={balances} uidToUsername={uidToUsername} />
+            &lt;div className="balances-chart">
+              {balances &amp;&amp; balances.owes &amp;&amp; Object.keys(balances.owes).length > 0 ? (
+                &lt;BalancesChart balances={balances} uidToUsername={uidToUsername} />
               ) : (
-                <p className="no-balances">No outstanding balances.</p>
+                &lt;p className="no-balances">No outstanding balances.&lt;/p>
               )}
-            </div>
-            {balances && balances.owes && Object.keys(balances.owes).length > 0 ? (
-              <div className="balances-list">
+            &lt;/div>
+            {balances &amp;&amp; balances.owes &amp;&amp; Object.keys(balances.owes).length > 0 ? (
+              &lt;div className="balances-list">
                 {Object.entries(balances.owes).map(([debtor, amount]) => (
-                  <div key={debtor} className="balance-item">
-                    {amount < 0 ? (
-                      <>
-                        <p>
-                          <strong>You owe {uidToUsername[debtor] || debtor}:</strong> 
-                          <span className="amount negative">
+                  &lt;div key={debtor} className="balance-item">
+                    {amount &lt; 0 ? (
+                      &lt;>
+                        &lt;p>
+                          &lt;strong>You owe {uidToUsername[debtor] || debtor}:&lt;/strong> 
+                          &lt;span className="amount negative">
                             ${Math.abs(parseFloat(amount)).toFixed(2)}
-                          </span>
-                        </p>
-                        <button
+                          &lt;/span>
+                        &lt;/p>
+                        &lt;button
                           className="pay-button"
                           onClick={() => handlePayBalances(debtor)}
                         >
                           Pay All
-                        </button>
-                      </>
+                        &lt;/button>
+                      &lt;/>
                     ) : (
-                      <p>
-                        <strong>{uidToUsername[debtor] || debtor} owes you:</strong> 
-                        <span className="amount positive">
+                      &lt;p>
+                        &lt;strong>{uidToUsername[debtor] || debtor} owes you:&lt;/strong> 
+                        &lt;span className="amount positive">
                           ${parseFloat(amount).toFixed(2)}
-                        </span>
-                      </p>
+                        &lt;/span>
+                      &lt;/p>
                     )}
-                  </div>
+                  &lt;/div>
                 ))}
-              </div>
+              &lt;/div>
             ) : (
-              <p className="no-balances">No outstanding balances.</p>
+              &lt;p className="no-balances">No outstanding balances.&lt;/p>
             )}
-          </div>
+          &lt;/div>
   
           {/* Expense Details */}
-          <div className="expense-input">
-            <h3>Expense Details</h3>
-            <div className="expense-form">
-              <select
+          &lt;div className="expense-input">
+            &lt;h3>Expense Details&lt;/h3>
+            &lt;div className="expense-form">
+              &lt;select
                 value={expenseInputs[0].paidBy}
                 onChange={(e) => setExpenseInputs([{ ...expenseInputs[0], paidBy: e.target.value }])}
               >
-                <option value="">Who paid?</option>
+                &lt;option value="">Who paid?&lt;/option>
                 {group.participants.map((participant) => (
-                  <option key={participant} value={participant}>
+                  &lt;option key={participant} value={participant}>
                     {uidToUsername[participant] || participant}
-                  </option>
+                  &lt;/option>
                 ))}
-              </select>
-              <input
+              &lt;/select>
+              &lt;input
                 type="number"
                 placeholder="Amount"
                 value={expenseInputs[0].amount}
@@ -393,7 +421,7 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
                   setExpenseInputs([{ ...expenseInputs[0], amount: e.target.value }])
                 }
               />
-              <input
+              &lt;input
                 type="text"
                 placeholder="Description"
                 value={expenseInputs[0].description}
@@ -401,160 +429,160 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
                   setExpenseInputs([{ ...expenseInputs[0], description: e.target.value }])
                 }
               />
-            </div>
-          </div>
+            &lt;/div>
+          &lt;/div>
   
           {/* Settlement Summary */}
-          <div className="settlement-summary">
-            <div className="settlement-header">
-              <div className="settlement-title-section">
-                <h3>Settlement Summary</h3>
-                <div className="strategy-section">
-                  <label>Select Strategy:</label>
-                  <select value={splitStrategy} onChange={handleStrategyChange}>
-                    <option value="EqualSplit">Equal Split</option>
-                    <option value="CustomSplit">Custom Split</option>
-                  </select>
-                </div>
-              </div>
+          &lt;div className="settlement-summary">
+            &lt;div className="settlement-header">
+              &lt;div className="settlement-title-section">
+                &lt;h3>Settlement Summary&lt;/h3>
+                &lt;div className="strategy-section">
+                  &lt;label>Select Strategy:&lt;/label>
+                  &lt;select value={splitStrategy} onChange={handleStrategyChange}>
+                    &lt;option value="EqualSplit">Equal Split&lt;/option>
+                    &lt;option value="CustomSplit">Custom Split&lt;/option>
+                  &lt;/select>
+                &lt;/div>
+              &lt;/div>
 
-              <div className="settlement-actions">
-                <button className="split-button" onClick={handleCalculate}>
+              &lt;div className="settlement-actions">
+                &lt;button className="split-button" onClick={handleCalculate}>
                   Calculate Split
-                </button>
-                {settlementResults.settlements.length > 0 && (
-                  <button className="add-entry-button" onClick={handleAddEntry}>
+                &lt;/button>
+                {settlementResults.settlements.length > 0 &amp;&amp; (
+                  &lt;button className="add-entry-button" onClick={handleAddEntry}>
                     Add Entry
-                  </button>
+                  &lt;/button>
                 )}
-              </div>
-            </div>
+              &lt;/div>
+            &lt;/div>
 
-            <div className="summary-card">
-              <h4>Total Expense</h4>
-              <div className="total-amount">
+            &lt;div className="summary-card">
+              &lt;h4>Total Expense&lt;/h4>
+              &lt;div className="total-amount">
                 ${settlementResults.totalExpense.toFixed(2)}
-              </div>
-            </div>
+              &lt;/div>
+            &lt;/div>
 
-            {splitStrategy === "CustomSplit" && (
-              <div className="custom-split-section">
-                <h4>Custom Split Ratios</h4>
-                <div className="custom-split-list">
+            {splitStrategy === "CustomSplit" &amp;&amp; (
+              &lt;div className="custom-split-section">
+                &lt;h4>Custom Split Ratios&lt;/h4>
+                &lt;div className="custom-split-list">
                   {group.participants.map((participant) => (
-                    <div key={participant} className="participant-split">
-                      <label>{uidToUsername[participant] || participant}:</label>
-                      <input
+                    &lt;div key={participant} className="participant-split">
+                      &lt;label>{uidToUsername[participant] || participant}:&lt;/label>
+                      &lt;input
                         type="number"
                         placeholder="Enter ratio in %"
                         value={customSplits[participant] || ""}
                         onChange={(e) => handleCustomSplitChange(participant, e.target.value)}
                       />
-                    </div>
+                    &lt;/div>
                   ))}
-                </div>
-              </div>
+                &lt;/div>
+              &lt;/div>
             )}
 
-            {settlementResults.settlements.length > 0 && (
-              <div className="settlements-list">
+            {settlementResults.settlements.length > 0 &amp;&amp; (
+              &lt;div className="settlements-list">
                 {settlementResults.settlements.map((settlement, index) => (
-                  <div key={index} className="settlement-item">
-                    <div className="settlement-details">
-                      <span className="from-tag">{uidToUsername[settlement.from] || settlement.from}</span>
-                      <span className="settlement-arrow">→</span>
-                      <span className="to-tag">{uidToUsername[settlement.to] || settlement.to}</span>
-                    </div>
-                    <div className="settlement-amount">
+                  &lt;div key={index} className="settlement-item">
+                    &lt;div className="settlement-details">
+                      &lt;span className="from-tag">{uidToUsername[settlement.from] || settlement.from}&lt;/span>
+                      &lt;span className="settlement-arrow">→&lt;/span>
+                      &lt;span className="to-tag">{uidToUsername[settlement.to] || settlement.to}&lt;/span>
+                    &lt;/div>
+                    &lt;div className="settlement-amount">
                       ${parseFloat(settlement.amount).toFixed(2)}
-                    </div>
-                  </div>
+                    &lt;/div>
+                  &lt;/div>
                 ))}
-              </div>
+              &lt;/div>
             )}
-          </div>
+          &lt;/div>
   
           {/* Transaction List */}
-          {showTransactions && (
-            <div className="transaction-list">
-              <h3>Transactions</h3>
+          {showTransactions &amp;&amp; (
+            &lt;div className="transaction-list">
+              &lt;h3>Transactions&lt;/h3>
               
               {Object.keys(entriesInfo || {}).length === 0 ? (
-                <p className="no-transactions">No transactions available.</p>
+                &lt;p className="no-transactions">No transactions available.&lt;/p>
               ) : (
                 Object.entries(entriesInfo).map(([entryId, entry]) => (
-                  <div key={entryId} className="transaction-item">
+                  &lt;div key={entryId} className="transaction-item">
                     {/* Transaction Item Content */}
-                    <div className="transaction-content">
-              <div className="transaction-info">
-                <div className="info-row">
-                  <User className="icon" />
-                  <span className="label">Payer:</span>
-                  <span className="value">{uidToUsername[entry.payer] || entry.payer}</span>
-                </div>
-                <div className="info-row">
-                  <DollarSign className="icon" />
-                  <span className="label">Amount:</span>
-                  <span className="value amount">
+                    &lt;div className="transaction-content">
+              &lt;div className="transaction-info">
+                &lt;div className="info-row">
+                  &lt;User className="icon" />
+                  &lt;span className="label">Payer:&lt;/span>
+                  &lt;span className="value">{uidToUsername[entry.payer] || entry.payer}&lt;/span>
+                &lt;/div>
+                &lt;div className="info-row">
+                  &lt;DollarSign className="icon" />
+                  &lt;span className="label">Amount:&lt;/span>
+                  &lt;span className="value amount">
                     ${parseFloat(entry.amount).toFixed(2)}
-                  </span>
-                </div>
-                <div className="info-row">
-                  <FileText className="icon" />
-                  <span className="label">Description:</span>
-                  <span className="value">{entry.memo || "No description"}</span>
-                </div>
-                <div className="info-row timestamp">
-                  <Clock className="icon" />
-                  <span className="label">Created At:</span>
-                  <span className="value">{formatTimestamp(entry.created_at)}</span>
-                </div>
-              </div>
+                  &lt;/span>
+                &lt;/div>
+                &lt;div className="info-row">
+                  &lt;FileText className="icon" />
+                  &lt;span className="label">Description:&lt;/span>
+                  &lt;span className="value">{entry.memo || "No description"}&lt;/span>
+                &lt;/div>
+                &lt;div className="info-row timestamp">
+                  &lt;Clock className="icon" />
+                  &lt;span className="label">Created At:&lt;/span>
+                  &lt;span className="value">{formatTimestamp(entry.created_at)}&lt;/span>
+                &lt;/div>
+              &lt;/div>
 
-              <div className="vertical-line"></div>
+              &lt;div className="vertical-line">&lt;/div>
 
-              <div className="participants-info">
-                <div className="participants-header">
-                  <Users className="icon" />
+              &lt;div className="participants-info">
+                &lt;div className="participants-header">
+                  &lt;Users className="icon" />
                   Participants:
-                </div>
-                <div className="participants-list">
+                &lt;/div>
+                &lt;div className="participants-list">
                   {Object.entries(entry.participants || {}).map(([participant, share]) => (
-                    <div key={participant} className="participant-row">
-                      <span>{uidToUsername[participant] || participant}</span>
-                      <span className={`share ${participant === entry.payer ? 'income' : 'expense'}`}>
+                    &lt;div key={participant} className="participant-row">
+                      &lt;span>{uidToUsername[participant] || participant}&lt;/span>
+                      &lt;span className={`share ${participant === entry.payer ? 'income' : 'expense'}`}>
                         ${parseFloat(share).toFixed(2)}
-                      </span>
-                    </div>
+                      &lt;/span>
+                    &lt;/div>
                   ))}
-                </div>
+                &lt;/div>
                         
-                        {/* Pay Button & Paid Label */}
-                        <div className="payment-status">
-                          {entry.payer !== uid && (!entry.paidStatus?.[uid] || entry.paidStatus[uid] !== true) && (
-                            <button
+                        {/* Pay Button &amp; Paid Label */}
+                        &lt;div className="payment-status">
+                          {entry.payer !== uid &amp;&amp; (!entry.paidStatus?.[uid] || entry.paidStatus[uid] !== true) &amp;&amp; (
+                            &lt;button
                               className="pay-button"
                               onClick={() => {
                                 handlePayBalances(entry.payer, entry.participants[uid], entryId);
                               }}
                             >
                               Pay
-                            </button>
+                            &lt;/button>
                           )}
-                          {entry.payer !== uid && entry.paidStatus?.[uid] === true && (
-                            <span className="paid-label">Paid</span>
+                          {entry.payer !== uid &amp;&amp; entry.paidStatus?.[uid] === true &amp;&amp; (
+                            &lt;span className="paid-label">Paid&lt;/span>
                           )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                        &lt;/div>
+                      &lt;/div>
+                    &lt;/div>
+                  &lt;/div>
                 ))
               )}
-            </div>
+            &lt;/div>
           )}
-        </div>
-      </div>
-    </div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
   );
   
   
@@ -868,7 +896,7 @@ const GroupSplit = () => {
 
                     Object.keys(updatedEntries).forEach((entryId) => {
                         const entry = updatedEntries[entryId];
-                        if (entry.participants && entry.participants[message.userId]) {
+                        if (entry.participants &amp;&amp; entry.participants[message.userId]) {
                             if (!entry.paidStatus) entry.paidStatus = {};
                             entry.paidStatus[message.userId] = true; // Mark the userId as paid
                         }
@@ -906,7 +934,7 @@ const GroupCard = ({ group, onClick }) => {
   
   // 計算餘額總和的函數
   const calculateTotalBalance = () => {
-    if (group.balances && group.balances[uid] && group.balances[uid].owes) {
+    if (group.balances &amp;&amp; group.balances[uid] &amp;&amp; group.balances[uid].owes) {
       // 計算所有欠款的總和
       return Object.values(group.balances[uid].owes).reduce((sum, amount) => {
         // 如果是負數（我們欠別人的）就減去，如果是正數（別人欠我們的）就加上
@@ -922,7 +950,7 @@ const GroupCard = ({ group, onClick }) => {
     
     try {
       // 處理 Firestore Timestamp 對象
-      if (timestamp && typeof timestamp === 'object' && timestamp.seconds) {
+      if (timestamp &amp;&amp; typeof timestamp === 'object' &amp;&amp; timestamp.seconds) {
         const date = new Date(timestamp.seconds * 1000);
         return new Intl.DateTimeFormat('en-US', {
           year: 'numeric',
@@ -980,68 +1008,68 @@ const GroupCard = ({ group, onClick }) => {
   const totalBalance = calculateTotalBalance();
   
   return (
-    <div className="group-card" onClick={onClick}>
-      <div className="group-card-header">
-        <h3>{group.groupName}</h3>
-        <span className="group-date">
+    &lt;div className="group-card" onClick={onClick}>
+      &lt;div className="group-card-header">
+        &lt;h3>{group.groupName}&lt;/h3>
+        &lt;span className="group-date">
           {formatDate(group.created_at)}
-        </span>
-      </div>
+        &lt;/span>
+      &lt;/div>
       
-      <div className="group-meta">
-        <div className="meta-item">
-          <i className="fas fa-users"></i>
-          <span>{group.participants.length} members</span>
-        </div>
-        <div className="group-total">
-          Total: <span className={totalBalance >= 0 ? 'positive' : 'negative'}>
+      &lt;div className="group-meta">
+        &lt;div className="meta-item">
+          &lt;i className="fas fa-users">&lt;/i>
+          &lt;span>{group.participants.length} members&lt;/span>
+        &lt;/div>
+        &lt;div className="group-total">
+          Total: &lt;span className={totalBalance >= 0 ? 'positive' : 'negative'}>
             ${Math.abs(totalBalance).toFixed(2)}
-          </span>
-        </div>
-      </div>
-    </div>
+          &lt;/span>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
   );
 };
 
   return (
-    <div className="group-split-container">
-      <Navbar username={username} />
-      <div className="group-split-content">
-        <div className="group-split-header">
-          <input 
+    &lt;div className="group-split-container">
+      &lt;Navbar username={username} />
+      &lt;div className="group-split-content">
+        &lt;div className="group-split-header">
+          &lt;input 
             type="text" 
             placeholder="Group Name" 
             value={groupName} 
             onChange={(e) => setGroupName(e.target.value)}
           />
-          <input 
+          &lt;input 
             type="text" 
             placeholder="Participant Emails (comma separated)" 
             value={participantEmails} 
             onChange={(e) => setParticipantEmails(e.target.value)}
           />
-          <button className="create-group-btn" onClick={handleCreateGroup}>
+          &lt;button className="create-group-btn" onClick={handleCreateGroup}>
             Create New Group
-          </button>
-        </div>
+          &lt;/button>
+        &lt;/div>
 
-        <div className="groups-grid">
+        &lt;div className="groups-grid">
           {Object.keys(groups).length === 0 ? (
-            <div className="no-groups">
-              <p>You haven't created any groups yet.</p>
-              <p>Start by creating a new group!</p>
-            </div>
+            &lt;div className="no-groups">
+              &lt;p>You haven't created any groups yet.&lt;/p>
+              &lt;p>Start by creating a new group!&lt;/p>
+            &lt;/div>
           ) : Object.values(groups).map(group => (
-            <GroupCard 
+            &lt;GroupCard 
               key={group.groupId}
               group={group}
               onClick={() => handleGroupClick(group)}
             />
           ))}
-        </div>
+        &lt;/div>
 
-        {selectedGroup && (
-          <ExpenseModal 
+        {selectedGroup &amp;&amp; (
+          &lt;ExpenseModal 
           /* reload when the entry info is updated */
             key={JSON.stringify(groups[selectedGroup.groupId].entriesInfo)}
             group={groups[selectedGroup.groupId]}
@@ -1050,9 +1078,31 @@ const GroupCard = ({ group, onClick }) => {
             onClose={() => setSelectedGroup(null)} 
           />
         )}
-      </div>
-    </div>
+      &lt;/div>
+    &lt;/div>
   );
 };
 
-export default GroupSplit;
+export default GroupSplit;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#BalancesChart">BalancesChart</a></li><li><a href="global.html#CategoryChartExpense">CategoryChartExpense</a></li><li><a href="global.html#CategoryChartIncome">CategoryChartIncome</a></li><li><a href="global.html#ExpenseModal">ExpenseModal</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IncomeRecommendation">IncomeRecommendation</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#WebSocketProvider">WebSocketProvider</a></li><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#addTransaction">addTransaction</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchAllTransactions">fetchAllTransactions</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#fetchUserCategories">fetchUserCategories</a></li><li><a href="global.html#fetchUsername">fetchUsername</a></li><li><a href="global.html#fetchUsernamesForGroup">fetchUsernamesForGroup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateColors">generateColors</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getOverallAmounts">getOverallAmounts</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mockOverallAmounts">mockOverallAmounts</a></li><li><a href="global.html#mockTransactions">mockTransactions</a></li><li><a href="global.html#renderGroupSplit">renderGroupSplit</a></li><li><a href="global.html#renderHome">renderHome</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li><li><a href="global.html#useUser">useUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 01:18:45 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

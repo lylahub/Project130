@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: backend/src/auth.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: backend/src/auth.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { signOut, sendEmailVerification, sendPasswordResetEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebaseConfig.js";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "./firebaseConfig.js";
+import WebSocket from 'ws';
+const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:3001';
+
+/**
+ * Registers a new user in Firebase Authentication and creates a user document in Firestore.
+ * @async
+ * @function
+ * @param {string} email - The email address of the user.
+ * @param {string} password - The password for the user.
+ * @returns {Promise&lt;Object|undefined>} Returns an error object if the operation fails.
+ */
+const signUp = async (email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("User registered successfully:", user);
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      email: user.email
+    });
+  } catch (error) {
+    console.error("Error during registration:", error.message);
+    return { error: "Fail: " + error.message };
+  }
+};
+
+/**
+ * Logs in an existing user and establishes a WebSocket connection.
+ * @async
+ * @function
+ * @param {string} email - The email address of the user.
+ * @param {string} password - The password for the user.
+ * @returns {Promise&lt;string|null>} The user ID if login is successful, or null if it fails.
+ */
+const login = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("User logged in successfully:", user);
+    console.log("User", user.uid);
+
+    const ws = new WebSocket(WEBSOCKET_URL);
+
+    ws.on("open", () => {
+      console.log("WebSocket connected");
+      ws.send(JSON.stringify({
+        action: "connect",
+        userId: user.uid,
+      }));
+    });
+
+    ws.on("message", (data) => {
+      const message = JSON.parse(data);
+      console.log("Received message from WebSocket:", message);
+    });
+
+    ws.on("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
+
+    ws.on("close", () => {
+      console.log("WebSocket connection closed");
+    });
+    return user.uid;
+  } catch (error) {
+    console.error("Error during login:", error.message);
+    return null;
+  }
+};
+
+/**
+ * Signs out the currently authenticated user.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>} Resolves when the user is signed out.
+ */
+const signOutUser = async () => {
+  try {
+    await signOut(auth);
+    console.log("User signed out successfully.");
+  } catch (error) {
+    console.error("Sign out error:", error.message);
+  }
+};
+
+/**
+ * Sends an email verification to the currently signed-in user.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>} Resolves when the email verification is sent, or logs an error.
+ */
+const emailVerification = async () => {
+  const user = auth.currentUser;
+  if (user) {
+    try {
+      await sendEmailVerification(user);
+      console.log("Email verification sent successfully!");
+    } catch (error) {
+      console.error("Error sending email verification:", error.message);
+    }
+  } else {
+    console.error("No user is currently signed in.");
+  }
+};
+
+/**
+ * Sends a password reset email to the specified email address.
+ * @async
+ * @function
+ * @param {string} email - The email address to send the reset link to.
+ * @returns {Promise&lt;void>} Resolves when the password reset email is sent, or logs an error.
+ */
+const resetPassword = async (email) => {
+  if (!email) {
+    console.error("Please provide an email address for password reset.");
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    console.log("Password reset email sent successfully!");
+  } catch (error) {
+    console.error("Error sending password reset email:", error.message);
+  }
+};
+
+export { login, signUp, signOutUser, emailVerification, resetPassword };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppRouter">AppRouter</a></li><li><a href="global.html#BalancesChart">BalancesChart</a></li><li><a href="global.html#CategoryChartExpense">CategoryChartExpense</a></li><li><a href="global.html#CategoryChartIncome">CategoryChartIncome</a></li><li><a href="global.html#ExpenseModal">ExpenseModal</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#IncomeRecommendation">IncomeRecommendation</a></li><li><a href="global.html#Login">Login</a></li><li><a href="global.html#Profile">Profile</a></li><li><a href="global.html#SignUp">SignUp</a></li><li><a href="global.html#UserProvider">UserProvider</a></li><li><a href="global.html#WebSocketProvider">WebSocketProvider</a></li><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#addTransaction">addTransaction</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchAllTransactions">fetchAllTransactions</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#fetchUserCategories">fetchUserCategories</a></li><li><a href="global.html#fetchUsername">fetchUsername</a></li><li><a href="global.html#fetchUsernamesForGroup">fetchUsernamesForGroup</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#generateColors">generateColors</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getOverallAmounts">getOverallAmounts</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mockOverallAmounts">mockOverallAmounts</a></li><li><a href="global.html#mockTransactions">mockTransactions</a></li><li><a href="global.html#renderGroupSplit">renderGroupSplit</a></li><li><a href="global.html#renderHome">renderHome</a></li><li><a href="global.html#reportWebVitals">reportWebVitals</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li><li><a href="global.html#useUser">useUser</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 01:18:45 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
