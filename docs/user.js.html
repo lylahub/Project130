@@ -1,4 +1,32 @@
-import { db } from "./firebaseConfig.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: user.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: user.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { db } from "./firebaseConfig.js";
 import { updateDoc, setDoc, getDoc, doc } from "firebase/firestore";
 
 // Fetch user data
@@ -8,7 +36,7 @@ import { updateDoc, setDoc, getDoc, doc } from "firebase/firestore";
  * @function
  * @param {string} uid - The user's unique ID (uid).
  * @param {string} [email=""] - The user's email address (optional).
- * @returns {Promise<Object>} The user's data including username, email, bio, and profile picture.
+ * @returns {Promise&lt;Object>} The user's data including username, email, bio, and profile picture.
  * @throws {Error} If there is an issue fetching or creating the user data.
  */
 export const getUserData = async (uid, email = "") => {
@@ -48,7 +76,7 @@ export const getUserData = async (uid, email = "") => {
  * @function
  * @param {string} uid - The user's unique ID (uid).
  * @param {Object} updates - An object containing fields to update.
- * @returns {Promise<Object>} A success message.
+ * @returns {Promise&lt;Object>} A success message.
  * @throws {Error} If there is an issue updating the user data.
  */
 export const updateUserData = async (uid, updates) => {
@@ -70,7 +98,7 @@ export const updateUserData = async (uid, updates) => {
  * @param {string} uid - The user's unique ID (uid).
  * @param {string} field - The field to ensure exists.
  * @param {*} [defaultValue=null] - The default value to set if the field is missing.
- * @returns {Promise<void>} Resolves when the field is ensured to exist.
+ * @returns {Promise&lt;void>} Resolves when the field is ensured to exist.
  * @throws {Error} If there is an issue ensuring the field exists.
  */
 export const ensureFieldExists = async (uid, field, defaultValue = null) => {
@@ -91,7 +119,7 @@ export const ensureFieldExists = async (uid, field, defaultValue = null) => {
  * @async
  * @function
  * @param {string} uid - The user's unique ID (uid).
- * @returns {Promise<string>} The username corresponding to the uid, or a default message if not set.
+ * @returns {Promise&lt;string>} The username corresponding to the uid, or a default message if not set.
  * @throws {Error} If the user is not found or there is an issue fetching the username.
  */
 export const getUsernameByUid = async (uid) => {
@@ -113,4 +141,26 @@ export const getUsernameByUid = async (uid) => {
       console.error("Error fetching username:", error.message);
       throw error;
     }
-  };
+  };</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 00:45:06 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

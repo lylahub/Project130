@@ -1,12 +1,37 @@
 //Interface: SplitStrategy
+/**
+ * Abstract base class for split strategies.
+ * Represents the strategy interface for calculating share distributions.
+ * @abstract
+ */
 export class SplitStrategy {
+    /**
+     * Abstract method to calculate share distribution.
+     * Must be implemented by subclasses.
+     * @param {number} amount - The total amount to be split.
+     * @param {string[]} participants - Array of participant identifiers.
+     * @param {Object} [split] - Optional custom split percentages for participants.
+     * @returns {Object} An object mapping participants to their respective shares.
+     * @throws Will throw an error if not implemented in a subclass.
+     */
     calculateShare(amount, participants, split) {
         throw new Error("Abstract");
     }
 }
 
-//Concrete strategy: Equal Split Strategy
+/**
+ * Concrete strategy for custom share distribution.
+ * Extends the SplitStrategy class to implement custom splitting logic.
+ */
 export class EqualSplitStrategy extends SplitStrategy {
+    /**
+     * Calculates shares based on custom percentages provided for participants.
+     * @param {number} amount - The total amount to be split.
+     * @param {string[]} participants - Array of participant identifiers.
+     * @param {Object} split - An object mapping participants to their respective percentages.
+     * @returns {Object} An object mapping participants to their custom-calculated shares.
+     * @throws Will throw an error if the participants array is empty.
+     */
     calculateShare(amount, participants) {
         if (!participants || participants.length === 0) {
             throw new Error("Participants array cannot be empty");

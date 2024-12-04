@@ -1,4 +1,32 @@
-import { db, storage } from "./firebaseConfig.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: groupBudget.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: groupBudget.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { db, storage } from "./firebaseConfig.js";
 import { collection, addDoc, getDocs, setDoc ,Timestamp, updateDoc, deleteDoc, orderBy, doc, query, getDoc, where, serverTimestamp, runTransaction, writeBatch} from "firebase/firestore";
 import { SplitStrategy, EqualSplitStrategy, CustomSplitStrategy } from "./SplitStrategy.js";
 import { Observable } from "./Observer.js";
@@ -23,7 +51,7 @@ export class GroupBudget extends Observable {
      * Finds participants in the database by their email addresses.
      * @async
      * @param {string[]} emails - Array of participant email addresses.
-     * @returns {Promise<string[]>} Array of participant user IDs.
+     * @returns {Promise&lt;string[]>} Array of participant user IDs.
      */
     async findParticipantsByEmail(emails) {
         const participantsUIDs = [];
@@ -120,7 +148,7 @@ export class GroupBudget extends Observable {
      * @param {number} amount - The amount of the transaction.
      * @param {string} memo - A note or memo for the entry.
      * @param {Object} shares - An object mapping participant IDs to their share amounts.
-     * @returns {Promise<Object>} The new entry data with updated balances.
+     * @returns {Promise&lt;Object>} The new entry data with updated balances.
      */
     async addEntry(groupId, payer, amount, memo, shares) {
         const groupRef = doc(db, "groups", groupId);
@@ -185,7 +213,7 @@ export class GroupBudget extends Observable {
      * @param {string[]} participants - Array of participant user IDs.
      * @param {string} payer - The user ID of the payer.
      * @param {Object} shares - An object mapping participant IDs to their share amounts.
-     * @returns {Promise<Object>} The updated balances for the group.
+     * @returns {Promise&lt;Object>} The updated balances for the group.
      */
     async updateBalances(groupId, participants, payer, shares) {
         const groupRef = doc(db, "groups", groupId);
@@ -238,7 +266,7 @@ export class GroupBudget extends Observable {
      * Fetches the groups that a user belongs to.
      * @async
      * @param {Object} clients - Client connections for WebSocket notifications.
-     * @returns {Promise<Object>} A map of group IDs to group details.
+     * @returns {Promise&lt;Object>} A map of group IDs to group details.
      */
     async fetchGroups(clients) {
         const groupsRef = collection(db, "groups");
@@ -288,7 +316,7 @@ export class GroupBudget extends Observable {
      * Fetches all entries for a specific group.
      * @async
      * @param {string} groupId - The ID of the group.
-     * @returns {Promise<Object>} A map of entry IDs to their respective details.
+     * @returns {Promise&lt;Object>} A map of entry IDs to their respective details.
      */
     async fetchEntries(groupId) {
         const entriesRef = collection(db, "groups", groupId, "entries");
@@ -318,7 +346,7 @@ export class GroupBudget extends Observable {
      * Fetches all balances for a specific group.
      * @async
      * @param {string} groupId - The ID of the group.
-     * @returns {Promise<Object>} A map of creditor IDs to their respective balances.
+     * @returns {Promise&lt;Object>} A map of creditor IDs to their respective balances.
      */
     async fetchBalances(groupId) {
         const balancesRef = collection(db, "groups", groupId, "balances");
@@ -353,7 +381,7 @@ export class GroupBudget extends Observable {
      * @param {number} amount - The total amount of the transaction.
      * @param {string} splitStrategyType - The type of split strategy to use ("EqualSplit" or "CustomSplit").
      * @param {Object} [split={}] - Custom split details if using "CustomSplit".
-     * @returns {Promise<Object>} Settlement details including total expense, shares, and settlements.
+     * @returns {Promise&lt;Object>} Settlement details including total expense, shares, and settlements.
      */
     async calculateSettlement(groupId, payer, amount, splitStrategyType, split = {}) {
         const groupRef = doc(db, "groups", groupId);
@@ -469,7 +497,7 @@ export class GroupBudget extends Observable {
             }
     
             // Only update the current user's payment status if they are a participant in the transaction
-            if (transactionData.participants && Object.keys(transactionData.participants).includes(userId)) {
+            if (transactionData.participants &amp;&amp; Object.keys(transactionData.participants).includes(userId)) {
                 // Mark the current user as having paid if they are not the payer
                 if (payer !== userId) {
                     transactionData.paidStatus[userId] = true;
@@ -517,7 +545,7 @@ export class GroupBudget extends Observable {
                     transactionData.paidStatus = {};
                 }
     
-                if (transactionData.participants?.[userId] && transactionData.payer !== userId) {
+                if (transactionData.participants?.[userId] &amp;&amp; transactionData.payer !== userId) {
                     // Mark the userId as paid for this transaction if they are not the payer
                     transactionData.paidStatus[userId] = true;
                     batch.update(doc.ref, { paidStatus: transactionData.paidStatus });
@@ -540,4 +568,26 @@ export class GroupBudget extends Observable {
     }
 }
 
-export default GroupBudget;
+export default GroupBudget;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="EqualSplitStrategy.html">EqualSplitStrategy</a></li><li><a href="GroupBudget.html">GroupBudget</a></li><li><a href="Observable.html">Observable</a></li><li><a href="SplitStrategy.html">SplitStrategy</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addDefaultCategories">addDefaultCategories</a></li><li><a href="global.html#addEntryToCategory">addEntryToCategory</a></li><li><a href="global.html#addNewCategory">addNewCategory</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#emailVerification">emailVerification</a></li><li><a href="global.html#ensureFieldExists">ensureFieldExists</a></li><li><a href="global.html#fetchTransactions">fetchTransactions</a></li><li><a href="global.html#firebaseConfig">firebaseConfig</a></li><li><a href="global.html#getCategoryAmount">getCategoryAmount</a></li><li><a href="global.html#getCategoryDetails">getCategoryDetails</a></li><li><a href="global.html#getFinancialAdvice">getFinancialAdvice</a></li><li><a href="global.html#getOverallAmount">getOverallAmount</a></li><li><a href="global.html#getUserCategories">getUserCategories</a></li><li><a href="global.html#getUserData">getUserData</a></li><li><a href="global.html#getUsernameByUid">getUsernameByUid</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#resetMonthlyAmounts">resetMonthlyAmounts</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signOutUser">signOutUser</a></li><li><a href="global.html#signUp">signUp</a></li><li><a href="global.html#updateUserData">updateUserData</a></li><li><a href="global.html#updateUsers">updateUsers</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Dec 04 2024 00:45:06 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
