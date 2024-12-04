@@ -7,10 +7,11 @@ export const WebSocketContext = createContext(null);
 export const WebSocketProvider = ({ children }) => {
   const { uid, setUid} = useUser();
   const socketRef = useRef(null);
+  const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:3001';
 
   useEffect(() => {
     if (uid) {  // Ensure uid is available
-      socketRef.current = new WebSocket("ws://localhost:3001");
+      socketRef.current = new WebSocket(WEBSOCKET_URL);
 
       socketRef.current.onopen = () => {
         console.log("Connected to WebSocket");

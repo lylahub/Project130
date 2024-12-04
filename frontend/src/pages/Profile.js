@@ -1,57 +1,130 @@
 // src/pages/Profile.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; // Import Navbar component
 import '../css/Profile.css'; // Import CSS for styling
+import { useUser } from '../userContext';
 
 // Main Profile component
 const Profile = () => {
+
+    // Access `uid` from the global context
+    const { uid } = useUser();
+    
     // Profile state holds user information
     const [profile, setProfile] = useState({
-        username: 'Baby',
-        email: 'baby@example.com',
-        profilePicture: '', // URL or uploaded image data for the profile picture
-        bio: 'This is a sample bio.',
+        username: '',
+        email: '',
+        profile_pic: 'https://via.placeholder.com/150', // Default profile picture
+        bio: '',
     });
 
     // State to manage edit mode, new password inputs
+    // Separate state for editing
+    const [editableProfile, setEditableProfile] = useState({ ...profile });
     const [isEditing, setIsEditing] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    // Fetch user profile from the backend
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch(`http://localhost:3001/user/${uid}`);
+                const data = await response.json();
+                const fetchedProfile = {
+                    username: data.username || 'To be set',
+                    email: data.email || '',
+                    profile_pic: data.profile_pic || 'https://via.placeholder.com/150',
+                    bio: data.bio || 'To be set',
+                };
+                setProfile(fetchedProfile);
+                setEditableProfile(fetchedProfile); // Initialize editable state
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        };
+
+        if (uid) fetchProfile();
+    }, [uid]);
+
     // Handle input changes for profile information
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setProfile((prev) => ({ ...prev, [name]: value }));
+        setEditableProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle image upload and display
+    // Handle profile picture upload
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProfile((prev) => ({ ...prev, profilePicture: reader.result }));
+                setEditableProfile((prev) => ({ ...prev, profile_pic: reader.result }));
             };
             reader.readAsDataURL(file);
         }
     };
 
-    // Handle password change with validation
-    const handlePasswordChange = (e) => {
-        e.preventDefault();
-        if (newPassword === confirmPassword) {
-            alert("Password updated successfully!");
-            setNewPassword(''); // Clear password fields
-            setConfirmPassword('');
-        } else {
-            alert("Passwords do not match."); // Show error if passwords don't match
-        }
+    const handleCancelEdit = () => {
+        setEditableProfile(profile); // Revert to original profile
+        setIsEditing(false); // Exit edit mode
     };
 
-    // Save profile changes and exit edit mode
-    const handleSaveProfile = () => {
-        setIsEditing(false); // Exit edit mode
-        alert("Profile updated successfully!"); // Notify user
+    // Handle password change with validation
+    // const handlePasswordChange = (e) => {
+    //     e.preventDefault();
+    //     if (newPassword === confirmPassword) {
+    //         alert("Password updated successfully!");
+    //         setNewPassword(''); // Clear password fields
+    //         setConfirmPassword('');
+    //     } else {
+    //         alert("Passwords do not match."); // Show error if passwords don't match
+    //     }
+    // };
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://localhost:3001/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: profile.email, newPassword }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                alert('Password updated successfully!');
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                alert(`Failed to update password: ${data.error}`);
+            }
+        } catch (error) {
+            console.error('Error updating password:', error);
+            alert('An error occurred while updating the password.');
+        }
+    };    
+
+    // Save profile changes
+    const handleSaveProfile = async () => {
+        try {
+            await fetch(`http://localhost:3001/user/${uid}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editableProfile),
+            });
+
+            alert('Profile updated successfully!');
+            setProfile(editableProfile); // Update main profile state
+            setIsEditing(false); // Exit edit mode
+        } catch (error) {
+            console.error('Error saving profile:', error);
+        }
     };
 
     return (
@@ -60,16 +133,20 @@ const Profile = () => {
             <Navbar username={profile.username} />
             <div className="content-container">
                 <div className="profile-section">
-                    <h1>Profile</h1>
 
                     {/* Profile picture section */}
                     <div className="profile-picture">
                         <img
-                            src={profile.profilePicture || 'https://via.placeholder.com/150'} // Default placeholder if no picture
+                            src={
+                                profile.profile_pic === 'https://via.placeholder.com/150'
+                                    ? require('../components/logo.png')
+                                    : isEditing
+                                    ? editableProfile.profile_pic
+                                    : profile.profile_pic
+                            }
                             alt="Profile"
                             className="profile-img"
                         />
-                        {/* Allow uploading profile picture in edit mode */}
                         {isEditing && (
                             <input
                                 type="file"
@@ -89,29 +166,19 @@ const Profile = () => {
                                 <input
                                     type="text"
                                     name="username"
-                                    value={profile.username}
+                                    value={editableProfile.username}
                                     onChange={handleInputChange}
                                     placeholder="Enter your username"
                                 />
                             ) : (
-                                <p>{profile.username}</p> // Display only when not editing
+                                <p>{profile.username || "To be set"}</p> // Display only when not editing
                             )}
                         </div>
 
                         {/* Email field */}
                         <div className="form-group">
                             <label>Email</label>
-                            {isEditing ? (
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={profile.email}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter your email"
-                                />
-                            ) : (
-                                <p>{profile.email}</p> // Display only when not editing
-                            )}
+                            <p>{profile.email}</p> {/* Email is not editable */}
                         </div>
 
                         {/* Bio field */}
@@ -120,13 +187,13 @@ const Profile = () => {
                             {isEditing ? (
                                 <textarea
                                     name="bio"
-                                    value={profile.bio}
+                                    value={editableProfile.bio}
                                     onChange={handleInputChange}
                                     placeholder="Write a short bio"
                                     rows="4"
                                 />
                             ) : (
-                                <p>{profile.bio}</p> // Display only when not editing
+                                <p>{profile.bio || "To be set"}</p> // Display only when not editing
                             )}
                         </div>
 
@@ -165,7 +232,7 @@ const Profile = () => {
                             {isEditing ? (
                                 <>
                                     <button onClick={handleSaveProfile} className="save-button">Save Profile</button>
-                                    <button onClick={() => setIsEditing(false)} className="cancel-button">Cancel</button>
+                                    <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
                                 </>
                             ) : (
                                 <button onClick={() => setIsEditing(true)} className="edit-button">Edit Profile</button>

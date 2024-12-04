@@ -2,6 +2,8 @@
 import express from "express";
 import { addNewCategory, addDefaultCategories, addEntryToCategory, resetMonthlyAmounts, getCategoryAmount, getCategoryDetails, getUserCategories, fetchTransactions, getOverallAmount } from "./categoricalBookkeeping.js";
 import { login, signUp, signOutUser, emailVerification, resetPassword } from "./auth.js";
+import { getUserData, updateUserData, getUsernameByUid } from "./user.js";
+import { admin, adminDb } from './firebaseConfig.js'; // Adjust the path as necessary
 
 const router = express.Router();
 
@@ -31,9 +33,29 @@ export default function (groupBudgets, clients) {
         }
     });
 
+    //for test fetching balances
+    router.get("/group/fetch-balances", async (req, res) => {
+        const { userId, groupId } = req.query;
+
+        // check relevant instance
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "No group budget for this user" });
+        }
+
+        try {
+            const balances = await userGroupBudget.fetchBalances(groupId);
+
+            res.status(200).json(balances);
+        } catch (error) {
+            res.status(500).json({ error: "Fail in fetching balances", details: error.message });
+        }
+    });
+
+
     // Route to add entry to a group
     router.post("/group/add-entry", async (req, res) => {
-        const { userId, groupId, payer, amount, memo, split, splitStrategy } = req.body;
+        const { groupId, payer, amount, memo, shares, userId } = req.body;
 
         // Retrieve the existing GroupBudget instance from groupBudgets
         const userGroupBudget = groupBudgets[userId];
@@ -42,8 +64,8 @@ export default function (groupBudgets, clients) {
         }
 
         try {
-            const shares = await userGroupBudget.addEntry(groupId, payer, amount, memo, split, splitStrategy);
-            res.status(201).json({ message: "Entry added successfully", shares });
+            const results = await userGroupBudget.addEntry(groupId, payer, amount, memo, shares);
+            res.status(201).json({ message: "Entry added successfully", results });
         } catch (error) {
             res.status(500).json({ error: "Failed to add entry", details: error.message });
         }
@@ -66,6 +88,123 @@ export default function (groupBudgets, clients) {
             res.status(500).json({ error: "Failed to fetch groups", details: error.message });
         }
     });
+
+
+    router.post("/group/calculate-settlement", async (req, res) => {
+        const { userId, groupId, payer, amount, splitStrategy, split } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+
+        try {
+            const settlementResults = await userGroupBudget.calculateSettlement(
+                groupId, payer, amount, splitStrategy, split
+            );
+            res.status(200).json(settlementResults);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to calculate settlement", details: error.message });
+        }
+    });
+
+
+    //fetch group entries
+    router.get("/group/fetch-entries", async (req, res) => {
+        const { groupId, userId } = req.query;
+        const userGroupBudget = groupBudgets[userId];
+        
+        if (!userGroupBudget) {
+          return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+      
+        try {
+          const entries = await userGroupBudget.fetchEntries(groupId);
+          res.status(200).json(entries);
+        } catch (error) {
+          console.error("Error fetching entries:", error);
+          res.status(500).json({ error: "Failed to fetch entries", details: error.message });
+        }
+      });
+
+    //zero balances for the group
+    router.post("/group/pay-balance", async (req, res) => {
+        const { userId, groupId, payer, payee, amount } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        try {
+            await userGroupBudget.payBalances(groupId, payer, payee, amount);
+            res.status(200).json({
+                message: "Balance successfully cleared between payer and payee",
+                payer,
+                payee
+            });
+            
+        } catch(error) {
+            console.log("Error clearing balance:", error);
+            res.status(500).json({
+                error: "Failed to clear balance",
+                details: error.message
+            });
+        }
+    });
+
+    //Mark all paid
+    router.post("/group/mark-all-paid", async (req, res) => {
+        const { userId, groupId, payer } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        try {
+            await userGroupBudget.markAllAsPaidForParticipant(groupId, payer, userId);
+            res.status(200).json({
+                message: `All transactions between ${payer} and ${userId} in group ${groupId} marked as paid;`,
+                payer,
+                userId,
+                groupId
+            });
+        } catch (error) {
+            console.error("Error marking all transactions as paid:", error);
+            res.status(500).json({
+                error: "Failed to mark all transactions as paid",
+                details: error.message
+            });
+        }
+    });
+    
+    
+    //MarkPaid
+    router.post("/group/mark-paid", async (req, res) => {
+        const { userId, groupId, transactionId, payer } = req.body;
+        const userGroupBudget = groupBudgets[userId];
+        
+        if (!userGroupBudget) {
+            return res.status(400).json({ error: "GroupBudget instance not found for this user" });
+        }
+        
+        try {
+            await userGroupBudget.markTransactionAsPaid(groupId, transactionId, userId, payer);
+            
+            res.status(200).json({
+                message: `Transaction ${transactionId} marked as paid for user ${userId} in group ${groupId}.`,
+                transactionId,
+                userId,
+                groupId
+            });
+        } catch (error) {
+            console.error("Error marking transaction as paid:", error);
+    
+            res.status(500).json({
+                error: "Failed to mark transaction as paid",
+                details: error.message
+            });
+        }
+    });
+    
+    
+    
 
     // Add default categories
     router.post("/categories/default", async (req, res) => {
@@ -233,19 +372,96 @@ export default function (groupBudgets, clients) {
         }
     });
 
-    // Reset password
-    router.post("/reset-password", async (req, res) => {
-        const { email } = req.body;
-        if (!email) {
-            return res.status(400).json({ error: "Please provide an email address for password reset." });
+    // Direct password update route
+    router.post('/update-password', async (req, res) => {
+        const { email, newPassword } = req.body;
+    
+        if (!email || !newPassword) {
+            return res.status(400).json({ error: 'Email and new password are required.' });
         }
+    
         try {
-            await resetPassword(email);
-            res.status(200).json({ message: "Password reset email sent successfully!" });
+            // Find user by email using Firebase Admin SDK
+            const user = await admin.auth().getUserByEmail(email);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found.' });
+            }
+    
+            // Update user's password
+            await admin.auth().updateUser(user.uid, { password: newPassword });
+    
+            res.status(200).json({ message: 'Password updated successfully!' });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Error updating password:', error.message);
+            res.status(500).json({ error: error.message });
         }
     });
+    
+    // get user data
+    router.get("/user/:uid", async (req, res) => {
+        const { uid } = req.params;
+        try {
+            const userData = await getUserData(uid);
+            res.status(200).json(userData);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to fetch user data", details: error.message });
+        }
+    });
+
+    // Update user data
+    router.put("/user/:uid", async (req, res) => {
+        const { uid } = req.params;
+        const updates = req.body; // Expecting { key: value } pairs
+        try {
+            await updateUserData(uid, updates); // Backend function to handle updates
+            res.status(200).json({ message: "User updated successfully" });
+        } catch (error) {
+            res.status(500).json({ error: "Failed to update user data", details: error.message });
+        }
+    });
+
+    // Endpoint to fetch the username by uid
+    router.get('/get-username/:uid', async (req, res) => {
+        const { uid } = req.params; // Extract the uid from the URL
+      
+        try {
+          const username = await getUsernameByUid(uid); // Call your Firestore function
+          res.status(200).json({ username });
+        } catch (error) {
+          console.error('Error fetching username:', error.message);
+          res.status(500).json({ error: 'Failed to fetch username' });
+        }
+      });
+
+    // Fetch usernames for a list of UIDs
+    router.post('/get-usernames', async (req, res) => {
+        try {
+            const { uids } = req.body;
+            if (!Array.isArray(uids)) {
+                return res.status(400).json({ error: "Invalid input" });
+            }
+            
+            console.log('Is adminDb initialized:', !!adminDb);
+            const usersRef = adminDb.collection('users');
+            const usernames = {};
+            const promises = uids.map(async (uid) => {
+                const userDoc = await usersRef.doc(uid).get();
+                if (userDoc.exists) {
+                    usernames[uid] = userDoc.data().username;
+                } else {
+                    usernames[uid] = null; // Or handle missing users differently
+                }
+            });
+    
+            await Promise.all(promises);
+    
+            res.json(usernames);
+        } catch (error) {
+            console.error("Error fetching usernames:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    });
+    
 
     return router;
 }

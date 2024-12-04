@@ -5,21 +5,25 @@ import { useUser } from '../userContext.js';
 import Navbar from '../components/Navbar';
 import '../css/Home.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { CategoryChartExpense, CategoryChartIncome } from '../chart.js';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+console.log()
 
 const fetchUserCategories = async (uid) => {
-  const response = await fetch(`/categories/user-categories?userId=${uid}`);
+  const response = await fetch(`${API_BASE_URL}/categories/user-categories?userId=${uid}`);
   const data = await response.json();
   return data.categories || [];
 };
 
 const fetchAllTransactions = async (uid) => {
-  const response = await fetch(`/categories/transactions?userId=${uid}`);
+  const response = await fetch(`${API_BASE_URL}/categories/transactions?userId=${uid}`);
   const data = await response.json();
   return data.transactions || [];
 };
 
 const getCategoryAmount = async (uid, categoryName) => {
-  const response = await fetch(`/categories/amount?userId=${uid}&categoryName=${categoryName}`);
+  const response = await fetch(`${API_BASE_URL}/categories/amount?userId=${uid}&categoryName=${categoryName}`);
   const data = await response.json();
   return data.amounts;
 };
@@ -27,7 +31,7 @@ const getCategoryAmount = async (uid, categoryName) => {
 
 const getCategoryDetails = async (userId, categoryName) => {
   try {
-    const response = await fetch(`/categories/details?userId=${userId}&categoryName=${categoryName}`);
+    const response = await fetch(`${API_BASE_URL}/categories/details?userId=${userId}&categoryName=${categoryName}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch category details: ${response.statusText}`);
     }
@@ -46,7 +50,7 @@ const getCategoryDetails = async (userId, categoryName) => {
 };
 
 const addNewCategory = async (uid, categoryName, icon) => {
-  const response = await fetch("http://localhost:3001/categories", {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, categoryName, icon }),
@@ -59,7 +63,7 @@ const addNewCategory = async (uid, categoryName, icon) => {
 };
 
 const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
-  const response = await fetch("http://localhost:3001/categories/entry", {
+  const response = await fetch(`${API_BASE_URL}/categories/entry`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, categoryName: categoryId, amount, note: memo, incomeExpense: incomeExpense}),
@@ -73,7 +77,7 @@ const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
 };
 
 const addDefaultCategories = async(uid, icons) => {
-  const response = await fetch("http://localhost:3001/categories/default", {
+  const response = await fetch(`${API_BASE_URL}/categories/default`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId: uid, icons: icons }),
@@ -86,7 +90,7 @@ const addDefaultCategories = async(uid, icons) => {
 }
 
 const getOverallAmounts = async (userId) => {
-  const response = await fetch(`http://localhost:3001/categories/overall?userId=${userId}`);
+  const response = await fetch(`${API_BASE_URL}/categories/overall?userId=${userId}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch overall amounts for user ${userId}: ${response.statusText}`);
   }
@@ -94,11 +98,19 @@ const getOverallAmounts = async (userId) => {
   return data;
 };
 
+const fetchUsername = async (uid) => {
+  const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch username");
+  }
+  const data = await response.json();
+  return data.username;
+};
 
 const Home = () => {
   const navigate = useNavigate();
-  const username = "Baby";
   const { uid } = useUser();
+  const [username, setUsername] = useState('');
   const [activeTab, setActiveTab] = useState(1);
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -111,6 +123,7 @@ const Home = () => {
   const [selectedCategoryAmounts, setSelectedCategoryAmounts] = useState({ monthlyAmount: 0, totalAmount: 0 });
   const [overallAmounts, setOverallAmounts] = useState({ monthlyAmount: 0, totalAmount: 0 });
   const [transactionType, setTransactionType] = useState('expense');
+
 
   const icons = [
     "fa-utensils",
@@ -132,6 +145,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       const fetchedCategories = await fetchUserCategories(uid);
+      console.log(fetchedCategories)
       
       if (fetchedCategories.length === 0) {
         await addDefaultCategories(uid, default_icons);
@@ -142,6 +156,7 @@ const Home = () => {
       }
 
       const fetchedTransactions = await fetchAllTransactions(uid);
+      console.log("Transactions: ", fetchedTransactions)
       const fetchedOverallAmounts = await getOverallAmounts(uid);
       setTransactions(fetchedTransactions);
       setFilteredTransactions(fetchedTransactions); 
@@ -149,6 +164,10 @@ const Home = () => {
         totalAmount: fetchedOverallAmounts.totalAmount,
         monthlyAmount: fetchedOverallAmounts.monthlyAmount
       });
+
+      // Fetch the username based on the uid
+      const fetchedUsername = await fetchUsername(uid);
+      setUsername(fetchedUsername);
     };
 
     fetchData();
@@ -200,7 +219,7 @@ const Home = () => {
       return;
     }
     const amount = parseFloat(newTransactionAmount);
-    if (isNaN(amount)) {
+    if (isNaN(amount) | amount < 0) {
       alert("Please enter a valid number for the amount");
       return;
     }
@@ -233,45 +252,57 @@ const Home = () => {
       />
       
       <div className="home-content">
-        <div className="home-block-container">
-          {/* Left Section */}
-          <div className="left-section">
-            {/* Chart Section */}
-            <div className="chart-section card">
-              <h2>Category Overview</h2>
-              
-              {/* Overall Amounts */}
-              <div className="overall-amounts">
-                <div className="amount-card">
-                  <p>Overall Total</p>
-                  <strong>${overallAmounts.totalAmount}</strong>
-                </div>
-                <div className="amount-card">
-                  <p>Monthly Total</p>
-                  <strong>${overallAmounts.monthlyAmount}</strong>
-                </div>
-              </div>
-  
-              {/* Categories List */}
-              <div className="category-list">
-                {categories?.map((category) => (
-                  <div
-                    key={category.id}
-                    className={`category-item ${selectedCategoryId === category.id ? 'active' : ''}`}
-                    onClick={() => handleCategoryClick(category.id)}
-                  >
-                    <i className={`fas ${category.icon}`}></i>
-                    <span>{category.name}</span>
+        <div className="home-blocks-wrapper">
+          {/* Overview Card */}
+          <div className="overview-card card">
+            <div className="overview-content">
+              {/* Left side with category info */}
+              <div className="category-info">
+                <h2>Category Overview</h2>
+                
+                <div className="amounts-section">
+                  <div className="amount-card">
+                    <p>Overall Total Income</p>
+                    <strong>${overallAmounts.totalAmount}</strong>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="amount-card">
+                    <p>Monthly Total Income</p>
+                    <strong>${overallAmounts.monthlyAmount}</strong>
+                  </div>
+                </div>
   
-            {/* Transactions Section */}
+                <div className="category-list">
+                  {categories?.map((category) => (
+                    <div
+                      key={category.id}
+                      className={`category-item ${selectedCategoryId === category.id ? 'active' : ''}`}
+                      onClick={() => handleCategoryClick(category.id)}
+                    >
+                      <i className={`fas ${category.icon}`}></i>
+                      <span>{category.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+  
+              {/* Right side with pie chart */}
+              {(selectedCategoryId === 'overall' || !selectedCategoryId) && (
+                <div className="chart-visualization">
+                  <h2>Expense Overview</h2>
+                  <CategoryChartExpense categories={categories} transactions={filteredTransactions}/>
+                  <h2>Income Overview</h2>
+                  <CategoryChartIncome categories={categories} transactions={filteredTransactions} />
+                </div>
+              )}
+            </div>
+          </div>
+  
+          {/* Lower section */}
+          <div className="lower-section">
+            {/* Transaction History - Left side */}
             <div className="transactions-section card">
               <h2>Transaction History</h2>
               
-              {/* Selected Category Amounts */}
               {selectedCategoryId && selectedCategoryId !== 'overall' && (
                 <div className="selected-category-amounts">
                   <div className="amount-card">
@@ -285,7 +316,6 @@ const Home = () => {
                 </div>
               )}
   
-              {/* Transactions List */}
               <div className="transactions-list">
                 {filteredTransactions.map((transaction) => (
                   <div key={transaction.id} className="transaction-item">
@@ -298,88 +328,85 @@ const Home = () => {
                 ))}
               </div>
             </div>
-          </div>
   
-          {/* Right Section */}
-          <div className="right-section">
-            {/* Add Category Section */}
-            <div className="add-category-section card">
-              <h2>Add New Category</h2>
-              <div className="input-container">
-                <div className="input-group">
-                  <label>Category Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter category name"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                  />
-                </div>
+            {/* Action Card - Right side */}
+            <div className="action-card">
+              {(selectedCategoryId === 'overall' || !selectedCategoryId) ? (
+                <div className="add-category-section card">
+                  <h2>Add New Category</h2>
+                  <div className="input-container">
+                    <div className="input-group">
+                      <label>Category Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter category name"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                      />
+                    </div>
   
-                {/* Icon Selector */}
-                <div className="icon-selector">
-                  <label>Select Icon</label>
-                  <div className="icon-list">
-                    {icons.map((icon, index) => (
-                      <div 
-                        key={index}
-                        className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
-                        onClick={() => setSelectedIcon(icon)}
-                      >
-                        <i className={`fas ${icon}`}></i>
+                    <div className="icon-selector">
+                      <label>Select Icon</label>
+                      <div className="icon-list">
+                        {icons.map((icon, index) => (
+                          <div 
+                            key={index}
+                            className={`icon-item ${selectedIcon === icon ? 'selected' : ''}`}
+                            onClick={() => setSelectedIcon(icon)}
+                          >
+                            <i className={`fas ${icon}`}></i>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+  
+                    <button className="button" onClick={handleAddCategory}>
+                      Add Category
+                    </button>
                   </div>
                 </div>
+              ) : (
+                <div className="add-transaction-section card">
+                  <h2>Add Transaction</h2>
+                  <div className="input-container">
+                    <div className="input-group">
+                      <label>Transaction Type</label>
+                      <select
+                        value={transactionType}
+                        onChange={(e) => setTransactionType(e.target.value)}
+                      >
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                      </select>
+                    </div>
   
-                <button className="button" onClick={handleAddCategory}>
-                  Add Category
-                </button>
-              </div>
+                    <div className="input-group">
+                      <label>Amount</label>
+                      <input
+                        type="number"
+                        placeholder="Enter amount"
+                        value={newTransactionAmount}
+                        onChange={(e) => setNewTransactionAmount(e.target.value)}
+                      />
+                    </div>
+  
+                    <div className="input-group">
+                      <label>Memo</label>
+                      <input
+                        type="text"
+                        placeholder="Enter memo"
+                        value={newTransactionMemo}
+                        onChange={(e) => setNewTransactionMemo(e.target.value)}
+                      />
+                    </div>
+  
+                    <button className="button" onClick={handleAddTransaction}>
+                      Add Transaction
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-  
-            {/* Add Transaction Section */}
-            {selectedCategoryId && selectedCategoryId !== 'overall' && (
-              <div className="add-transaction-section card">
-                <h2>Add Transaction</h2>
-                <div className="input-container">
-                  <div className="input-group">
-                    <label>Transaction Type</label>
-                    <select
-                      value={transactionType}
-                      onChange={(e) => setTransactionType(e.target.value)}
-                    >
-                      <option value="income">Income</option>
-                      <option value="expense">Expense</option>
-                    </select>
-                  </div>
-  
-                  <div className="input-group">
-                    <label>Amount</label>
-                    <input
-                      type="number"
-                      placeholder="Enter amount"
-                      value={newTransactionAmount}
-                      onChange={(e) => setNewTransactionAmount(e.target.value)}
-                    />
-                  </div>
-  
-                  <div className="input-group">
-                    <label>Memo</label>
-                    <input
-                      type="text"
-                      placeholder="Enter memo"
-                      value={newTransactionMemo}
-                      onChange={(e) => setNewTransactionMemo(e.target.value)}
-                    />
-                  </div>
-  
-                  <button className="button" onClick={handleAddTransaction}>
-                    Add Transaction
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

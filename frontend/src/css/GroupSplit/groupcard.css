@@ -1,0 +1,92 @@
+/* Group card styles */
+.group-card {
+    background-color: var(--background-secondary);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .group-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .group-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .group-card h3 {
+    font-size: 24px;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  .group-card p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .group-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .group-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  
+  .meta-item i {
+    opacity: 0.7;
+  }
+  
+  .group-total {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  
+  .group-date {
+    font-size: 14px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+  
+  @media (max-width: 768px) {
+    .group-card {
+      padding: 20px;
+    }
+  
+    .group-card h3 {
+      font-size: 20px;
+    }
+  
+    .group-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }

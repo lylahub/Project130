@@ -1,0 +1,363 @@
+/* Settlement Summary Container */
+.settlement-summary {
+  background: var(--background-secondary);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* Header Section */
+.settlement-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.settlement-title-section {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.settlement-title-section h3 {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  min-width: 160px;
+}
+
+/* Strategy Section */
+.strategy-section {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 250px;
+}
+
+.strategy-section label {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.strategy-section select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: white;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  min-width: 150px;
+  max-width: 200px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+}
+
+.strategy-section select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+/* Action Buttons */
+.settlement-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.split-button,
+.add-entry-button {
+  width: 140px;
+  height: 36px;
+  margin: 0;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.split-button {
+  background: var(--primary-color);
+  color: white;
+}
+
+.add-entry-button {
+  background: var(--income-color);
+  color: white;
+}
+
+.split-button:hover,
+.add-entry-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.split-button:active,
+.add-entry-button:active {
+  transform: translateY(0);
+}
+
+/* Summary Card */
+.summary-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.summary-card h4 {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.total-amount {
+  color: var(--text-secondary);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* Custom Split Section */
+.custom-split-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.custom-split-section h4 {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0 0 16px 0;
+  font-weight: 600;
+}
+
+.custom-split-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.participant-split {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--background-third);
+  border-radius: 6px;
+}
+
+.participant-split label {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 12px;
+}
+
+.participant-split input {
+  flex: 1;
+  max-width: 140px;
+  padding: 8px 12px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: white;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.participant-split input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+/* Settlements List */
+.settlements-list {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.settlement-item {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settlement-item:last-child {
+  border-bottom: none;
+}
+
+.settlement-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settlement-arrow {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+}
+
+.from-tag,
+.to-tag {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.from-tag {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--income-color);
+}
+
+.to-tag {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--expense-color);
+}
+
+.settlement-amount {
+  font-weight: 500;
+  padding: 6px 12px;
+  background: var(--background-third);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .settlement-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settlement-title-section {
+    justify-content: space-between;
+  }
+
+  .strategy-section {
+    justify-content: space-between;
+  }
+
+  .settlement-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .settlement-summary {
+    padding: 16px;
+  }
+
+  .settlement-header {
+    gap: 16px;
+  }
+
+  .settlement-title-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .strategy-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .strategy-section select {
+    max-width: 100%;
+  }
+
+  .settlement-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .split-button,
+  .add-entry-button {
+    width: 100%;
+  }
+
+  .participant-split {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .participant-split input {
+    max-width: 100%;
+  }
+
+  .settlement-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .settlement-details {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .from-tag,
+  .to-tag {
+    max-width: none;
+  }
+
+  .settlement-amount {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .settlement-summary {
+    padding: 12px;
+  }
+
+  .settlement-title-section h3 {
+    font-size: 1.125rem;
+  }
+
+  .total-amount {
+    font-size: 1.5rem;
+  }
+
+  .from-tag,
+  .to-tag {
+    font-size: 0.8125rem;
+    padding: 4px 8px;
+  }
+}

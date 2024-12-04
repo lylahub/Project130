@@ -1,0 +1,136 @@
+/* Container styles */
+.group-split-container {
+    min-height: 100vh;
+    background-color: var(--background-primary);
+  }
+  
+  .group-split-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  /* Header styles */
+  .group-split-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--background-primary);
+    margin-bottom: 30px;
+  }
+  
+  .group-split-header h1 {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin: 0;
+    min-width: fit-content;
+  }
+  
+  .group-split-header input {
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
+    background-color: var(--secondary-color);
+    color: white;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .group-split-header input::placeholder {
+    color: #666;
+  }
+  
+  .group-split-header input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.1);
+  }
+  
+  .create-group-btn {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .create-group-btn:hover {
+    background-color: #3d5366;
+    transform: translateY(-1px);
+  }
+  
+  /* Groups grid styles */
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  /* Empty state styles */
+  .no-groups {
+    text-align: center;
+    padding: 40px;
+    background: var(--background-secondary);
+    border-radius: 12px;
+    grid-column: 1 / -1;
+    color: var(--text-secondary);
+  }
+  
+  .no-groups p {
+    margin: 10px 0;
+  }
+  
+  .no-groups p:first-child {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .group-total {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+  }
+  
+  .group-total span {
+    font-weight: 600;
+  }
+  
+  .group-total span.positive {
+    color: var(--income-color);
+  }
+  
+  .group-total span.negative {
+    color: var(--expense-color);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .group-split-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
+    }
+  
+    .group-split-header input {
+      width: 100%;
+    }
+  
+    .create-group-btn {
+      width: 100%;
+    }
+  
+    .groups-grid {
+      grid-template-columns: 1fr;
+      padding: 10px;
+    }
+  }
+

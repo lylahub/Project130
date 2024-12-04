@@ -1,6 +1,9 @@
 // src/authService.js
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 export const login = async (email, password) => {
-  const response = await fetch("http://localhost:3001/login", {
+  console.log(API_URL)
+  const response = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -17,7 +20,7 @@ export const login = async (email, password) => {
 };
 
 export const signUp = async (email, password) => {
-  const response = await fetch("http://localhost:3001/signup", {
+  const response = await fetch(`${API_URL}/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

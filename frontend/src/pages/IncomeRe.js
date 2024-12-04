@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '../userContext';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import Navbar from '../components/Navbar';
 import '../css/IncomeRe.css';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+const fetchUsername = async (uid) => {
+  const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch username");
+  }
+  const data = await response.json();
+  return data.username;
+};
 
 const IncomeRecommendation = () => {
   const [financialData, setFinancialData] = useState({
@@ -14,6 +26,8 @@ const IncomeRecommendation = () => {
     riskTolerance: 'moderate',
     investmentExperience: 'beginner'
   });
+  const { uid } = useUser();
+  const [username, setUsername] = useState('');
   const [recommendation, setRecommendation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,6 +38,16 @@ const IncomeRecommendation = () => {
       [name]: value
     }));
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch the username based on the uid
+      const fetchedUsername = await fetchUsername(uid);
+      setUsername(fetchedUsername);
+    };
+
+    fetchData();
+  }, [uid]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +73,7 @@ const IncomeRecommendation = () => {
 
   return (
     <div className="income-recommendation-container">
-      <Navbar username="Baby" />
+      <Navbar username = {username} />
       <div className="page-container">
         <div className="block-container">
           <div className="form-block">
