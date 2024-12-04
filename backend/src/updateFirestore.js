@@ -1,5 +1,15 @@
 import { adminDb } from "./firebaseConfig.js"; // Use adminDb for backend Firestore access
 
+/**
+ * Updates all user documents in the Firestore database.
+ * Adds default values for username, bio, and profile picture to each user document.
+ * Uses a batch operation for efficient bulk updates.
+ *
+ * @async
+ * @function
+ * @returns {Promise<void>} Resolves when all updates are successfully committed.
+ * @throws Will log an error if the batch update fails.
+ */
 const updateUsers = async () => {
     try {
         const usersCollection = adminDb.collection("users");

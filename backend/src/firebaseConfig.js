@@ -20,7 +20,11 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 
-
+/**
+ * Firebase Client SDK Configuration
+ * Uses environment variables for secure setup.
+ * @type {Object}
+ */
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

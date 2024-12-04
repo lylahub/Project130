@@ -16,7 +16,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let clients = {};
 
-// Conditionally load .env file for local development
+/**
+ * Conditionally load environment variables from a .env file for local development.
+ * Uses the .env file only if environment variables are not already defined.
+ */
 if (!process.env.PORT) {
     dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
@@ -25,8 +28,17 @@ const app = express();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 //const groupBudget = new GroupBudget(userId);
+
+/**
+ * Map of user IDs to their GroupBudget instances.
+ * @type {Object<string, GroupBudget>}
+ */
 const groupBudgets = {};
 
+/**
+ * Port number for the server to listen on.
+ * @constant {number}
+ */
 const PORT = process.env.PORT || 3001;
 
 // Middleware setup
@@ -39,6 +51,14 @@ app.use(cors({
 app.use("/", router(groupBudgets, clients));
 
 // OpenAI recommendation route
+/**
+ * Route to fetch financial advice using OpenAI API.
+ * Accepts financial data and returns a recommendation.
+ * @route POST /api/get-recommendation
+ * @param {Object} req - The Express request object.
+ * @param {Object} req.body - The request body containing financialData.
+ * @param {Object} res - The Express response object.
+ */
 app.post('/api/get-recommendation', async (req, res) => {
     try {
         const { financialData } = req.body;
@@ -50,6 +70,9 @@ app.post('/api/get-recommendation', async (req, res) => {
     }
 });
 
+/**
+ * WebSocket server handling real-time connections.
+ */
 wss.on('connection', (socket) => {
     socket.on('message', async (message) => {
         const data = JSON.parse(message);
@@ -81,6 +104,9 @@ wss.on('connection', (socket) => {
         }
     });
 
+    /**
+     * Handle WebSocket disconnection events.
+     */
     socket.on('close', () => {
         const disconnectedUserId = Object.keys(clients).find(id => clients[id] === socket);
         if (disconnectedUserId) {
@@ -106,6 +132,10 @@ wss.on('connection', (socket) => {
 });
 
 // Helper function to log all clients
+/**
+ * Logs all currently connected WebSocket clients.
+ * Iterates over the `clients` object and logs their connection status.
+ */
 function logAllClients() {
     console.log("Current connected clients:");
     Object.keys(clients).forEach(userId => {
