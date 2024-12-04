@@ -1,3 +1,50 @@
+## Building and Managing with Docker
+
+This repository is designed to use Docker for consistent and reproducible builds. Docker provides containerized environments that ensure compatibility across development and production systems. Below are the instructions for building, running, and cleaning up the project using Docker.
+
+### Building the Project
+
+To build and start the project, use the following command:
+
+```bash
+docker-compose up --build
+```
+This command:
+
+- Builds the Docker images for the application as specified in the `docker-compose.yml` file.
+- Starts all services defined in the `docker-compose.yml` file.
+
+Once the build is complete, the application will be running locally, and the logs will be displayed in your terminal.
+
+### Stopping the Project
+
+To stop the running services, use:
+
+```bash
+docker-compose down
+```
+
+This command stops all services defined in the `docker-compose.yml` file but preserves the built images and volumes for future use.
+
+### Removing All Images and Data
+
+If you need to clean up by removing all Docker images, containers, and volumes related to this project, use:
+
+```bash
+docker-compose down --rmi all
+```
+
+This command:
+
+- Stops all running services.
+- Removes all images built from the `docker-compose.yml` file.
+- Deletes any associated volumes, ensuring a clean slate.
+
+### CI/CD Integration with Docker
+
+The `docker-compose` commands can be integrated into your CI/CD pipeline to ensure automated builds, testing, and deployments. Configure your CI/CD scripts to use the same commands for consistency across development and production environments.
+
+
 # Repository Template
 
 [![Build Status](https://app.travis-ci.com/melaasar/cs130-template.svg?branch=master)](https://app.travis-ci.com/github/melaasar/cs130-template)
