@@ -1,12 +1,14 @@
-name: Deploy to Google Cloud Run
+name: Build and Test Docker Images
 
 on:
   push:
     branches:
       - main
+      - cicd-automation
+
 
 jobs:
-  deploy:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,59 +16,125 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
-      # Step 2: Authenticate to Google Cloud
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      # Step 2: Set up Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # Step 3: Set up Google Cloud CLI
-      - name: Set up Google Cloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          install_components: gcloud
-
-      # Step 4: Configure Docker for Artifact Registry
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker us-west1-docker.pkg.dev
-
-      # Step 5: Build and push backend image to Artifact Registry
-      - name: Build and push backend image
+      # Step 3: Build backend Docker image
+      - name: Build backend Docker image
         run: |
           docker build \
             --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
-            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
-            -f ./backend/Dockerfile .
-          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
+            -t backend:latest \
+            -f ./backend/Dockerfile ./backend
 
-      # Step 6: Build and push frontend image to Artifact Registry
-      - name: Build and push frontend image
+      # Step 4: Build frontend Docker image
+      - name: Build frontend Docker image
         run: |
           docker build \
             --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
-            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
-            -f ./frontend/Dockerfile .
-          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
+            -t frontend:latest \
+            -f ./frontend/Dockerfile ./frontend
 
-      # Step 7: Deploy backend to Google Cloud Run
-      - name: Deploy backend to Google Cloud Run
+      # Step 5: Run backend container
+      - name: Run backend container
         run: |
-          gcloud run deploy backend-service \
-          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
-          --platform managed \
-          --region us-west1 \
-          --allow-unauthenticated \
-          --set-env-vars=CORS_ORIGIN=https://frontend-service-520187080239.us-west1.run.app,REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }},REACT_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.REACT_APP_FIREBASE_AUTH_DOMAIN }},REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }},REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }},REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }},REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }},REACT_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}
-      
-      
+          docker run -d --name backend-test backend:latest
+        timeout-minutes: 1
 
-      # Step 8: Deploy frontend to Google Cloud Run
-      - name: Deploy frontend to Google Cloud Run
+      # Step 6: Run frontend container
+      - name: Run frontend container
         run: |
-          gcloud run deploy frontend-service \
-          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
-          --platform managed \
-          --region us-west1 \
-          --allow-unauthenticated \
-          --set-env-vars=REACT_APP_API_URL=https://backend-service-520187080239.us-west1.run.app,REACT_APP_WEBSOCKET_URL=wss://backend-service-520187080239.us-west1.run.app
+          docker run -d --name frontend-test frontend:latest
+        timeout-minutes: 1
+
+      # Step 7: Wait for 30 seconds
+      - name: Wait for 30 seconds
+        run: sleep 30
+
+      # Step 8: Stop and remove containers
+      - name: Stop and remove containers
+        run: |
+          docker stop backend-test frontend-test
+          docker rm backend-test frontend-test
+
+      # Step 9: Clean up Docker images
+      - name: Remove Docker images
+        run: |
+          docker rmi backend:latest frontend:latest
+
+
+#
+#
+#name: Deploy to Google Cloud Run
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#jobs:
+#  deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      # Step 1: Check out the code
+#      - name: Check out the code
+#        uses: actions/checkout@v3
+#
+#      # Step 2: Authenticate to Google Cloud
+#      - name: Authenticate to Google Cloud
+#        uses: google-github-actions/auth@v1
+#        with:
+#          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+#
+#      # Step 3: Set up Google Cloud CLI
+#      - name: Set up Google Cloud CLI
+#        uses: google-github-actions/setup-gcloud@v2
+#        with:
+#          project_id: ${{ secrets.GCP_PROJECT_ID }}
+#          install_components: gcloud
+#
+#      # Step 4: Configure Docker for Artifact Registry
+#      - name: Configure Docker for Artifact Registry
+#        run: gcloud auth configure-docker us-west1-docker.pkg.dev
+#
+#      # Step 5: Build and push backend image to Artifact Registry
+#      - name: Build and push backend image
+#        run: |
+#          docker build \
+#            --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
+#            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
+#            -f ./backend/Dockerfile .
+#          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest
+#
+#      # Step 6: Build and push frontend image to Artifact Registry
+#      - name: Build and push frontend image
+#        run: |
+#          docker build \
+#            --build-arg ENV_VARS=${{ secrets.ENV_VARS }} \
+#            -t us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
+#            -f ./frontend/Dockerfile .
+#          docker push us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest
+#
+#      # Step 7: Deploy backend to Google Cloud Run
+#      - name: Deploy backend to Google Cloud Run
+#        run: |
+#          gcloud run deploy backend-service \
+#          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend/backend:latest \
+#          --platform managed \
+#          --region us-west1 \
+#          --allow-unauthenticated \
+#          --set-env-vars=CORS_ORIGIN=https://frontend-service-520187080239.us-west1.run.app,REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }},REACT_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.REACT_APP_FIREBASE_AUTH_DOMAIN }},REACT_APP_FIREBASE_PROJECT_ID=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }},REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }},REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }},REACT_APP_FIREBASE_APP_ID=${{ secrets.REACT_APP_FIREBASE_APP_ID }},REACT_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.REACT_APP_FIREBASE_MEASUREMENT_ID }}
+#
+#
+#
+#      # Step 8: Deploy frontend to Google Cloud Run
+#      - name: Deploy frontend to Google Cloud Run
+#        run: |
+#          gcloud run deploy frontend-service \
+#          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/frontend/frontend:latest \
+#          --platform managed \
+#          --region us-west1 \
+#          --allow-unauthenticated \
+#          --set-env-vars=REACT_APP_API_URL=https://backend-service-520187080239.us-west1.run.app,REACT_APP_WEBSOCKET_URL=wss://backend-service-520187080239.us-west1.run.app
