@@ -1,4 +1,9 @@
 // src/pages/Home.js
+
+/**
+ * @file Home.js
+ * @description This file contains the implementation of the Home component for managing categories and transactions in a budgeting application.
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../userContext.js';
@@ -10,25 +15,54 @@ import { CategoryChartExpense, CategoryChartIncome } from '../chart.js';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 console.log()
 
+/**
+ * Fetches user-specific categories.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @returns {Promise<Array>} An array of category objects.
+ */
 const fetchUserCategories = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/categories/user-categories?userId=${uid}`);
   const data = await response.json();
   return data.categories || [];
 };
 
+/**
+ * Fetches all transactions for a user.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @returns {Promise<Array>} An array of transaction objects.
+ */
 const fetchAllTransactions = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/categories/transactions?userId=${uid}`);
   const data = await response.json();
   return data.transactions || [];
 };
 
+/**
+ * Fetches amounts for a specific category.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @param {string} categoryName - The category name.
+ * @returns {Promise<Object>} An object containing monthly and total amounts.
+ */
 const getCategoryAmount = async (uid, categoryName) => {
   const response = await fetch(`${API_BASE_URL}/categories/amount?userId=${uid}&categoryName=${categoryName}`);
   const data = await response.json();
   return data.amounts;
 };
 
-
+/**
+ * Fetches transaction details for a specific category.
+ *
+ * @async
+ * @param {string} userId - The user ID.
+ * @param {string} categoryName - The category name.
+ * @returns {Promise<Array>} An array of transaction entries.
+ */
 const getCategoryDetails = async (userId, categoryName) => {
   try {
     const response = await fetch(`${API_BASE_URL}/categories/details?userId=${userId}&categoryName=${categoryName}`);
@@ -49,6 +83,15 @@ const getCategoryDetails = async (userId, categoryName) => {
   }
 };
 
+/**
+ * Adds a new category for the user.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @param {string} categoryName - The name of the new category.
+ * @param {string} icon - The icon class for the category.
+ * @returns {Promise<Object>} The result of the API call.
+ */
 const addNewCategory = async (uid, categoryName, icon) => {
   const response = await fetch(`${API_BASE_URL}/categories`, {
     method: "POST",
@@ -62,6 +105,17 @@ const addNewCategory = async (uid, categoryName, icon) => {
   return result;
 };
 
+/**
+ * Adds a transaction to a category.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @param {string} categoryId - The category ID.
+ * @param {number} amount - The transaction amount.
+ * @param {string} memo - A note for the transaction.
+ * @param {string} incomeExpense - The type of transaction ('income' or 'expense').
+ * @returns {Promise<Object>} The result of the API call.
+ */
 const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
   const response = await fetch(`${API_BASE_URL}/categories/entry`, {
     method: "POST",
@@ -76,6 +130,14 @@ const addTransaction = async (uid, categoryId, amount, memo, incomeExpense) => {
   return response.json(); 
 };
 
+/**
+ * Adds default categories for a user.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @param {Array<string>} icons - An array of default icon classes.
+ * @returns {Promise<Object>} The result of the API call.
+ */
 const addDefaultCategories = async(uid, icons) => {
   const response = await fetch(`${API_BASE_URL}/categories/default`, {
     method: "POST",
@@ -89,6 +151,13 @@ const addDefaultCategories = async(uid, icons) => {
   return response.json(); 
 }
 
+/**
+ * Fetches overall amounts (income/expense) for a user.
+ *
+ * @async
+ * @param {string} userId - The user ID.
+ * @returns {Promise<Object>} An object containing total and monthly amounts.
+ */
 const getOverallAmounts = async (userId) => {
   const response = await fetch(`${API_BASE_URL}/categories/overall?userId=${userId}`);
   if (!response.ok) {
@@ -98,6 +167,13 @@ const getOverallAmounts = async (userId) => {
   return data;
 };
 
+/**
+ * Fetches the username for a given user ID.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @returns {Promise<string>} The username of the user.
+ */
 const fetchUsername = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
   if (!response.ok) {
@@ -107,6 +183,12 @@ const fetchUsername = async (uid) => {
   return data.username;
 };
 
+/**
+ * The main Home component for the budgeting application.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Home component.
+ */
 const Home = () => {
   const navigate = useNavigate();
   const { uid } = useUser();

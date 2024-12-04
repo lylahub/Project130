@@ -1,10 +1,21 @@
 // src/pages/Profile.js
+/**
+ * @file Profile.js
+ * @description This file contains the Profile component that allows users to view and update their profile information, including username, bio, and password.
+ */
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; // Import Navbar component
 import '../css/Profile.css'; // Import CSS for styling
 import { useUser } from '../userContext';
 
 // Main Profile component
+/**
+ * Profile Component
+ *
+ * @component
+ * @description Renders the user's profile information, allows for editing, uploading a profile picture, and changing the password.
+ * @returns {JSX.Element} The rendered Profile component.
+ */
 const Profile = () => {
 
     // Access `uid` from the global context
@@ -25,7 +36,10 @@ const Profile = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    // Fetch user profile from the backend
+
+    /**
+     * Fetches user profile information from the backend when the component mounts or `uid` changes.
+     */
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -47,13 +61,21 @@ const Profile = () => {
         if (uid) fetchProfile();
     }, [uid]);
 
-    // Handle input changes for profile information
+    /**
+     * Handles input changes in editable profile fields.
+     *
+     * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - The input change event.
+     */
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditableProfile((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handle profile picture upload
+    /**
+     * Handles profile picture upload.
+     *
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The file input change event.
+     */
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -65,6 +87,9 @@ const Profile = () => {
         }
     };
 
+    /**
+     * Cancels the edit mode and resets changes.
+     */
     const handleCancelEdit = () => {
         setEditableProfile(profile); // Revert to original profile
         setIsEditing(false); // Exit edit mode
@@ -81,6 +106,11 @@ const Profile = () => {
     //         alert("Passwords do not match."); // Show error if passwords don't match
     //     }
     // };
+    /**
+     * Handles updating the user's password with validation.
+     *
+     * @param {React.MouseEvent<HTMLButtonElement>} e - The button click event.
+     */
     const handlePasswordChange = async (e) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {

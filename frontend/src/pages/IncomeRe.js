@@ -1,4 +1,8 @@
 // Import required dependencies and components
+/**
+ * @file IncomeRecommendation.js
+ * @description This file contains the implementation of the IncomeRecommendation component, a financial advisor tool for providing personalized financial recommendations based on user inputs.
+ */
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../userContext';
 import axios from 'axios';
@@ -9,6 +13,14 @@ import '../css/IncomeRe.css';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 // Utility function to fetch username from server
+/**
+ * Fetches the username for a given user ID.
+ *
+ * @async
+ * @param {string} uid - The user ID.
+ * @returns {Promise<string>} The username of the user.
+ * @throws {Error} If the fetch request fails.
+ */
 const fetchUsername = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
   if (!response.ok) {
@@ -19,6 +31,12 @@ const fetchUsername = async (uid) => {
 };
 
 // Main component for financial recommendation system
+/**
+ * IncomeRecommendation Component.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered IncomeRecommendation component.
+ */
 const IncomeRecommendation = () => {
   // Initialize state for financial form data
   const [financialData, setFinancialData] = useState({
@@ -36,6 +54,11 @@ const IncomeRecommendation = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle input changes for form fields
+  /**
+   * Handles input changes for financial form fields.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>} e - The input change event.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFinancialData(prev => ({
@@ -55,6 +78,11 @@ const IncomeRecommendation = () => {
   }, [uid]);
 
   // Handle form submission and get recommendations
+  /**
+   * Handles form submission to get financial recommendations.
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);

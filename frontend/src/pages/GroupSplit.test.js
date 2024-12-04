@@ -1,4 +1,9 @@
 // src/pages/GroupSplit.test.js
+
+/**
+ * @file GroupSplit.test.js
+ * @description Unit tests for the GroupSplit component using React Testing Library.
+ */
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -71,6 +76,12 @@ const mockGroups = {
 };
 
 // Test component wrapper
+/**
+ * Renders the GroupSplit component wrapped with the necessary contexts.
+ *
+ * @function
+ * @returns {RenderResult} The rendered component.
+ */
 const renderGroupSplit = () => {
   return render(
     <MemoryRouter>

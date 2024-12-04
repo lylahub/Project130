@@ -1,4 +1,8 @@
 // src/pages/Home.test.js
+/**
+ * @file Home.test.js
+ * @description Unit tests for the Home component using React Testing Library.
+ */
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -17,6 +21,13 @@ jest.mock('../userContext', () => ({
 
 // Mock the chart.js module
 jest.mock('../chart', () => ({
+  /**
+   * Mocked CategoryChartExpense component.
+   * @param {Object} props - Component props.
+   * @param {Array} props.categories - Array of categories.
+   * @param {Array} props.transactions - Array of transactions.
+   * @returns {JSX.Element} Mocked chart visualization.
+   */
   CategoryChartExpense: ({ categories, transactions }) => (
     <div data-testid="mock-chart">
       Mock Chart: {categories.length} categories, {transactions.length} transactions
@@ -30,6 +41,9 @@ const mockCategories = [
   { id: 2, name: 'Entertainment', icon: 'fa-film' }
 ];
 
+/**
+ * Mocked transactions for the initial state.
+ */
 const mockTransactions = [
   { 
     id: 1, 
@@ -40,12 +54,21 @@ const mockTransactions = [
   }
 ];
 
+/**
+ * Mocked overall amounts for testing.
+ */
 const mockOverallAmounts = {
   totalAmount: 1000,
   monthlyAmount: 300
 };
 
 // Setup component wrapper with required providers
+/**
+ * Renders the Home component within the necessary context.
+ *
+ * @function
+ * @returns {RenderResult} The rendered Home component.
+ */
 const renderHome = () => {
   return render(
     <BrowserRouter>
@@ -101,6 +124,10 @@ describe('Home Component', () => {
     });
   });
 
+  /**
+   * Tests if the main components of the Home page are rendered correctly
+   * and if initial data is loaded successfully.
+   */
   test('renders main components and loads initial data', async () => {
     renderHome();
 
@@ -125,6 +152,9 @@ describe('Home Component', () => {
     expect(screen.getByTestId('mock-chart')).toBeInTheDocument();
   });
 
+  /**
+   * Tests if a new category can be added successfully.
+   */
   test('can add a new category', async () => {
     // Set up the mock response for adding a category
     const mockAddCategory = {

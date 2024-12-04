@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["./backend/src"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs/backend",
+    "recurse": true
+  }
+}

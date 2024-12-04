@@ -1,4 +1,8 @@
 // src/App.js
+/**
+ * @file App.js
+ * @description This file serves as the main entry point for the React application, managing routes and context providers.
+ */
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from "framer-motion";
@@ -16,6 +20,13 @@ import Profile from "./pages/Profile";
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 
+/**
+ * AppRouter Component
+ *
+ * @component
+ * @description Manages the application's routes and handles conditional rendering based on user authentication state.
+ * @returns {JSX.Element} The rendered AppRouter component.
+ */
 function AppRouter() {
   const location = useLocation(); // useLocation在Router内部使用
   const { uid, setUid } = useUser();
@@ -48,7 +59,13 @@ function AppRouter() {
 }
 
 
-
+/**
+ * App Component
+ *
+ * @component
+ * @description Wraps the application with necessary providers such as UserProvider and WebSocketProvider, and initializes routing.
+ * @returns {JSX.Element} The rendered App component.
+ */
 function App() {
   return (
     <Router>

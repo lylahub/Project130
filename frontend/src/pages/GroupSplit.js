@@ -16,6 +16,13 @@ import { BalancesChart } from '../chart'
 //TODO: The above question is due to delay update, same occurred when logging in it cannot fetch groups on time
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
+/**
+ * Fetches the username associated with a given user ID.
+ *
+ * @param {string} uid - User ID.
+ * @returns {Promise<string>} - Resolves to the username.
+ * @throws {Error} If the request fails.
+ */
 const fetchUsername = async (uid) => {
   const response = await fetch(`${API_BASE_URL}/get-username/${uid}`);
   if (!response.ok) {
@@ -25,6 +32,13 @@ const fetchUsername = async (uid) => {
   return data.username;
 };
 
+/**
+ * Fetches usernames for multiple user IDs.
+ *
+ * @param {Array<string>} participants - List of user IDs.
+ * @returns {Promise<Object>} - Resolves to a mapping of user IDs to usernames.
+ * @throws {Error} If the request fails.
+ */
 const fetchUsernamesForGroup = async (participants) => {
   try {
     const response = await fetch(`${API_BASE_URL}/get-usernames`, {
@@ -45,6 +59,14 @@ const fetchUsernamesForGroup = async (participants) => {
 };
 
 // Main expense management modal component - handles split bills and group expenses
+/**
+ * Component for managing expenses within a group.
+ *
+ * @param {Object} props - Component props.
+ * @param {Object} props.group - Group details.
+ * @param {Object} props.uidToUsername - Mapping of user IDs to usernames.
+ * @param {Function} props.onClose - Callback to close the modal.
+ */
 const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   const { uid } = useUser();
   
@@ -76,6 +98,12 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   );
   
   // Utility function to format timestamps into readable dates
+  /**
+   * Formats a timestamp into a readable date string.
+   *
+   * @param {Object|number|string} timestamp - The timestamp to format.
+   * @returns {string} - Formatted date string or 'N/A' if invalid.
+   */
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
     
@@ -93,12 +121,23 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   };
 
   // Handler for switching between equal and custom split strategies
+  /**
+   * Handles the change in split strategy.
+   *
+   * @param {Object} e - Event object.
+   */
   const handleStrategyChange = (e) => {
     setSplitStrategy(e.target.value);
     setSettlementResults({ ...settlementResults, settlements: [] });
   };
 
   // Manage participant ratios for custom splits
+  /**
+   * Handles changes to custom split percentages.
+   *
+   * @param {string} participant - Participant ID.
+   * @param {string} value - Custom percentage value.
+   */
   const handleCustomSplitChange = (participant, value) => {
     setCustomSplits({
       ...customSplits,
@@ -112,6 +151,11 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   };
 
   // Validate custom split percentages sum to 100%
+  /**
+   * Checks if the custom split percentages sum to 100%.
+   *
+   * @returns {boolean} - True if valid, false otherwise.
+   */
   const isPercentageValid = () => {
     const totalPercentage = Object.values(customSplits).reduce((sum, percentage) => sum + percentage, 0);
     return totalPercentage === 100;
@@ -183,6 +227,13 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   };
   
   // Process payments and update transaction statuses
+  /**
+   * Handles the payment of balances and updates transaction statuses.
+   *
+   * @param {string} debtor - User ID of the person who owes the balance.
+   * @param {number|null} [payAmount=null] - Optional specific amount to pay.
+   * @param {string|null} [entryId=null] - Optional ID of the specific transaction entry.
+   */
   const handlePayBalances = async (debtor, payAmount = null, entryId = null) => {
     const amount = balances.owes[debtor] || 0;
     if (!amount) {
@@ -246,6 +297,11 @@ const ExpenseModal = ({ group, uidToUsername, onClose }) => {
   };  
 
   // Update local state when group data changes
+  /**
+   * Updates the state when group data changes.
+   *
+   * @param {Object} group - Group data.
+   */
   useEffect(() => {
     if (group.entriesInfo) {
       setEntriesInfo(group.entriesInfo || {});
@@ -518,6 +574,9 @@ const GroupSplit = () => {
 
 
   // 处理创建群组
+  /**
+   * Handles the creation of a new group.
+   */
   const handleCreateGroup = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/group/create`, {
@@ -546,6 +605,9 @@ const GroupSplit = () => {
   };
 
   // group information
+  /**
+   * Fetches the groups the user is part of.
+   */
   const handleFetchGroups = async () => {
     try {
       setLoading(true);
@@ -611,6 +673,13 @@ const GroupSplit = () => {
       console.error("Error updating entries and balances:", error.message);
     }
   }; */
+  /**
+   * Updates entries and balances for a specific group.
+   *
+   * @param {Object} entry - Entry data.
+   * @param {string} groupId - ID of the group.
+   * @param {string} entryId - ID of the entry.
+   */
   const updateEntriesForGroup = async (entry, groupId, entryId) => {
     try {
       const balances = entry.balances; 
@@ -654,8 +723,16 @@ const GroupSplit = () => {
       console.error("Error updating entries and balances:", error.message);
     }
   };
-  
 
+  /**
+   * Updates the balances for a specific group.
+   *
+   * @param {string} payer - User ID of the payer.
+   * @param {string} payee - User ID of the payee.
+   * @param {Object} entryPayer - Balance data for the payer.
+   * @param {Object} entryPayee - Balance data for the payee.
+   * @param {string} groupId - ID of the group.
+   */
   const updateBalancesForGroup = (payer, payee, entryPayer, entryPayee, groupId) => {
     try {
         const newPayerBalance = entryPayer.owes[payee];  // Amount owed by the payer to the payee

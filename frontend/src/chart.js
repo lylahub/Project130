@@ -1,3 +1,7 @@
+/**
+ * @file ChartComponents.js
+ * @description Contains reusable chart components using Chart.js to display financial data visualizations.
+ */
 import React, { useRef, useEffect } from 'react';
 import {
   Chart,
@@ -7,6 +11,17 @@ import {
 Chart.register(...registerables);
 
 //chart for group budget: bar
+/**
+ * BalancesChart Component
+ *
+ * @component
+ * @description Displays a bar chart of balances owed to or by the user in a group.
+ * Positive values indicate amounts owed to the user, and negative values indicate amounts the user owes.
+ * @param {Object} props - Component props.
+ * @param {Object} props.balances - Balance data for the group.
+ * @param {Object} props.uidToUsername - Mapping of user IDs to usernames.
+ * @returns {JSX.Element} The rendered bar chart component.
+ */
 const BalancesChart = ({ balances, uidToUsername }) => {
   const chartRef = useRef(null);
   let myChart = null;
@@ -112,6 +127,12 @@ const BalancesChart = ({ balances, uidToUsername }) => {
   );
 };
 
+/**
+ * Utility function to generate a color palette for charts.
+ *
+ * @param {number} count - Number of colors to generate.
+ * @returns {string[]} Array of hex color codes.
+ */
 const generateColors = (count) => {
     // 定義你想要的顏色
   const colorPalette = [
@@ -129,6 +150,16 @@ const generateColors = (count) => {
   return Array(count).fill().map((_, i) => colorPalette[i % colorPalette.length]);
 };
 
+/**
+ * CategoryChartExpense Component
+ *
+ * @component
+ * @description Displays a pie chart of expense totals by category.
+ * @param {Object} props - Component props.
+ * @param {Object[]} props.categories - List of categories.
+ * @param {Object[]} props.transactions - List of transactions.
+ * @returns {JSX.Element} The rendered pie chart component.
+ */
   const CategoryChartExpense = ({ categories, transactions }) => {
     const title = "Expense Overview"
     const chartRef = useRef(null);
@@ -194,6 +225,16 @@ const generateColors = (count) => {
     return <canvas ref={chartRef} />;
   };
 
+/**
+ * CategoryChartIncome Component
+ *
+ * @component
+ * @description Displays a pie chart of income totals by category.
+ * @param {Object} props - Component props.
+ * @param {Object[]} props.categories - List of categories.
+ * @param {Object[]} props.transactions - List of transactions.
+ * @returns {JSX.Element} The rendered pie chart component.
+ */
   const CategoryChartIncome = ({ categories, transactions }) => {
     const title = "Income Overview";
     const chartRef = useRef(null);
