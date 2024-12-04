@@ -29,8 +29,13 @@ jest.mock('../chart', () => ({
    * @returns {JSX.Element} Mocked chart visualization.
    */
   CategoryChartExpense: ({ categories, transactions }) => (
-    <div data-testid="mock-chart">
-      Mock Chart: {categories.length} categories, {transactions.length} transactions
+    <div data-testid="mock-expense-chart">
+      Mock Expense Chart: {categories.length} categories, {transactions.length} transactions
+    </div>
+  ),
+  CategoryChartIncome: ({ categories, transactions }) => (
+    <div data-testid="mock-income-chart">
+      Mock Income Chart: {categories.length} categories, {transactions.length} transactions
     </div>
   )
 }));
@@ -130,7 +135,7 @@ describe('Home Component', () => {
    */
   test('renders main components and loads initial data', async () => {
     renderHome();
-
+  
     // Check if main sections are rendered
     await waitFor(() => {
       expect(screen.getByText('Category Overview')).toBeInTheDocument();
@@ -138,18 +143,20 @@ describe('Home Component', () => {
     
     // Wait for data to load
     await waitFor(() => {
-      expect(screen.getByText('Overall Total Expense')).toBeInTheDocument();
+      // 修改這裡以匹配實際的文字
+      expect(screen.getByText('Overall Total Income')).toBeInTheDocument();
       expect(screen.getByText('$1000')).toBeInTheDocument();
     });
-
+  
     // Check if categories are rendered
     await waitFor(() => {
       expect(screen.getByText('Food')).toBeInTheDocument();
       expect(screen.getByText('Entertainment')).toBeInTheDocument();
     });
-
-    // Check if chart is rendered
-    expect(screen.getByTestId('mock-chart')).toBeInTheDocument();
+  
+    // Check if both charts are rendered
+    expect(screen.getByTestId('mock-expense-chart')).toBeInTheDocument();
+    expect(screen.getByTestId('mock-income-chart')).toBeInTheDocument();
   });
 
   /**

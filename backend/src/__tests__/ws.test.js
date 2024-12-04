@@ -4,6 +4,8 @@ import { WebSocketServer } from 'ws';
 import GroupBudget from '../groupBudget.js';
 import express from 'express';
 import { Server } from 'http';
+import { Observable } from '../Observer.js';
+
 
 // Mock firebaseConfig.js, fixed path not found error
 jest.mock('../firebaseConfig.js', () => ({
@@ -28,7 +30,7 @@ jest.mock('firebase/firestore', () => ({
   writeBatch: jest.fn(),
 }));
 
-// Test suite for web socket, unresolved issue exists: meta url
+// Test suite for web socket and observer
 describe('WebSocket Server', () => {
   let server;
   let wss;
@@ -189,4 +191,68 @@ describe('WebSocket Server', () => {
       done();
     }, 100);
   });
+
+  test('notifyGroup do nothing if groupId does not exist in clients', () => {
+    const groupBudget = new GroupBudget('user1');
+    const mockMessage = { action: 'test', data: 'No Group!' };
+  
+    // Ensure clients[groupId] is undefined
+    groupBudget.clients = {};
+    groupBudget.notifyGroup('nonexistentGroup', mockMessage);
+  
+    // Expect no errors and no messages sent
+    expect(groupBudget.clients['nonexistentGroup']).toBeUndefined();
+  });
+  
+  test('notifyGroup outputs "No active clients" if socket is not open', () => {
+    const groupBudget = new GroupBudget('user1');
+    const groupId = 'testGroup';
+    const mockMessage = { action: 'test', data: 'Socket Closed!' };
+  
+    // Mock clients with a socket not in OPEN state
+    const mockSocket = {
+      readyState: WebSocket.CLOSED,
+      send: jest.fn(),
+    };
+    groupBudget.clients[groupId] = [{ uid: 'user1', socket: mockSocket }];
+  
+    // Spy on console.log
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  
+    groupBudget.notifyGroup(groupId, mockMessage);
+  
+    // Verify log output
+    expect(consoleSpy).toHaveBeenCalledWith(`No active clients for group ${groupId}`);
+    expect(mockSocket.send).not.toHaveBeenCalled();
+  
+    consoleSpy.mockRestore();
+  });
+
+  test('addObserver adds an observer to the observers list', () => {
+    const observable = new Observable();
+    observable.observers = []; //empty observer
+
+    const observer = jest.fn(); // Mock a function as an observer
+    observable.addObserver(observer);
+
+    expect(observable.observers).toContain(observer); // Check if the observer was added
+    expect(observable.observers.length).toBe(1); // Check the length of the observers list
+});
+
+  test('removeObserver removes an observer from the observers list', () => {
+    const observable = new Observable();
+    const observer1 = jest.fn();
+    const observer2 = jest.fn();
+
+    observable.observers = [observer1, observer2]; // Initialize observers list with two observers
+
+    observable.removeObserver(observer1);
+
+    expect(observable.observers).not.toContain(observer1); // Check if observer1 was removed
+    expect(observable.observers).toContain(observer2); // Ensure observer2 is still in the list
+    expect(observable.observers.length).toBe(1); // Ensure the length is correct
+  });
+
+
+  
 });
