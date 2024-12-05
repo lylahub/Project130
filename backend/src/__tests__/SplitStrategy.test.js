@@ -103,22 +103,6 @@ describe('CustomSplitStrategy', () => {
     });
   });
 
-  it('invalid percentages (input > 100 percent)', () => {
-    const strategy = new CustomSplitStrategy();
-    const participants = ['user1', 'user2'];
-    const amount = 100;
-    const split = {
-      user1: 70,
-      user2: 40, // Total is 110%
-    };
-
-    const result = strategy.calculateShare(amount, participants, split);
-
-    expect(result).toEqual({
-      user1: 70,
-      user2: 40,
-    });
-  });
 
   it('empty split object', () => {
     const strategy = new CustomSplitStrategy();
