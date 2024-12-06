@@ -151,18 +151,39 @@ const IncomeRecommendation = () => {
 
                     {/* Savings and Debt Input Fields */}
                     <div className="input-pair">
-                      {/* Additional financial fields... */}
+                      <div className="input-group">
+                        <label>Current Savings</label>
+                        <input
+                            type="number"
+                            name="savings"
+                            value={financialData.savings}
+                            onChange={handleInputChange}
+                            placeholder="Enter current savings"
+                            required
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label>Current Debt</label>
+                        <input
+                            type="number"
+                            name="debt"
+                            value={financialData.debt}
+                            onChange={handleInputChange}
+                            placeholder="Enter current debt"
+                            required
+                        />
+                      </div>
                     </div>
 
                     {/* Financial Goals Section */}
                     <div className="goals-section">
                       <label>Financial Goals</label>
                       <textarea
-                        name="financialGoals"
-                        value={financialData.financialGoals}
-                        onChange={handleInputChange}
-                        placeholder="Describe your financial goals"
-                        rows="4"
+                          name="financialGoals"
+                          value={financialData.financialGoals}
+                          onChange={handleInputChange}
+                          placeholder="Describe your financial goals"
+                          rows="4"
                       />
                     </div>
                   </div>
@@ -174,8 +195,8 @@ const IncomeRecommendation = () => {
                   <div className="input-group">
                     <label>Risk Tolerance</label>
                     <select
-                      name="riskTolerance"
-                      value={financialData.riskTolerance}
+                        name="riskTolerance"
+                        value={financialData.riskTolerance}
                       onChange={handleInputChange}
                     >
                       <option value="conservative">Conservative</option>
